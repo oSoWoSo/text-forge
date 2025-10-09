@@ -42,8 +42,8 @@ signal reload_recent_files
 signal module_profiler_refresh
 ## Emits when current mode changes.
 signal mode_changed(mode: Dictionary)
-## Emits when new preview is available.
-signal preview_updated(new: String)
+## Emits when new preview is available, preview can be a [b]BBCode[/b] [String] or a [Control].
+signal preview_updated(new)
 ## Shares problems list.
 signal problems_updated(problems: Array[Dictionary])
 ## Shares file outline.

@@ -268,8 +268,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 2.0
 offset_top = 2.0
-offset_right = -2.0
-offset_bottom = -2.0
+offset_right = 198.0
+offset_bottom = 80.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -359,7 +359,7 @@ layout_mode = 2
 bbcode_enabled = true
 text = "[font_size=24]Text Forge[/font_size]
 [font_size=15][color=darkgray]v0.2-beta1
-Mode API v2.0
+Mode API v2.1
 Project Module v1.0[/color][/font_size]
 
 A highly modular and extendable open-source code editor.
