@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file. (Notable ch
 The format is based on [Keep a Changelog (1.1)](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning (2.0)](https://semver.org/spec/v2.0.0.html).
 
-## [unreleased]
+## [v0.2-beta2] - 2025-10-9
 
 ### Added
 - Higher priority for main action scripts loading ([#112](https://github.com/text-forge/text-forge/pull/112))
@@ -205,7 +205,8 @@ and this project adheres to [Semantic Versioning (2.0)](https://semver.org/spec/
 - Data-driven UI.
 - Docs in 4 languages (en, fa, es, zh)
 
-[unreleased]: https://github.com/text-forge/text-forge/compare/v0.2.0-beta1...HEAD
+[unreleased]: https://github.com/text-forge/text-forge/compare/v0.2.0-beta2...HEAD
+[v0.2-beta2]: https://github.com/text-forge/text-forge/releases/tag/v0.2.0-beta2
 [v0.2-beta1]: https://github.com/text-forge/text-forge/releases/tag/v0.2.0-beta1
 [v0.1-rc2]: https://github.com/text-forge/text-forge/releases/tag/v0.1.0-rc2
 [v0.1-rc1]: https://github.com/text-forge/text-forge/releases/tag/v0.1.0-rc1
