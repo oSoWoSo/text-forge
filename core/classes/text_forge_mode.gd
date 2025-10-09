@@ -95,8 +95,9 @@ func _update_code_completion_options(text: String) -> void:
 
 ## [b][color=lightblue]Virtual[/color][/b][br]
 ## Override this method to handle preview feature, [param text] is the full editor text and this
-## method should return preview as string. (you can use BBCode for formatting)
-func _generate_preview(text: String) -> String:
+## method can return preview as string or a control node. (you can use BBCode for formatting preview
+## string)
+func _generate_preview(text: String) -> Variant:
 	return String()
 
 
