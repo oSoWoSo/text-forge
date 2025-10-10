@@ -11,7 +11,7 @@ To start, create a new file using the New option.
 !!! Tip
 
     You can select **File > New** from the menu, use the shortcut `Ctrl + N`, or execute this command 
-	from the command palette.
+    from the command palette.
 
 You can write your template like any other file. Use {{{}}} for placeholders to enable quick completion 
 features when using the template. There are also several predefined internal placeholders that you can use:
@@ -24,7 +24,7 @@ features when using the template. There are also several predefined internal pla
 
 For example, we create this template:
 
-```
+```markdown
 # Daily Report - {{{!date}}}
 
 ## Project: {{{project}}}
@@ -41,11 +41,11 @@ For example, we create this template:
 
 ### Plan for Tomorrow
 - {{{next_step_1}}}
-- {{{next_stap_2}}}
+- {{{next_step_2}}}
 
 ---
 
-🕐 Logget at: {{{!time}}}
+🕐 Logged at: {{{!time}}}
 ```
 
 Our template is ready. To save it, select **Save As Template** from the **Format** menu, confirm the pop-up, 

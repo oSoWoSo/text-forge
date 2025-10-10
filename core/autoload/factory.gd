@@ -2,7 +2,7 @@ class_name NodeFactory
 extends Node
 ## Fast way to create standard popups, menus, windows, etc.
 ##
-## This is node factory of Text Forge. It's designed to generate useful nodes with signle function
+## This is node factory of Text Forge. It's designed to generate useful nodes with single function
 ## call. You can access to an instance of this class with [code]Factory[/code] singleton.
 
 
@@ -45,7 +45,7 @@ func accept_dialog(
 	return dialog
 
 
-## Creates a [LineEdit] with [Button] for signle line input based on parameters. All will be in
+## Creates a [LineEdit] with [Button] for single line input based on parameters. All will be in
 ## [PopupPanel] > [MarginContainer] > [HBoxContainer].
 func single_line_input(
 		placeholder := "", button_text := "OK", output := Callable(), show := true

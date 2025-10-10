@@ -47,7 +47,7 @@ const MENU_TRANSLATION_PREFIX = "menu."
 
 ## Recent files [PopupMenu], see also [method _reload_recent_files].
 var recent_files_submenu: PopupMenu
-## Templates [PopupMenu], see also [method _reload_templates].
+## Templates [PopupMenu], see also [method reload_templates].
 var templates_submenu: PopupMenu
 ## Configurations loaded from [constant S.MAIN_UI_DATA].
 var main_menu_data: Dictionary

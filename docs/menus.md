@@ -279,7 +279,7 @@ Returns you to Placeholder completion mode (when current file has any placeholde
 Saves current file as a template with given name.
 
 ### Templates
-Shows *Template Manager* window to view, editr, and remove templates.
+Shows *Template Manager* window to view, edit, and remove templates.
 
 ## View 
 This menu includes options and actions related to editor layout and visible items.

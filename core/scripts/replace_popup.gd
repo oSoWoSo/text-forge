@@ -6,19 +6,22 @@ extends PopupPanel
 @export var previous: Button
 @export var close: Button
 
-var regex := RegEx.new()
+var regex: RegEx
 var result: Array[RegExMatch] = []
 var i: int = 0
 
 func start(pattern: String, reset := true) -> void:
-	regex = RegEx.create_from_string(pattern)
+	regex = RegEx.new()
+	if regex.compile(pattern):
+		hide()
+		return
 	result = regex.search_all(Global.get_editor_text())
 	if reset:
 		i = -1
-	if result:
-		_on_next_pressed()
-	else:
+	if result.is_empty():
 		_on_close_pressed()
+		return
+	_on_next_pressed()
 
 func _on_replace_text_submitted(new_text: String) -> void:
 	Global.set_editor_text(regex.sub(Global.get_editor_text(), new_text, false, result[i].get_start()))
@@ -36,11 +39,10 @@ func _on_next_pressed() -> void:
 
 func _on_previous_pressed() -> void:
 	i = clampi(i - 1, 0, result.size() - 1)
-	if 0 <= i:
-		var _start := Global.get_editor().search(result[i].get_string(), CodeEdit.SearchFlags.SEARCH_MATCH_CASE, 0, 0)
-		Global.get_editor().select(_start.y, _start.x, _start.y, _start.x + result[i].get_string().length())
-		await U.wait()
-		_show_popup()
+	var _start := Global.get_editor().search(result[i].get_string(), CodeEdit.SearchFlags.SEARCH_MATCH_CASE, 0, 0)
+	Global.get_editor().select(_start.y, _start.x, _start.y, _start.x + result[i].get_string().length())
+	await U.wait()
+	_show_popup()
 
 
 func _show_popup() -> void:
@@ -54,14 +56,14 @@ func _show_popup() -> void:
 				insert.tooltip_text = "Auto Insert\nYou can insert file path in one click."
 				insert.disabled = false
 			else:
-				insert.tooltip_text = "Auto Insert\nThis file ins't saved yet!"
+				insert.tooltip_text = "Auto Insert\nThis file isn't saved yet!"
 				insert.disabled = true
 		"!file_name":
 			if Global.has_file():
 				insert.tooltip_text = "Auto Insert\nYou can insert file name in one click."
 				insert.disabled = false
 			else:
-				insert.tooltip_text = "Auto Insert\nThis file ins't saved yet!"
+				insert.tooltip_text = "Auto Insert\nThis file isn't saved yet!"
 				insert.disabled = true
 		"!date":
 			insert.tooltip_text = "Auto Insert\nYou can insert current date as YYYY-MM-DD in one click."
