@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning (2.0)](https://semver.org/spec/
 
 ## [unreleased]
 
+### Added
+- Template system ([#117](https://github.com/text-forge/text-forge/pull/117))
+
 ### Fixed
 - Empty *Mode Viewer* popup menu at startup ([#116](https://github.com/text-forge/text-forge/pull/116))
 

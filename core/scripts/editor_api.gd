@@ -24,7 +24,8 @@ func _ready() -> void:
 	Global.get_editor().type_timer_timeout.connect(_update_outline)
 	Global.get_editor().type_timer_timeout.connect(_lint_content)
 
-	_load_mode_list()
+	if DirAccess.dir_exists_absolute(S.globalize_path(S.FOLDER_MODES.path_join("plain_text"))):
+		import_mode(S.globalize_path(S.DEFAULT_MODES))
 
 
 ## Loads [member mode_list], will fill [member GlobalAccess.damaged_modes] with failed modes.
@@ -32,6 +33,9 @@ func _ready() -> void:
 ## validation, and script class check. This function will add modes folder name to mode information
 ## dictionary and [code]"id"[/code].
 func _load_mode_list() -> void:
+	if mode_list != []:
+		reload_modes()
+		return
 	var damaged_modes: Dictionary[String, String] = {}
 
 	for mode_folder: String in DirAccess.get_directories_at(S.FOLDER_MODES):

@@ -1,7 +1,12 @@
-[gd_scene load_steps=15 format=3 uid="uid://dx1alvj3tjt16"]
+[gd_scene load_steps=20 format=3 uid="uid://dx1alvj3tjt16"]
 
 [ext_resource type="Script" uid="uid://byayvu15ojy1j" path="res://core/main.gd" id="1_o5qli"]
+[ext_resource type="Script" uid="uid://bkd665ctfsj35" path="res://core/scripts/replace_popup.gd" id="2_g0q11"]
+[ext_resource type="Texture2D" uid="uid://cbmkrx1vn2jtp" path="res://assets/close.svg" id="2_ntwa4"]
 [ext_resource type="Script" uid="uid://dfy2sbtb4i0ht" path="res://core/scripts/panel_manager.gd" id="2_tefeu"]
+[ext_resource type="Texture2D" uid="uid://f7lveaepk802" path="res://assets/down.svg" id="3_lxu0y"]
+[ext_resource type="Texture2D" uid="uid://bnsvt2l1rv0dg" path="res://assets/insert.svg" id="3_slld4"]
+[ext_resource type="Texture2D" uid="uid://cgpgqdfnk8mre" path="res://assets/up.svg" id="4_slld4"]
 [ext_resource type="Script" uid="uid://bxrwoyafmhny4" path="res://core/scripts/mode_viewer.gd" id="5_kagtj"]
 [ext_resource type="Script" uid="uid://5cin2ow0mkq0" path="res://core/scripts/module_profiler.gd" id="5_xa854"]
 [ext_resource type="Script" uid="uid://bqinywvcdcdqp" path="res://core/scripts/problem_counter.gd" id="5_xhu5d"]
@@ -17,7 +22,7 @@
 [sub_resource type="Theme" id="Theme_csopv"]
 Button/colors/font_color = Color(0.87451, 0.87451, 0.87451, 0.607843)
 
-[node name="Main" type="Control" node_paths=PackedStringArray("menu_container", "file_label", "editor", "scripts", "panel_manager", "about", "module_profiler")]
+[node name="Main" type="Control" node_paths=PackedStringArray("menu_container", "file_label", "editor", "scripts", "panel_manager", "about", "module_profiler", "replace_popup")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -32,6 +37,66 @@ scripts = NodePath("Scripts")
 panel_manager = NodePath("Margin/Sections/PanelManager")
 about = NodePath("About")
 module_profiler = NodePath("Margin/Sections/BottomBar/ModuleProfiler")
+replace_popup = NodePath("CanvasLayer/Replace popup")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="Replace popup" type="PopupPanel" parent="CanvasLayer" node_paths=PackedStringArray("insert", "replace", "next", "previous", "close")]
+oversampling_override = 1.0
+size = Vector2i(300, 45)
+script = ExtResource("2_g0q11")
+insert = NodePath("Margin/HBox/Insert")
+replace = NodePath("Margin/HBox/Replace")
+next = NodePath("Margin/HBox/Next")
+previous = NodePath("Margin/HBox/Previous")
+close = NodePath("Margin/HBox/Close")
+
+[node name="Margin" type="MarginContainer" parent="CanvasLayer/Replace popup"]
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 298.0
+offset_bottom = 43.0
+
+[node name="HBox" type="HBoxContainer" parent="CanvasLayer/Replace popup/Margin"]
+layout_mode = 2
+
+[node name="Insert" type="Button" parent="CanvasLayer/Replace popup/Margin/HBox"]
+custom_minimum_size = Vector2(31, 0)
+layout_mode = 2
+tooltip_text = "Auto Insert"
+icon = ExtResource("3_slld4")
+expand_icon = true
+
+[node name="Replace" type="LineEdit" parent="CanvasLayer/Replace popup/Margin/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Replace Match With"
+placeholder_text = "Replace with"
+keep_editing_on_text_submit = true
+expand_to_text_length = true
+select_all_on_focus = true
+
+[node name="Next" type="Button" parent="CanvasLayer/Replace popup/Margin/HBox"]
+custom_minimum_size = Vector2(31, 0)
+layout_mode = 2
+tooltip_text = "Next Match"
+icon = ExtResource("3_lxu0y")
+expand_icon = true
+
+[node name="Previous" type="Button" parent="CanvasLayer/Replace popup/Margin/HBox"]
+custom_minimum_size = Vector2(31, 0)
+layout_mode = 2
+tooltip_text = "Previous Match"
+icon = ExtResource("4_slld4")
+expand_icon = true
+
+[node name="Close" type="Button" parent="CanvasLayer/Replace popup/Margin/HBox"]
+custom_minimum_size = Vector2(31, 0)
+layout_mode = 2
+tooltip_text = "Close Replace Mode"
+icon = ExtResource("2_ntwa4")
+expand_icon = true
 
 [node name="Background" type="Panel" parent="."]
 layout_mode = 1
@@ -415,6 +480,11 @@ text = "[b]Icons:[/b]
 [i]Check [code]modes[/code], [code]extensions[/code], and [code]themes[/code] for other licenses. Modes, themes and extensions without LICENSE file are onder Text Forge license."
 metadata/_tab_index = 4
 
+[connection signal="pressed" from="CanvasLayer/Replace popup/Margin/HBox/Insert" to="CanvasLayer/Replace popup" method="_on_insert_pressed"]
+[connection signal="text_submitted" from="CanvasLayer/Replace popup/Margin/HBox/Replace" to="CanvasLayer/Replace popup" method="_on_replace_text_submitted"]
+[connection signal="pressed" from="CanvasLayer/Replace popup/Margin/HBox/Next" to="CanvasLayer/Replace popup" method="_on_next_pressed"]
+[connection signal="pressed" from="CanvasLayer/Replace popup/Margin/HBox/Previous" to="CanvasLayer/Replace popup" method="_on_previous_pressed"]
+[connection signal="pressed" from="CanvasLayer/Replace popup/Margin/HBox/Close" to="CanvasLayer/Replace popup" method="_on_close_pressed"]
 [connection signal="code_completion_requested" from="Margin/Sections/PanelManager/LeftSpliter/RightSpliter/BottomSpliter/Editor" to="Margin/Sections/PanelManager/LeftSpliter/RightSpliter/BottomSpliter/Editor/API" method="_on_editor_code_completion_requested"]
 [connection signal="text_changed" from="Margin/Sections/PanelManager/LeftSpliter/RightSpliter/BottomSpliter/Editor" to="." method="_on_editor_text_changed"]
 [connection signal="text_changed" from="Margin/Sections/PanelManager/LeftSpliter/RightSpliter/BottomSpliter/Editor" to="Margin/Sections/PanelManager/LeftSpliter/RightSpliter/BottomSpliter/Editor" method="_on_text_changed"]

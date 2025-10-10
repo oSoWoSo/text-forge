@@ -78,6 +78,7 @@ menu.format,Format,قالب,Formatuj
 menu.format.auto_format,Auto Format,قالب بندی خودکار,Automatyczne formatowanie
 menu.format.auto_indention,Auto Indention,تورفتگی خودکار,Automatyczny akapit
 menu.format.remove_all_indents,Remove All Indents,حذف همه تورفتگی ها,Usuń wszystkie akapity
+menu.format.continue_placeholder_completion,Continue Placeholder Completion,ادامه تکمیل جانگهدار ها
 menu.format.save_as_template,Save As Template...,ذخیره به عنوان قالب...,Zapisz jako szablon...
 menu.format.templates,Templates...,قالب ها...,Szablony...
 menu.view,View,نمایش,Widok

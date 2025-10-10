@@ -35,9 +35,9 @@ func test_confirmation_dialog(
 	assert_bool(get_child(-1).visible).is_equal(show)
 
 
-func test_signle_line_input(
+func test_single_line_input(
 		placeholder := "", button_text := "OK", output := Callable(), show := true, test_parameters := single_line_input_parameters
 ) -> void:
-	assert_error(add_child.bind(factory.signle_line_input(placeholder, button_text, output, show))).is_success()
+	assert_error(add_child.bind(factory.single_line_input(placeholder, button_text, output, show))).is_success()
 	assert_bool(get_child(-1).visible).is_equal(show)
 	assert_error(get_child(-1).hide).is_success()

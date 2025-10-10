@@ -43,9 +43,12 @@ const MENU_TRANSLATION_PREFIX = "menu."
 @export var about: Window
 ## Module Profiler.
 @export var module_profiler: MenuButton
+@export var replace_popup: PopupPanel
 
-## Recent files [PopupMenu], see also [method _update_recent_files].
+## Recent files [PopupMenu], see also [method _reload_recent_files].
 var recent_files_submenu: PopupMenu
+## Templates [PopupMenu], see also [method reload_templates].
+var templates_submenu: PopupMenu
 ## Configurations loaded from [constant S.MAIN_UI_DATA].
 var main_menu_data: Dictionary
 var _translation_data: Dictionary[String, Dictionary]
@@ -241,11 +244,9 @@ func _create_submenu(root_menu: PopupMenu, root_option: Dictionary, config_file:
 			_reload_recent_files()
 
 		"New With Template": # needs special action
-			if not DirAccess.dir_exists_absolute(S.globalize_path(S.FOLDER_TEMPLATES)):
-				DirAccess.make_dir_recursive_absolute(S.globalize_path(S.FOLDER_TEMPLATES))
+			templates_submenu = submenu
 
-			for template: String in DirAccess.get_files_at(S.FOLDER_TEMPLATES):
-				submenu.add_item(template)
+			reload_templates()
 
 		"By Extensions": # needs load from another script
 			Extensions.menu = submenu
@@ -409,3 +410,29 @@ func _reload_recent_files() -> void:
 		var file = FileAccess.open(S.RECENT_FILES_DATA, FileAccess.WRITE)
 		file.store_string("\n".join(recent_files))
 		file.close()
+
+
+## Reloads templates list.
+func reload_templates() -> void:
+	if not DirAccess.dir_exists_absolute(S.globalize_path(S.FOLDER_TEMPLATES)):
+		DirAccess.make_dir_recursive_absolute(S.globalize_path(S.FOLDER_TEMPLATES))
+
+	templates_submenu.clear()
+	for template: String in DirAccess.get_files_at(S.FOLDER_TEMPLATES):
+		templates_submenu.add_item(template.get_file().get_basename())
+
+
+## Loads template with given [param name].
+func load_template(_name: String) -> void:
+	Signals.new_file.emit()
+	await U.wait()
+	Global.set_file_name("New file")
+	Global.set_file_path("Unsaved")
+	Global.set_editor_text(FileAccess.get_file_as_string(S.TEMPLATE_TEMPLATES.format([_name])))
+	Global.set_editor_disabled(false)
+	Signals.check_options.emit()
+	start_replace_action(S.PATTERN_PLACEHOLDER)
+
+
+func start_replace_action(pattern: String) -> void:
+	replace_popup.start(pattern)
