@@ -424,7 +424,7 @@ func reload_templates() -> void:
 
 ## Loads template with given [param name].
 func load_template(_name: String) -> void:
-	Global.get_scripts_node().get_node("new")._run_action()
+	Signals.new_file.emit()
 	await U.wait()
 	Global.set_file_name("New file")
 	Global.set_file_path("Unsaved")
