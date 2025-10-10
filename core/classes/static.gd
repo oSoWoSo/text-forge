@@ -12,6 +12,7 @@ const RECENT_FILES_DATA = "user://recent_files.txt"
 const RECENT_PROJECTS_DATA = "user://recent_projects.txt"
 ## Path to backup database.
 const BACKUP_DATABASE = "user://backups.ini"
+const DEFAULT_MODES = "res://data/default_modes.tfmode"
 ## Root folder for saved templates.
 const FOLDER_TEMPLATES = "user://templates/"
 ## Root folder for cached project icons.
@@ -52,10 +53,14 @@ const TEMPLATE_MODE_ICON = "user://modes/{0}/icon.png"
 const TEMPLATE_BACKUP_FILE = "user://backups/{0}"
 ## Template file path for themes.
 const TEMPLATE_THEME = "user://themes/{0}.tres"
+## Template file path for templates.
+const TEMPLATE_TEMPLATES = "user://templates/{0}.txt"
 ## Valid image extensions for runtime loading.
 const IMAGE_EXTS = ["bmp", "dds", "ktx", "exr", "hdr", "jpg", "jpeg", "png", "tga", "svg", "webp"]
 ## Editor version.
 const EDITOR_VERSION = "0.2.0"
+## [RegEx] pattern for template placeholders.
+const PATTERN_PLACEHOLDER = r"\{\{\{(.*?)\}\}\}"
 
 static func map_array_to_int(array: Array) -> Array[int]:
 	return Array(array.map(func(e): return int(e)), TYPE_INT, "", null)

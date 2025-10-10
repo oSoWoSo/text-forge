@@ -1,0 +1,61 @@
+[gd_scene load_steps=2 format=3 uid="uid://dbij25bdk5g74"]
+
+[ext_resource type="Script" uid="uid://cd0o6jppquivx" path="res://action_scripts/scenes/template_manager.gd" id="1_f2rpv"]
+
+[node name="TemplateManager" type="Window" node_paths=PackedStringArray("templates", "preview_panel", "template_name", "preview")]
+oversampling_override = 1.0
+title = "Templates..."
+initial_position = 2
+size = Vector2i(600, 500)
+popup_window = true
+min_size = Vector2i(500, 400)
+script = ExtResource("1_f2rpv")
+templates = NodePath("MarginContainer/HSplitContainer/ItemList")
+preview_panel = NodePath("MarginContainer/HSplitContainer/VBoxContainer")
+template_name = NodePath("MarginContainer/HSplitContainer/VBoxContainer/Label")
+preview = NodePath("MarginContainer/HSplitContainer/VBoxContainer/RichTextLabel")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HSplitContainer" type="HSplitContainer" parent="MarginContainer"]
+layout_mode = 2
+split_offset = 200
+
+[node name="ItemList" type="ItemList" parent="MarginContainer/HSplitContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HSplitContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/HSplitContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/HSplitContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HSplitContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Button" type="Button" parent="MarginContainer/HSplitContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Edit"
+
+[node name="Button2" type="Button" parent="MarginContainer/HSplitContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Remove"
+
+[connection signal="close_requested" from="." to="." method="queue_free"]
+[connection signal="item_selected" from="MarginContainer/HSplitContainer/ItemList" to="." method="_on_item_list_item_selected"]
+[connection signal="pressed" from="MarginContainer/HSplitContainer/VBoxContainer/HBoxContainer/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="MarginContainer/HSplitContainer/VBoxContainer/HBoxContainer/Button2" to="." method="_on_button_2_pressed"]

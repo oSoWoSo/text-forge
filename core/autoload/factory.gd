@@ -47,7 +47,7 @@ func accept_dialog(
 
 ## Creates a [LineEdit] with [Button] for signle line input based on parameters. All will be in
 ## [PopupPanel] > [MarginContainer] > [HBoxContainer].
-func signle_line_input(
+func single_line_input(
 		placeholder := "", button_text := "OK", output := Callable(), show := true
 ) -> PopupPanel:
 	var panel := PopupPanel.new()

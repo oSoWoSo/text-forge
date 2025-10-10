@@ -24,7 +24,10 @@ func _ready() -> void:
 	Global.get_editor().type_timer_timeout.connect(_update_outline)
 	Global.get_editor().type_timer_timeout.connect(_lint_content)
 
-	_load_mode_list()
+	if DirAccess.dir_exists_absolute(S.globalize_path(S.FOLDER_MODES.path_join("plain_text"))):
+		_load_mode_list()
+	else:
+		import_mode(S.globalize_path(S.DEFAULT_MODES))
 
 
 ## Loads [member mode_list], will fill [member GlobalAccess.damaged_modes] with failed modes.
