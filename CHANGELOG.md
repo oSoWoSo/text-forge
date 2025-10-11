@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning (2.0)](https://semver.org/spec/
 
 ### Fixed
 - Empty *Mode Viewer* popup menu at startup ([#116](https://github.com/text-forge/text-forge/pull/116))
+- Panel status is not restored after startup ([#119](https://github.com/text-forge/text-forge/pull/119))
 
 ## [v0.2-beta2] - 2025-10-9
 
