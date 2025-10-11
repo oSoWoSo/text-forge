@@ -73,7 +73,6 @@ func _ready() -> void:
 
 	_load_panels()
 	_load_layout()
-	_apply_split()
 
 
 ## Add given [param panel] in [param location] with [param icon], it means new icon in [param location]
@@ -159,6 +158,7 @@ func _complete_loading() -> void:
 	for p in _panels:
 		var info := _panels[p]
 		add_panel(info["place"], U.load_resource(p).instantiate(), U.load_resource(S.TEMPLATE_PANEL_ICON.format([info["name"]])))
+	_apply_split()
 	load_completed.emit()
 
 
