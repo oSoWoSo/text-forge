@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning (2.0)](https://semver.org/spec/
 
 ### Added
 - Template system ([#117](https://github.com/text-forge/text-forge/pull/117))
+- Synchronized preview scrolling with the editor’s vertical scroll ([#124](https://github.com/text-forge/text-forge/pull/124))
 
 ### Fixed
 - Empty *Mode Viewer* popup menu at startup ([#116](https://github.com/text-forge/text-forge/pull/116))
