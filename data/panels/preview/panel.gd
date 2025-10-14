@@ -8,11 +8,23 @@ extends TextForgePanel
 @export var tab: TabContainer
 ## Preview [RichTextLabel] with BBCode support.
 @export var preview: RichTextLabel
-## Preview [CenterContainer] to keep node-based preview.
-@export var preview_node: Container
+## Preview [MarginContainer] to keep node-based preview.
+@export var preview_node: MarginContainer
+@export var preview_scroll_container: ScrollContainer
+
+@onready var preview_v_scroll_bar: VScrollBar = preview.get_v_scroll_bar()
+@onready var preview_node_v_scroll_bar: VScrollBar = preview_scroll_container.get_v_scroll_bar()
+@onready var editor_v_scroll_bar: VScrollBar = Global.get_editor().get_v_scroll_bar()
 
 func _ready() -> void:
+	editor_v_scroll_bar.value_changed.connect(_update_scroll)
+
 	Signals.preview_updated.connect(_update_preview)
+
+
+func _update_scroll(value: float) -> void:
+	preview_v_scroll_bar.set_value(value * preview_v_scroll_bar.max_value / editor_v_scroll_bar.max_value)
+	preview_node_v_scroll_bar.set_value(value * preview_node_v_scroll_bar.max_value / editor_v_scroll_bar.max_value)
 
 
 func _update_preview(_preview) -> void:

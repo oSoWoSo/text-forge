@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c5oujlrt244w6" path="res://data/panels/preview/panel.gd" id="1_b5vjj"]
 
-[node name="Panel" type="Control" node_paths=PackedStringArray("tab", "preview", "preview_node")]
+[node name="Panel" type="Control" node_paths=PackedStringArray("tab", "preview", "preview_node", "preview_scroll_container")]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 3
 anchors_preset = 15
@@ -14,6 +14,7 @@ script = ExtResource("1_b5vjj")
 tab = NodePath("Margin/TabContainer")
 preview = NodePath("Margin/TabContainer/Preview")
 preview_node = NodePath("Margin/TabContainer/ScrollContainer/MarginContainer")
+preview_scroll_container = NodePath("Margin/TabContainer/ScrollContainer")
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 1
