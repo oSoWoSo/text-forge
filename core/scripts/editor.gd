@@ -40,7 +40,7 @@ func is_selection_in_line(line: int) -> bool:
 	return false
 
 
-## Returns the caret pixel draw postion in user screen. This is global version of [method TextEdit.get_caret_draw_pos].
+## Returns the caret pixel draw position in user screen. This is global version of [method TextEdit.get_caret_draw_pos].
 ## When [param center] is [code]true[/code] returned position will be in center of caret, otherwise
 ## will be under caret.
 func get_caret_global_draw_pos(caret_index: int = 0, center := false) -> Vector2:
