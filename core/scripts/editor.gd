@@ -16,6 +16,7 @@ func _ready() -> void:
 
 	type_timer_timeout.connect(func(): code_completion_requested.emit())
 
+
 ## Returns char index in [param line] and [param column], useful for use original [LineEdit]
 ## functions with [String] options.
 func get_char_index(line: int, column: int) -> int:
@@ -37,6 +38,13 @@ func is_selection_in_line(line: int) -> bool:
 		if line >= selection[0] and line <= selection[1]:
 			return true
 	return false
+
+
+## Returns the caret pixel draw postion in user screen. This is global version of [method TextEdit.get_caret_draw_pos].
+## When [param center] is [code]true[/code] returned position will be in center of caret, otherwise
+## will be under caret.
+func get_caret_global_draw_pos(caret_index: int = 0, center := false) -> Vector2:
+	return get_caret_draw_pos(caret_index) + global_position + Vector2(get_window().position) + Vector2(0, 0.0 if center else get_theme_font_size("font_size") / 2.0)
 
 
 func _on_text_changed() -> void:

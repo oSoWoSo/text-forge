@@ -77,7 +77,7 @@ func _show_popup() -> void:
 		_:
 			insert.tooltip_text = "Auto Insert\nThis feature isn't available for this placeholder!"
 			insert.disabled = true
-	popup(Rect2i(Global.get_editor().get_caret_draw_pos() + Global.get_editor().global_position + Vector2(get_tree().get_root().position) + Vector2(0, Settings.get_setting("editor_ui", "font_size")), size))
+	popup(Rect2i(Global.get_editor().get_caret_global_draw_pos(), size))
 	replace.grab_focus()
 	replace.select_all()
 
