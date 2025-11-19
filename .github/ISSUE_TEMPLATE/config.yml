@@ -9,6 +9,3 @@ contact_links:
   - name: Documentation Website
     url: https://text-forge.github.io/docs/
     about: Browse the official documentation for usage and setup.
-  - name: Security Reporting
-    url: https://github.com/text-forge/text-forge/security/policy
-    about: Report security vulnerabilities responsibly here.
