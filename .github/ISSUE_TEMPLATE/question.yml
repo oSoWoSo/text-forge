@@ -36,8 +36,8 @@ body:
     attributes:
       label: Context
       description: Add any relevant context, steps you tried, or screenshots to help us understand.
-      validations:
-        required: false
+    validations:
+      required: false
   - type: markdown
     attributes:
       value: |
