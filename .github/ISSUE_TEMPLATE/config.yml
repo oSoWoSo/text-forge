@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Community Support & Forum
+    url: https://github.com/orgs/text-forge/discussions
+    about: Please ask and answer questions here.
+  - name: Contribution Guide
+    url: https://github.com/text-forge/text-forge/blob/Main/CONTRIBUTING.md
+    about: Read this guide before opening PRs or contributing new features.
+  - name: Documentation Website
+    url: https://text-forge.github.io/docs/
+    about: Browse the official documentation for usage and setup.
+  - name: Security Reporting
+    url: https://github.com/text-forge/text-forge/security/policy
+    about: Report security vulnerabilities responsibly here.
