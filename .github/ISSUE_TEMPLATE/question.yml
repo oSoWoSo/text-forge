@@ -1,0 +1,51 @@
+name: Question / Support
+description: Ask a question or request support for Text Forge
+labels: ["triage", "question"]
+projects: ["text-forge/1"]
+type: support
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reaching out with your question or support request!
+        Please provide as much detail as possible so we can help you effectively.
+  - type: markdown
+    attributes:
+      value: |
+        ## 0/2 Before starting, check:
+  - type: checkboxes
+    attributes:
+      label: Is there an existing issue or discussion for this?
+      description: Please search to see if your question has already been answered.
+      options:
+        - label: I have searched the existing issues/discussions
+          required: true
+  - type: markdown
+    attributes:
+      value: |
+        ## 1/2 Your question or request
+  - type: textarea
+    attributes:
+      label: Question / Support request
+      description: Clearly state your question or the support you need.
+      placeholder: |
+        Example: How do I enable syntax highlighting for Haxe in Text Forge?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Context
+      description: Add any relevant context, steps you tried, or screenshots to help us understand.
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: |
+        ## 2/2 Final review
+  - type: checkboxes
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/text-forge/text-forge/blob/Main/CODE_OF_CONDUCT.md).
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true

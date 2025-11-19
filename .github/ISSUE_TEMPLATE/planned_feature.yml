@@ -1,0 +1,108 @@
+name: Planned Feature
+description: Document a planned feature design and criteria
+labels: ["triage"]
+projects: ["text-forge/1"]
+type: feature
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This template is intended for **developers, contributors, and maintainers** to document planned features.
+        If you are a user suggesting a new idea, please use the **Feature Request** template instead.
+  - type: markdown
+    attributes:
+      value: |
+        ## 0/4 Before starting, check:
+  - type: checkboxes
+    attributes:
+      label: Eligibility
+      description: Confirm that you are part of the development, contributor, or maintainer team.
+      options:
+        - label: I confirm that I am a developer, contributor, or maintainer
+          required: true
+    validations:
+      required: true
+  - type: checkboxes
+    attributes:
+      label: Is there an existing issue or proposal for this?
+      description: Please search to see if a similar planned feature already exists.
+      options:
+        - label: I have searched the existing issues/proposals
+          required: true
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        ## 1/4 Feature Summary
+  - type: textarea
+    attributes:
+      label: Feature summary
+      description: A brief and clear description of the feature.
+      placeholder: |
+        Example: Add support for live collaboration in the editor.
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        ## 2/4 Motivation
+  - type: textarea
+    attributes:
+      label: Motivation
+      description: Why is this feature important? What problem does it solve?
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        ## 3/4 Proposed Design
+  - type: textarea
+    attributes:
+      label: Proposed design
+      description: Describe the expected behavior or implementation approach.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Acceptance criteria
+      description: Criteria that define a successful and correct implementation.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Related issues / discussions
+      description: Links to related issues or discussions, along with context if necessary.
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Implementation notes (Optional)
+      description: Notes for developers and suggested approaches or solutions.
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Localization & Accessibility
+      description: Explain whether additional translation or specific accessibility features are required.
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Community feedback (Optional)
+      description: Mention any user feedback or suggestions outside of linked issues and discussions.
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: |
+        ## 4/4 Final review
+  - type: checkboxes
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/text-forge/text-forge/blob/Main/CODE_OF_CONDUCT.md).
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
+    validations:
+      required: true

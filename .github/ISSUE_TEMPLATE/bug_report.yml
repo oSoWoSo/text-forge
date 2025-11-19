@@ -1,0 +1,143 @@
+name: Bug Report
+description: Create a report to help us improve.
+labels: ["bug", "triage"]
+projects: ["text-forge/1"]
+type: bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+        Please check all fields to help our triage team.
+  - type: markdown
+    attributes:
+      value: |
+        ## 0/4 Before starting, check:
+  - type: checkboxes
+    attributes:
+      label: Is there an existing issue for this?
+      description: Please search to see if an issue already exists for the bug you encountered.
+      options:
+      - label: I have searched the existing issues
+        required: true
+  - type: markdown
+    attributes:
+      value: |
+        ## 1/4 Basic Information
+  - type: textarea
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+      placeholder: Tell us what you see!
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: To Reproduce
+      description: Steps to reproduce the behavior.
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Screenshots (Optional)
+      description: If applicable, add screenshots to help explain your problem.
+      placeholder: You can attach image files by clicking this area to highlight it and then dragging files in.
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: |
+        ## 2/4 Metadata
+  - type: textarea
+    attributes:
+      label: Related Items
+      description: Link related issues, pull requests, documentation page, etc.
+      placeholder: |
+        #502 - Same bug in another module
+        #543 - Where this module was added
+    validations:
+      required: false
+  - type: dropdown
+    attributes:
+      label: Version
+      description: What version of editor are you running?
+      options:
+        - 0.1.0-rc2 and older
+        - 0.1.0-stable (Default)
+        - 0.2.0-beta1
+        - 0.2.0-beta2 (Edge)
+        - last dev build
+      default: 1
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
+      label: Priority
+      description: How important and urgent is this bug?
+      options:
+        - 🟢Minor
+        - 🟡Major
+        - 🔴Critical
+      default: 0
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
+      label: Platform
+      description: What platforms are you seeing the problem on?
+      multiple: true
+      options:
+        - Windows
+        - Linux
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        ## 3/4 Environment and Context
+  - type: textarea
+    attributes:
+      label: System Information
+      description: Please complete the following information.
+      placeholder: |
+         - OS (With Version): Windows 11
+         - Other system information (e.g. GPU): Nvidia GeForce MX350
+      value: |
+         - OS (With Version):
+         - Other system information (e.g. GPU):
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Additional context
+      description: Add any other context about the problem here. 
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Workaround
+      description: Explain if a temporary solution exists.
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: |
+        ## 4/4 Perform the final review
+  - type: checkboxes
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/text-forge/text-forge/blob/Main/CODE_OF_CONDUCT.md).
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
