@@ -400,6 +400,7 @@ one_shot = true
 [node name="Scripts" type="Node" parent="."]
 
 [node name="About" type="Window" parent="."]
+oversampling_override = 1.0
 title = "About Text Forge"
 initial_position = 2
 size = Vector2i(500, 400)
@@ -423,7 +424,7 @@ current_tab = 0
 layout_mode = 2
 bbcode_enabled = true
 text = "[font_size=24]Text Forge[/font_size]
-[font_size=15][color=darkgray]v0.2-beta2
+[font_size=15][color=darkgray]v0.2-rc1
 Mode API v2.1
 Project Module v1.0[/color][/font_size]
 
@@ -454,7 +455,7 @@ visible = false
 layout_mode = 2
 text = "MIT License
 
-Copyright (c) 2025 Mahan Khalili and contributors
+Copyright (c) 2025-present Mahan Khalili and contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -477,7 +478,7 @@ bbcode_enabled = true
 text = "[b]Icons:[/b]
 		Main UI: MIT 2025 by Mahan Khalili
 
-[i]Check [code]modes[/code], [code]extensions[/code], and [code]themes[/code] for other licenses. Modes, themes and extensions without LICENSE file are onder Text Forge license."
+[i]Check modes, extensions, and themes for other licenses. Modes, themes and extensions without LICENSE file are onder Text Forge license."
 metadata/_tab_index = 4
 
 [connection signal="pressed" from="CanvasLayer/Replace popup/Margin/HBox/Insert" to="CanvasLayer/Replace popup" method="_on_insert_pressed"]
