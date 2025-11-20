@@ -478,7 +478,7 @@ bbcode_enabled = true
 text = "[b]Icons:[/b]
 		Main UI: MIT 2025 by Mahan Khalili
 
-[i]Check modes, extensions, and themes for other licenses. Modes, themes and extensions without LICENSE file are onder Text Forge license."
+[i]Check modes, extensions, and themes for other licenses. Modes, themes and extensions without LICENSE file are under Text Forge license."
 metadata/_tab_index = 4
 
 [connection signal="pressed" from="CanvasLayer/Replace popup/Margin/HBox/Insert" to="CanvasLayer/Replace popup" method="_on_insert_pressed"]
