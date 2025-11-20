@@ -59,7 +59,7 @@ func _convert_text_from_markdown_to_bbcode_style(markdown_text: String) -> Strin
 	return _text
 
 
-func _on_about_about_to_popup() -> void:
+func _on_about_visibility_changed() -> void:
 	var markdown_text := FileAccess.get_file_as_string(S.globalize_path("res://CHANGELOG.md"))
 	var bbcode_text := _convert_text_from_markdown_to_bbcode_style(markdown_text)
 	text = bbcode_text
