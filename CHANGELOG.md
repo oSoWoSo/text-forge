@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file. (Notable ch
 The format is based on [Keep a Changelog (1.1)](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning (2.0)](https://semver.org/spec/v2.0.0.html).
 
-## [unreleased]
+## [v0.2-rc1] - 2025-11-20
 
 ### Added
 - Template system ([#117](https://github.com/text-forge/text-forge/pull/117))
@@ -36,7 +36,10 @@ and this project adheres to [Semantic Versioning (2.0)](https://semver.org/spec/
 - Error when multiple save requests sent at same time ([#102](https://github.com/text-forge/text-forge/pull/102))
 - Restore panel open state ([#103](https://github.com/text-forge/text-forge/pull/103))
 
-## [v0.1-rc2] - 2025-8-26
+## [v0.1-stable] - 2025-8-30 & [v0.1-rc2] - 2025-8-26
+
+> [!Note]
+> Because of a versioning mistake changelog of these versions is mixed.
 
 ### Added
 - Open with handling ([#82](https://github.com/text-forge/text-forge/pull/82))
@@ -215,9 +218,11 @@ and this project adheres to [Semantic Versioning (2.0)](https://semver.org/spec/
 - Data-driven UI.
 - Docs in 4 languages (en, fa, es, zh)
 
-[unreleased]: https://github.com/text-forge/text-forge/compare/v0.2.0-beta2...HEAD
+[unreleased]: https://github.com/text-forge/text-forge/compare/v0.2.0-rc1...HEAD
+[v0.2-rc1]: https://github.com/text-forge/text-forge/releases/tag/v0.2.0-rc1
 [v0.2-beta2]: https://github.com/text-forge/text-forge/releases/tag/v0.2.0-beta2
 [v0.2-beta1]: https://github.com/text-forge/text-forge/releases/tag/v0.2.0-beta1
+[v0.1-stable]: https://github.com/text-forge/text-forge/releases/tag/v0.1.0-stable
 [v0.1-rc2]: https://github.com/text-forge/text-forge/releases/tag/v0.1.0-rc2
 [v0.1-rc1]: https://github.com/text-forge/text-forge/releases/tag/v0.1.0-rc1
 [v0.1-beta]: https://github.com/text-forge/text-forge/releases/tag/v0.1.0-beta
