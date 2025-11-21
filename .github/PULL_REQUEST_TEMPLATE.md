@@ -1,31 +1,30 @@
-<!--Provide a succinct and descriptive title for the pull request, e.g., "Improve caching mechanism for API calls"-->
+<!-- Provide a clear, concise summary of the pull request as the title. -->
 
-## Type of Change
-<!--Remove unrelated items-->
-- New feature
-- Bug fix
-- Documentation update
-- Refactoring
-- Hotfix
-- Security patch
-- UI/UX improvement
+<!-- Tip: You can remove comments (this line is a comment too) after reading them.
+see this link for more information: https://www.w3schools.com/html/html_comments.asp -->
 
-## Description
-<!--Provide a detailed explanation of the changes you have made. Include the reasons behind these changes and any relevant context. Link any related issues.-->
+## Summary of Changes
+<!-- Briefly describe what this PR does. -->
 
-## Testing
-<!--Detail the testing you have performed to ensure that these changes function as intended. Include information about any added tests.-->
+## Related Items
+<!-- List all issues this PR addresses. Also list related PRs and discussions.
+Use "Closes #ID" or "Fixes #ID" for issues to auto-link them. Write descriptions if providing them helps.
+For example:
+- Closes #123
+- Related to #456
+  This PR is where this module was added.
+-->
 
-## Impact
-<!--Discuss the impact of your changes on the project. This might include effects on performance, new dependencies, or changes in behaviour.-->
-
-## Additional Information
-<!--Any additional information that reviewers should be aware of.-->
+## Technical Details & Testing
+<!-- Explain how the change was made and how it was tested.
+Include technical notes, test cases, environments, screenshots if relevant. -->
 
 ## Checklist
-- [ ] My code adheres to the coding and style guidelines of the project.
-- [ ] I have performed a self-review of my own code.
-- [ ] I have commented my code, particularly in hard-to-understand areas.
-- [ ] I have made corresponding changes to the documentation.
-- [ ] My changes generate no new warnings
-- [ ] Changes were added to CHANGELOG
+<!-- Confirm the following before requesting merge,
+keep PR as draft before completing this list. -->
+- [ ] Linked all relevant issues/PRs/discussions
+- [ ] Code follows project style and guidelines
+- [ ] Self-reviewed and tested thoroughly
+- [ ] Documentation updated (if applicable)
+- [ ] No new warnings or errors introduced
+- [ ] Relevant changes added to CHANGELOG
