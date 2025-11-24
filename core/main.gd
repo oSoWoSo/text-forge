@@ -13,7 +13,7 @@ enum OptionTypes {
 	SUBMENU,
 	## Checkbox items.
 	CHECKBOX,
-	## Redio checkbox items.
+	## Radio checkbox items.
 	RADIO_CHECKBOX,
 }
 
@@ -115,8 +115,7 @@ func _handle_settings() -> void:
 
 	# Load settings
 
-	Global.get_editor().indent_use_spaces = Settings.get_setting("edit", "indent_with_space")
-	Global.get_editor().indent_size = Settings.get_setting("edit", "indent_size")
+	Global.get_editor_api().update_indentation_settings(false)
 	if not FileAccess.file_exists(S.TEMPLATE_THEME.format([Settings.get_setting("editor_ui", "theme_name")])):
 		Settings.restore_default("editor_ui", "theme_name")
 	get_window().set_theme(U.load_resource(S.TEMPLATE_THEME.format([Settings.get_setting("editor_ui", "theme_name")])))
@@ -262,8 +261,10 @@ func _create_submenu(root_menu: PopupMenu, root_option: Dictionary, config_file:
 						submenu.add_item(TFT.get_text(submenu_item.get("key", "")), submenu_item.get("code", -1))
 					OptionTypes.SEPARATOR:
 						submenu.add_separator(TFT.get_text(submenu_item.get("key", "")))
+					OptionTypes.CHECKBOX:
+						submenu.add_check_item(TFT.get_text(submenu_item.get("key", "")), submenu_item.get("code", -1))
 					_:
-						Global.send_notification(Global.Notification.ERROR, "Can't add item to submenu!", "Currently just regular and separatior items are avaliable for submenus.")
+						Global.send_notification(Global.Notification.ERROR, "Can't add item to submenu!", "Currently regular, separator, and checkbox items are available for submenus.")
 			# connect submenu to handle state function
 			submenu.id_pressed.connect(_handle_menu_option_state.bind(submenu))
 

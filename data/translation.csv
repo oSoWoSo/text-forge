@@ -1,131 +1,133 @@
 key,en,fa,pl
-menu.project,Project,پروژه
-menu.project.new_project,New Project,پروژه جدید
-menu.project.open_project,Open Project,باز کردن پروژه
-menu.project.recent_projects,Recent Projects,پروژه های اخیر
-menu.project.close_project,Close Project,بستن پروژه
-menu.project.project_settings,Project Settings,تنظیمات پروژه
+menu.project,Project,پروژه,Projekt
+menu.project.new_project,New Project,پروژه جدید,Nowy projekt
+menu.project.open_project,Open Project,باز کردن پروژه,Otwórz projekt
+menu.project.recent_projects,Recent Projects,پروژه‌های اخیر,Ostatnie projekty
+menu.project.close_project,Close Project,بستن پروژه,Zamknij projekt
+menu.project.project_settings,Project Settings,تنظیمات پروژه,Ustawienia projektu
 menu.file,File,فایل,Plik
 menu.file.new,New,جدید,Nowy
 menu.file.new_window,New Window,پنجره جدید,Nowe okno
-menu.file.new_with_template,New With Template,جدید با قابل,Nowy z szablonu
-menu.file.open,Open...,بازکردن...,Otwórz
-menu.file.recent_files,Recent Files,فایل های اخیر,Ostatnie pliki
+menu.file.new_with_template,New With Template,جدید با قالب,Nowy z szablonu
+menu.file.open,Open...,باز کردن...,Otwórz...
+menu.file.recent_files,Recent Files,فایل‌های اخیر,Ostatnie pliki
 menu.file.save,Save,ذخیره,Zapisz
 menu.file.save_as,Save As...,ذخیره به عنوان...,Zapisz jako...
 menu.file.reload,Reload,بارگذاری مجدد,Załaduj ponownie
 menu.file.close,Close,بستن,Zamknij
 menu.file.backup_create,Create Backup...,ایجاد پشتیبان...,Stwórz kopię...
 menu.file.backup_load,Load From Backup...,بارگذاری از پشتیبان...,Wczytaj kopię...
-menu.file.copy_path,Copy Path,رونوشت مسیر,Skopiuj ścieżkę
-menu.file.show_in_filesystem,Show In FileSystem,نمایش در فایل ها,Pokaż w eksploratorze plików
-menu.file.secure_delete,Secure Delete,حذف امن,Bezpiecznie usuń
-menu.file.restart,Restart,راه اندازی دوباره,Zrestartuj
-menu.file.exit,Exit,خروج,Zamknij
+menu.file.copy_path,Copy Path,کپی مسیر,Skopiuj ścieżkę
+menu.file.show_in_filesystem,Show In FileSystem,نمایش در فایل‌ها,Pokaż w eksploratorze plików
+menu.file.secure_delete,Secure Delete,حذف امن,Bezpieczne usuwanie
+menu.file.restart,Restart,راه‌اندازی دوباره,Uruchom ponownie
+menu.file.exit,Exit,خروج,Zakończ
 menu.edit,Edit,ویرایش,Edytuj
-menu.edit.undo,Undo,لغو عمل,Cofnij
-menu.edit.redo,Redo,بازگردادن عمل,Ponów
+menu.edit.undo,Undo,واگرد,Cofnij
+menu.edit.redo,Redo,بازانجام,Ponów
 menu.edit.cut,Cut,برش,Wytnij
-menu.edit.copy,Copy,رونوشت,Kopiuj
-menu.edit.paste,Paste,جایگذاری,Wklej
+menu.edit.copy,Copy,کپی,Kopiuj
+menu.edit.paste,Paste,چسباندن,Wklej
 menu.edit.delete,Delete,حذف,Usuń
 menu.edit.select_all,Select All,انتخاب همه,Zaznacz wszystko
-menu.edit.select_next_occurence,Select Next Occurence,انتخاب مشابه بعدی,Następny podobny wybór
-menu.edit.select_all_occurences,Select All Occurences,انتخاب همه مشابهات,Zaznacz wszystkie podobne
-menu.edit.duplicate_selection,Duplicate Selection,تکثیر انتخاب شده,Zduplikuj zaznaczenie
-menu.edit.evulate_selection,Evaluate Selection,محاسبه انتخاب شده,Przelicz zaznaczenie
+menu.edit.select_next_occurence,Select Next Occurrence,انتخاب مشابه بعدی,Zaznacz następne wystąpienie
+menu.edit.select_all_occurences,Select All Occurrences,انتخاب همه مشابهات,Zaznacz wszystkie wystąpienia
+menu.edit.duplicate_selection,Duplicate Selection,تکثیر انتخاب,Zduplikuj zaznaczenie
+menu.edit.evaluate_selection,Evaluate Selection,محاسبه انتخاب,Przelicz zaznaczenie
 menu.edit.line,Line,خط,Linia
-menu.edit.line.move_up,Move Lines Up,انتقال به بالا,Przesuń linie do góry
-menu.edit.line.move_down,Move Lines Down,انتقال به پایین,Przesuń linie w dół
-menu.edit.line.indent,Indent,ایجاد فرورفتگی,Wcięcie
-menu.edit.line.unindent,Unindent,حذف فرورفتگی,Usuń wcięcie
+menu.edit.line.move_up,Move Lines Up,انتقال خطوط به بالا,Przesuń linie do góry
+menu.edit.line.move_down,Move Lines Down,انتقال خطوط به پایین,Przesuń linie w dół
+menu.edit.line.indent,Indent,ایجاد تورفتگی,Wcięcie
+menu.edit.line.unindent,Unindent,حذف تورفتگی,Usuń wcięcie
 menu.edit.line.delete,Delete Lines,حذف خطوط,Usuń linie
-menu.edit.line.toggle_comment,Toggle Comment,تغییر کامنت گذاری,Przełącz komentarz
+menu.edit.line.toggle_comment,Toggle Comment,تغییر وضعیت کامنت,Przełącz komentarz
 menu.edit.line.duplicate,Duplicate Lines,تکثیر خطوط,Zduplikuj linie
 menu.edit.line.select_whole,Select Whole Line,انتخاب کل خط,Zaznacz całą linię
-menu.edit.line.select_paragraph,Select Paragraph,انتخاب بند,Zaznacz paragraf
+menu.edit.line.select_paragraph,Select Paragraph,انتخاب بند,Zaznacz akapit
 menu.edit.line.join,Join Lines,ادغام خطوط,Połącz linie
 menu.edit.line.move_to_new_file,Move To New File,انتقال به فایل جدید,Przenieś do nowego pliku
-menu.edit.completion_query,Completion Query,درخواست تکمیل,Uzupełnij
-menu.edit.indention,Indention,فرورفتگی,Akapit
-menu.edit.indention.auto_indent,Auto Indent,تورفتگی خودکار,Automatyczne wcięcie
-menu.edit.indention.to_spaces,Convert Indent To Spaces,تبدیل فرورفتگی به فاصله,Zmień wcięcie na spacje
-menu.edit.indention.to_tabs,Convert Indent To Tabs,تبدیل فرورفتگی به تب,Zmień wcięcie na tabulatory
+menu.edit.completion_query,Completion Query,درخواست تکمیل,Zapytanie o uzupełnienie
 menu.edit.convert_case,Convert Case,تبدیل حروف,Zmień wielkość liter
-menu.edit.convert_case.upper,UPPER,UPPER,DUŻE
-menu.edit.convert_case.lower,lower,lower,małe
-menu.edit.convert_case.capitalize,Capitalize,Capitalize,Pierwsza Litera Duża
+menu.edit.convert_case.upper,UPPER,حروف بزرگ,DUŻE
+menu.edit.convert_case.lower,lower,حروف کوچک,małe
+menu.edit.convert_case.capitalize,Capitalize,حرف اول بزرگ,Pierwsza litera duża
 menu.edit.convert_case.camel,camelCase,camelCase,camelCase
 menu.edit.convert_case.pascal,PascalCase,PascalCase,PascalCase
 menu.edit.convert_case.snake,snake_case,snake_case,snake_case
 menu.search,Search,جستجو,Szukaj
 menu.search.find_and_replace,Find and Replace...,یافتن و جایگزینی...,Znajdź i zamień...
-menu.search.find_next,Find Next,یافته بعدی,Znajdź następny...
-menu.search.find_prev,Find Previous,یافته قبلی,Znajdź poprzedni...
-menu.search.replace_all,Replace All,چایگزینی همه,Zamień wszystko
-menu.go_to,Go To,انتقال,Skocz do
-menu.go_to.line,Go To Line...,برو به خط...,Skocz do linii...
-menu.go_to.code_regions,Code Regions...,محدوده کد ها...,Regiony kodu...
-menu.go_to.insert_nav_mark,Insert Navigation Mark,افزودن علامت ناوبری,Wstaw znak nawigacji
-menu.go_to.nav_marks,Navigation Marks...,علائم ناوبری...,Znaki nawigacji...
-menu.go_to.table_of_contents,Table Of Contents...,لیست محتوا...,Spis treści...
-menu.go_to.bookmarks,Bookmarks...,نشانک ها...,Zakładki...
-menu.go_to.toggle_bookmark,Toggle Bookmark,نشانک گذاری,Przełącz zakładki
-menu.go_to.remove_all_bookmarks,Remove All Bookmarks,حذف همه نشانک ها,Usuń wszystkie zakładki
-menu.command,Command,دستور,Komendy
-menu.command.palette,Command Palette...,پالت فرمان...,Lista komend...
+menu.search.find_next,Find Next,یافتن بعدی,Znajdź następny
+menu.search.find_prev,Find Previous,یافتن قبلی,Znajdź poprzedni
+menu.search.replace_all,Replace All,جایگزینی همه,Zamień wszystko
+menu.go_to,Go To,رفتن,Przejdź do
+menu.go_to.line,Go To Line...,برو به خط...,Przejdź do linii...
+menu.go_to.code_regions,Code Regions...,محدوده‌های کد...,Regiony kodu...
+menu.go_to.insert_nav_mark,Insert Navigation Mark,افزودن علامت ناوبری,Wstaw znacznik nawigacji
+menu.go_to.nav_marks,Navigation Marks...,علائم ناوبری...,Znaczniki nawigacji...
+menu.go_to.table_of_contents,Table Of Contents...,فهرست محتوا...,Spis treści...
+menu.go_to.bookmarks,Bookmarks...,نشانک‌ها...,Zakładki...
+menu.go_to.toggle_bookmark,Toggle Bookmark,تغییر وضعیت نشانک,Przełącz zakładkę
+menu.go_to.remove_all_bookmarks,Remove All Bookmarks,حذف همه نشانک‌ها,Usuń wszystkie zakładki
+menu.command,Command,دستور,Polecenie
+menu.command.palette,Command Palette...,پالت دستورات...,Paleta poleceń...
 menu.format,Format,قالب,Formatuj
-menu.format.auto_format,Auto Format,قالب بندی خودکار,Automatyczne formatowanie
-menu.format.auto_indention,Auto Indention,تورفتگی خودکار,Automatyczny akapit
-menu.format.remove_all_indents,Remove All Indents,حذف همه تورفتگی ها,Usuń wszystkie akapity
-menu.format.continue_placeholder_completion,Continue Placeholder Completion,ادامه تکمیل جانگهدار ها
+menu.format.auto_format,Auto Format,قالب‌بندی خودکار,Automatyczne formatowanie
+menu.format.indentation,Indentation,تورفتگی,Wcięcie
+menu.format.indentation.auto_indentation,Auto Indentation,تورفتگی خودکار,Automatyczne wcięcie
+menu.format.indentation.remove_all_indents,Remove All Indents,حذف همه تورفتگی‌ها,Usuń wszystkie wcięcia
+menu.format.indentation.auto_indent,Auto Indent,تورفتگی خودکار,Automatyczne wcięcie
+menu.format.indentation.to_spaces,Convert Indent To Spaces,تبدیل تورفتگی به فاصله,Zmień wcięcie na spacje
+menu.format.indentation.to_tabs,Convert Indent To Tabs,تبدیل تورفتگی به تب,Zmień wcięcie na tabulatory
+menu.format.indentation.auto_indent_new_lines,Auto Indent New Lines,تورفتگی خودکار خطوط جدید,Automatyczne wcięcie nowych linii
+menu.format.indentation.lock_indentation,Lock Indentation Settings,قفل تنظیمات تورفتگی,Zablokuj ustawienia wcięć
+menu.format.indentation.reset_mode_indentation,Reset To Mode Indentation Settings,بازنشانی به تنظیمات تورفتگی حالت,Resetuj ustawienia wcięć trybu
+menu.format.continue_placeholder_completion,Continue Placeholder Completion,ادامه تکمیل جای‌نگهدار,Kontynuuj uzupełnianie placeholderów
 menu.format.save_as_template,Save As Template...,ذخیره به عنوان قالب...,Zapisz jako szablon...
-menu.format.templates,Templates...,قالب ها...,Szablony...
+menu.format.templates,Templates...,قالب‌ها...,Szablony...
 menu.view,View,نمایش,Widok
 menu.view.increase_font,Increase Font Size,افزایش اندازه قلم,Zwiększ rozmiar czcionki
 menu.view.reduce_font,Reduce Font Size,کاهش اندازه قلم,Zmniejsz rozmiar czcionki
 menu.view.reset_font,Reset Font Size,بازنشانی اندازه قلم,Zresetuj rozmiar czcionki
-menu.view.toggle_dark_mode,Toggle Dark Mode,تغییر حالت تاریک,Przełącz ciemny motyw
-menu.view.focus_editor,Focus On Editor,تمرکز روی ویرایشگر,Fokus na edytorze
-menu.view.line_length_guides,Line Length Guides...,خطوط راهنما...,Ustawienia długości linii...
-menu.view.show_bookmarks,Show Bookmarks,نمایش نشانک ها,Pokaż zakładki
-menu.view.show_line_numbers,Show Line Numbers,نمایش شماره خط,Pokaż numery linii
-menu.view.show_fold_gutter,Show Fold Gutter,نمایش نگهدارنده خط,
-menu.view.show_minimap,Show Minimap,نمایش نمای کوچک,Pokaż minimapkę
+menu.view.focus_editor,Focus On Editor,تمرکز روی ویرایشگر,Skup się na edytorze
+menu.view.line_length_guides,Line Length Guides...,راهنماهای طول خط...,Ustawienia długości linii...
+menu.view.show_bookmarks,Show Bookmarks,نمایش نشانک‌ها,Pokaż zakładki
+menu.view.show_line_numbers,Show Line Numbers,نمایش شماره خطوط,Pokaż numery linii
+menu.view.show_fold_gutter,Show Fold Gutter,نمایش نوار جمع‌کننده,Pokaż panel zwijania
+menu.view.show_minimap,Show Minimap,نمایش نقشه کوچک,Pokaż minimapę
 menu.view.block_caret,Block Type Caret,نشانگر بلوکی,Kursor blokowy
-menu.view.highlight_occurrences,Highlight All Occurrences,برجسته کردن موادر مشابه,Podświetl wszystkie wystąpienia
-menu.view.highlight_current_line,Highlight Current Line,برجسته کردن خط فعلی,Podświetl bieżącą linię
-menu.view.show_control_chars,Show Control Characters,نمایش کاراکتر های کنترل,Pokaż znaki kontrolne
-menu.view.show_tabs,Show Tabs,نمایش تب ها,Pokaż tabulatory
-menu.view.show_spaces,Show Spaces,نمایش فاصله ها,Pokaż spacje
-menu.view.full_screen,Full Screen,تمام صفحه,Pełny ekran
-menu.tools,Tools,ابزار ها,Narzędzia
+menu.view.highlight_occurrences,Highlight All Occurrences,برجسته‌سازی همه موارد,Podświetl wszystkie wystąpienia
+menu.view.highlight_current_line,Highlight Current Line,برجسته‌سازی خط فعلی,Podświetl bieżącą linię
+menu.view.show_control_chars,Show Control Characters,نمایش کاراکترهای کنترل,Pokaż znaki kontrolne
+menu.view.show_tabs,Show Tabs,نمایش تب‌ها,Pokaż tabulatory
+menu.view.show_spaces,Show Spaces,نمایش فاصله‌ها,Pokaż spacje
+menu.view.full_screen,Full Screen,تمام‌صفحه,Pełny ekran
+menu.tools,Tools,ابزارها,Narzędzia
 menu.tools.color_picker,Color Picker,انتخابگر رنگ,Wybór koloru
 menu.tools.security,Security...,امنیت...,Bezpieczeństwo...
-menu.tools.counter,Counter...,شماشگر...,Licznik...
+menu.tools.counter,Counter...,شمارشگر...,Licznik...
 menu.tools.translation,Translation...,ترجمه...,Tłumaczenie...
-menu.tools.clipboard_history,Clipboard History,تاریخچه بریده دان,Historia schowka
-menu.tools.function_creator,Function Creator...,تابع ساز...,Kreator funkcji...
-menu.tools.documentation,Documentation...,سند نویسی...,Dokumentacja...
+menu.tools.clipboard_history,Clipboard History,تاریخچه کلیپ‌بورد,Historia schowka
+menu.tools.function_creator,Function Creator...,تابع‌ساز...,Kreator funkcji...
+menu.tools.documentation,Documentation...,مستندسازی...,Dokumentacja...
 menu.tools.auto_completion,Auto Completion...,تکمیل خودکار...,Automatyczne uzupełnianie...
 menu.tools.time_management,Time Management...,مدیریت زمان...,Zarządzanie czasem...
 menu.tools.calendar,Calendar,تقویم,Kalendarz
-menu.tools.by_extensions,By Extensions,توسط افزونه ها,Rozszerzenia
+menu.tools.by_extensions,By Extensions,بر اساس افزونه‌ها,Rozszerzenia
 menu.tools.signature,Signature...,امضا...,Podpis...
 menu.tools.date_time,Date & Time...,تاریخ و زمان...,Data i czas...
-menu.tools.macros,Macros...,ماکرو ها...,Makra...
-menu.tools.auto_backup,Auto Backup...,پشتیبان گیری خودکار...,Automatyczny zapis...
+menu.tools.macros,Macros...,ماکروها...,Makra...
+menu.tools.auto_backup,Auto Backup...,پشتیبان‌گیری خودکار...,Automatyczny zapis...
 menu.settings,Settings,تنظیمات,Ustawienia
 menu.settings.preferences,Preferences...,ترجیحات...,Preferencje...
-menu.settings.mode_manager,Mode Manager...,مدیریت مود ها...,Manadżer trybów
-menu.settings.extensions,Extensions...,افزونه ها...,Rozszerzenia...
+menu.settings.mode_manager,Mode Manager...,مدیریت حالت‌ها...,Menadżer trybów
+menu.settings.extensions,Extensions...,افزونه‌ها...,Rozszerzenia...
 menu.settings.marketplace,Marketplace...,بازار...,Rynek...
-menu.settings.open_data_folder,Open Data Folder,بازکردن پوشه داده,Otwórz folder danych
-menu.help,Help,کمک,Pomoc
-menu.help.github,GitHub Repository,مخزن گیت هاب,Repozytorium GitHub
-menu.help.mode_library,Mode Library,کتابخانه مود,Biblioteka trybów
+menu.settings.open_data_folder,Open Data Folder,باز کردن پوشه داده,Otwórz folder danych
+menu.help,Help,راهنما,Pomoc
+menu.help.github,GitHub Repository,مخزن گیت‌هاب,Repozytorium GitHub
+menu.help.mode_library,Mode Library,کتابخانه حالت,Biblioteka trybów
 menu.help.forum,Forum,انجمن,Forum
 menu.help.feedback,Share Feedback,ارسال بازخورد,Napisz opinię
 menu.help.submit_issue,Submit Issue,ثبت اشکال,Zgłoś problem
 menu.help.docs,Online Docs,اسناد آنلاین,Dokumentacja online
-menu.help.about,About,درباره,O nas
+menu.help.about,About,درباره,Informacje o programie

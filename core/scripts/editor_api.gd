@@ -7,6 +7,7 @@ extends Control
 ## Emits when a mode selected from available modes, this is a delay system and restore choice when
 ## there is more than one mode for current file.
 signal mode_selected(index: int)
+signal indentation_settings_updated(use_space: bool, indent_size: int)
 
 ## Keeps list of all modes informations without damaged modes.
 var mode_list: Array[Dictionary] = []
@@ -16,6 +17,7 @@ var current_mode: Dictionary = {}
 var mode_panel: TextForgePanel
 # Keeps temprory index of selected mode.
 var _temp_mode_index: int = 0
+var custom_mode_indentations := {}
 
 func _ready() -> void:
 	child_order_changed.connect(Signals.refresh_module_profiler)
@@ -66,6 +68,8 @@ func _load_mode_list() -> void:
 			mode[key] = config.get_value("mode", key)
 
 		mode_list.append(mode)
+
+	custom_mode_indentations = Settings.read_data("mode_settings", "indentations", {})
 
 	Global.damaged_modes = damaged_modes
 	if damaged_modes:
@@ -198,6 +202,7 @@ func load_file(file_path: String) -> void:
 					Global.send_notification(Global.Notification.ERROR, "Error in opening file!", "Load from {0} completed with error code {1}".format([file_path, FileAccess.get_open_error()]))
 
 				Signals.check_options.emit()
+				update_indentation_settings(false)
 				return
 			1:
 				mode = compatible_modes[0]
@@ -471,6 +476,7 @@ func _handle_load_file(file_path: String) -> void:
 	Global.get_core().append_to_recent_files(file_path)
 	Global.set_editor_disabled(false)
 	Signals.check_options.emit()
+	update_indentation_settings()
 
 
 ## Returns [code]true[/code] if [param file_path] extension is in [param mode] extensions.
@@ -489,3 +495,85 @@ func _get_mode_script() -> TextForgeMode:
 	else:
 		mode_script = get_child(0) as TextForgeMode
 	return mode_script
+
+
+func update_indentation_settings(use_mode := true) -> void:
+	if Settings.get_setting("edit", "lock_indentation_settings", false):
+		return
+	var use_spaces: bool
+	var indent_size: int
+	if not use_mode:
+		use_spaces = Settings.get_setting("edit", "indent_with_space")
+		indent_size = Settings.get_setting("edit", "indent_size")
+	else:
+		if current_mode.has("id") and custom_mode_indentations.has(current_mode.id):
+			use_spaces = custom_mode_indentations[current_mode.id]["use_spaces"]
+			indent_size = custom_mode_indentations[current_mode.id]["indent_size"]
+		else:
+			var mode_script := _get_mode_script()
+			if not mode_script:
+				Global.send_notification(Global.Notification.ERROR, "Can't find mode script!", "Updating indentation settings failed.")
+				return
+			if mode_script.indent_type == TextForgeMode.INDENT_TYPE.DISABLE:
+				use_spaces = Settings.get_setting("edit", "indent_with_space")
+			else:
+				use_spaces = mode_script.indent_type == TextForgeMode.INDENT_TYPE.SPACE
+			if mode_script.indent_size < 1:
+				indent_size = Settings.get_setting("edit", "indent_size")
+			else:
+				indent_size = mode_script.indent_size
+
+	Global.get_editor().indent_use_spaces = use_spaces
+	Global.get_editor().indent_size = indent_size
+	indentation_settings_updated.emit(use_spaces, indent_size)
+
+
+func reset_to_mode_indentation_settings() -> void:
+	if not current_mode.has("id"):
+		return
+	if custom_mode_indentations.has(current_mode.id):
+		custom_mode_indentations.erase(current_mode.id)
+		Settings.write_data("mode_settings", "indentations", custom_mode_indentations)
+		update_indentation_settings()
+
+
+func change_indentation_type(use_spaces: bool) -> void:
+	if not current_mode.has("id"):
+		Settings.set_setting("edit", "indent_with_space", use_spaces)
+		update_indentation_settings(false)
+		return
+	if custom_mode_indentations.has(current_mode.id):
+		custom_mode_indentations[current_mode.id]["use_spaces"] = use_spaces
+	else:
+		var mode_script := _get_mode_script()
+		if not mode_script:
+			Global.send_notification(Global.Notification.ERROR, "Can't find mode script!", "Changing indentation settings failed.")
+			return
+		custom_mode_indentations[current_mode.id] = { "use_spaces": use_spaces, "indent_size": mode_script.indent_size if mode_script.indent_size > 0 else Settings.get_setting("edit", "indent_size") }
+	Settings.write_data("mode_settings", "indentations", custom_mode_indentations)
+	update_indentation_settings()
+
+
+func change_indent_size(indent_size: int) -> void:
+	if indent_size < 1:
+		Global.send_notification(Global.Notification.ERROR, "Invalid indent size!", "Indent size must be at least 1.")
+		return
+	if not current_mode.has("id"):
+		Settings.set_setting("edit", "indent_size", indent_size)
+		update_indentation_settings(false)
+		return
+	if custom_mode_indentations.has(current_mode.id):
+		custom_mode_indentations[current_mode.id]["indent_size"] = indent_size
+	else:
+		var mode_script := _get_mode_script()
+		if not mode_script:
+			Global.send_notification(Global.Notification.ERROR, "Can't find mode script!", "Changing indentation settings failed.")
+			return
+		var use_spaces_value: bool
+		if mode_script.indent_type == TextForgeMode.INDENT_TYPE.DISABLE:
+			use_spaces_value = Settings.get_setting("edit", "indent_with_space")
+		else:
+			use_spaces_value = mode_script.indent_type == TextForgeMode.INDENT_TYPE.SPACE
+		custom_mode_indentations[current_mode.id] = { "use_spaces": use_spaces_value, "indent_size": indent_size }
+	Settings.write_data("mode_settings", "indentations", custom_mode_indentations)
+	update_indentation_settings()
