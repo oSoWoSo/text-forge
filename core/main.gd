@@ -262,6 +262,8 @@ func _create_submenu(root_menu: PopupMenu, root_option: Dictionary, config_file:
 						submenu.add_item(TFT.get_text(submenu_item.get("key", "")), submenu_item.get("code", -1))
 					OptionTypes.SEPARATOR:
 						submenu.add_separator(TFT.get_text(submenu_item.get("key", "")))
+					OptionTypes.CHECKBOX:
+						submenu.add_check_item(TFT.get_text(submenu_item.get("key", "")), submenu_item.get("code", -1))
 					_:
 						Global.send_notification(Global.Notification.ERROR, "Can't add item to submenu!", "Currently just regular and separatior items are avaliable for submenus.")
 			# connect submenu to handle state function
