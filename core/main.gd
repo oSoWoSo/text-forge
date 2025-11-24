@@ -13,7 +13,7 @@ enum OptionTypes {
 	SUBMENU,
 	## Checkbox items.
 	CHECKBOX,
-	## Redio checkbox items.
+	## Radio checkbox items.
 	RADIO_CHECKBOX,
 }
 
@@ -265,7 +265,7 @@ func _create_submenu(root_menu: PopupMenu, root_option: Dictionary, config_file:
 					OptionTypes.CHECKBOX:
 						submenu.add_check_item(TFT.get_text(submenu_item.get("key", "")), submenu_item.get("code", -1))
 					_:
-						Global.send_notification(Global.Notification.ERROR, "Can't add item to submenu!", "Currently just regular and separatior items are avaliable for submenus.")
+						Global.send_notification(Global.Notification.ERROR, "Can't add item to submenu!", "Currently regular, separator, and checkbox items are available for submenus.")
 			# connect submenu to handle state function
 			submenu.id_pressed.connect(_handle_menu_option_state.bind(submenu))
 
