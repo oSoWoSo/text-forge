@@ -506,7 +506,7 @@ func update_indentation_settings(use_mode := true) -> void:
 		use_spaces = Settings.get_setting("edit", "indent_with_space")
 		indent_size = Settings.get_setting("edit", "indent_size")
 	else:
-		if custom_mode_indentations.has(current_mode.id):
+		if current_mode.has("id") and custom_mode_indentations.has(current_mode.id):
 			use_spaces = custom_mode_indentations[current_mode.id]["use_spaces"]
 			indent_size = custom_mode_indentations[current_mode.id]["indent_size"]
 		else:
