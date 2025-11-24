@@ -115,8 +115,7 @@ func _handle_settings() -> void:
 
 	# Load settings
 
-	Global.get_editor().indent_use_spaces = Settings.get_setting("edit", "indent_with_space")
-	Global.get_editor().indent_size = Settings.get_setting("edit", "indent_size")
+	Global.get_editor_api().update_indentation_settings(false)
 	if not FileAccess.file_exists(S.TEMPLATE_THEME.format([Settings.get_setting("editor_ui", "theme_name")])):
 		Settings.restore_default("editor_ui", "theme_name")
 	get_window().set_theme(U.load_resource(S.TEMPLATE_THEME.format([Settings.get_setting("editor_ui", "theme_name")])))
