@@ -239,7 +239,7 @@ command name.
 This menu includes commands and actions related to formatting file content.
 
 ### Auto Format
-Will automaticly format whole file content.
+Will automatically format whole file content.
 
 !!! Note
 
@@ -274,11 +274,11 @@ apply last line indentation level for new line.
 
 #### Lock Indentation Settings
 When enabled, protects indentation settings from changing, this change can come from *Indentation Settings*
-menu in editor bottom bar, mode changing actions, etc.
+menu in editor bottom bar, mode-changing actions, etc.
 
 #### Reset To Mode Indentation Settings
 Resets current mode's indentation settings to defined settings by mode developer. See [here](modes.md#mode-features)
-for more information about mode-driven indetation settings.
+for more information about mode-driven indentation settings.
 
 ### Continue Placeholder Completion
 Returns you to Placeholder completion mode (when current file has any placeholder).

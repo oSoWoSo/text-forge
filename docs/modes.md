@@ -65,10 +65,11 @@ features of a mode depends on its developers:
 
 - **Indentation Settings** _optional_
 
-   After release of TFM API v2.2 (Text Forge v0.2), modes can provide indetation settings, so you can use multiple modes and be 
-   sure about automatic setting indentation options when you change mode. For example, in YAML indetation must be with spaces, 
-   bug in GDScript tabs are recommended, so a YAML mode can provide 2 spaces as indetation and a GDScript mode can provide
-   single tab with 4 width as indetation and you haven't need to change indentation type and size each time you open a new file.
+   After release of TFM API v2.2 (Text Forge v0.2), modes can provide indentation settings, so you can use multiple modes and be 
+   sure about automatic setting indentation options when you change mode. For example, in YAML indentation must be with spaces, 
+   bug in GDScript tabs are recommended, so a YAML mode can provide 2 spaces as indentation and a GDScript mode can provide
+   single tab with 4 width as indentation and you haven't need to change indentation type and size each time you open a new file.
+
    To customize this feature for each mode, you can use **Indentation Settings** menu in bottom right corner of editor 
    (a button with a text like `Tabs (4)`), you can open a file with target mode and then use this button to set custom settings,
    Also you can use `Format > Indentation > Reset To Mode Indentation Settings` to restore original settings. If you want disable
@@ -92,8 +93,7 @@ features of a mode depends on its developers:
 
 !!! Note
 
-    Auto Format and Auto Indent are triggerable actions, there is an **Auto Indent New Lines** toggleable feature in `Format > Indentation`
-    menu that will change indenttaion automatically when you create new line.
+    Auto Format and Auto Indent are triggerable actions, there is an **Auto Indent New Lines** toggleable feature in `Format > Indentation` menu that will change indentation automatically when you create new line.
 
 ## Mode Kits
 
