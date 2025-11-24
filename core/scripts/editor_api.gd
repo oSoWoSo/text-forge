@@ -555,6 +555,9 @@ func change_indentation_type(use_spaces: bool) -> void:
 
 
 func change_indent_size(indent_size: int) -> void:
+	if indent_size < 1:
+		Global.send_notification(Global.Notification.ERROR, "Invalid indent size!", "Indent size must be at least 1.")
+		return
 	if not current_mode.has("id"):
 		Settings.set_setting("edit", "indent_size", indent_size)
 		update_indentation_settings(false)
@@ -566,6 +569,11 @@ func change_indent_size(indent_size: int) -> void:
 		if not mode_script:
 			Global.send_notification(Global.Notification.ERROR, "Can't find mode script!", "Changing indentation settings failed.")
 			return
-		custom_mode_indentations[current_mode.id] = { "use_spaces": mode_script.indent_type == TextForgeMode.INDENT_TYPE.SPACE, "indent_size": indent_size }
+		var use_spaces_value: bool
+		if mode_script.indent_type == TextForgeMode.INDENT_TYPE.DISABLE:
+			use_spaces_value = Settings.get_setting("edit", "indent_with_space")
+		else:
+			use_spaces_value = mode_script.indent_type == TextForgeMode.INDENT_TYPE.SPACE
+		custom_mode_indentations[current_mode.id] = { "use_spaces": use_spaces_value, "indent_size": indent_size }
 	Settings.write_data("mode_settings", "indentations", custom_mode_indentations)
 	update_indentation_settings()
