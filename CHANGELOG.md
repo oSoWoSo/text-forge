@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning (2.0)](https://semver.org/spec/
 
 ## [unreleased]
 
+### Added
+- Mode-driven indentation settings ([#136](https://github.com/text-forge/text-forge/pull/136))
+
 ### Fixed
 - Changelog is not displayed in editor ([#133](https://github.com/text-forge/text-forge/pull/133))
 
