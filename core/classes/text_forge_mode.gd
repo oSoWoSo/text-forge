@@ -10,6 +10,13 @@ extends Node
 ## [b]Note:[/b] Use [method _initialize_mode] to set properties values, see [method _initialize_mode]
 ## for more information.
 
+## Valid values for [member indent_type].
+enum INDENT_TYPE {
+	DISABLE, ## Keep indentation type. (When indentation type is not important)
+	SPACE, ## Indent with spaces.
+	TAB, ## Indent with tabs.
+}
+
 ## [SyntaxHighlighter] to load to [Editor]. You can have a highlighter script and load it to this
 ## property, this method is advanced way. Otherwise, you can use [CodeHighlighter] and its functions
 ## to create simple highlighters.
@@ -33,6 +40,11 @@ var features: Dictionary[String, bool] = {
 	"auto_format": false,
 	"auto_indent": false,
 }
+## Use this parameter to define your mode indentation type, see [enum INDENT_TYPE] for valid values.
+var indent_type: INDENT_TYPE = INDENT_TYPE.DISABLE
+## Use this parameter to define your mode indentation size, values less than [code]1[/code] means
+## indentation size is not important for this mode. (same as [constant INDENT_TYPE.DISABLE])
+var indent_size: int = 0
 
 ## Returns [member syntax_highlighter]. Setup syntax highlighter in [method _initialize_mode].
 func get_syntax_highlighter() -> SyntaxHighlighter:
