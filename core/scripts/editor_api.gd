@@ -461,6 +461,7 @@ func _handle_save_file(file_path: String) -> void:
 	Signals.check_options.emit()
 
 
+## Saves bookmarks based on file path in editor data or project file.
 func _save_bookmarks() -> void:
 	var bookmarks := Global.get_editor().get_bookmarked_lines()
 	var data: Dictionary[String, PackedInt32Array]
@@ -499,6 +500,7 @@ func _handle_load_file(file_path: String) -> void:
 	update_indentation_settings()
 
 
+## Loads bookmarks based on file path from project file or editor data.
 func _load_bookmarks() -> void:
 	var data: Dictionary[String, PackedInt32Array]
 	if Project.has_project():
