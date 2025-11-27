@@ -122,7 +122,7 @@ func test_on_text_changed_restarts_timer() -> void:
 	editor._on_text_changed()
 
 	# Timer should have been restarted, so time_left should be close to wait_time
-	assert_float(editor.type_timer.time_left).is_greater_equal(first_time_left)
+	assert_float(editor.type_timer.time_left).is_equal(first_time_left)
 
 func test_on_gutter_clicked_not_editable_does_nothing() -> void:
 	editor.editable = false
