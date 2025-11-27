@@ -68,11 +68,12 @@ func test_get_char_index_empty_text() -> void:
 	var index := editor.get_char_index(0, 0)
 	assert_int(index).is_equal(0)
 
-func test_is_selection_in_line_no_selection() -> void:
+func test_is_selection_in_line_caret_only() -> void:
 	editor.text = "Line 1\nLine 2\nLine 3"
 	editor.set_caret_line(1)
 	editor.set_selection_origin_line(1)
 	editor.deselect()
+	# With no active selection, only the caret line should be considered "in selection"
 	assert_bool(editor.is_selection_in_line(0)).is_false()
 	assert_bool(editor.is_selection_in_line(1)).is_true()
 	assert_bool(editor.is_selection_in_line(2)).is_false()
