@@ -152,6 +152,7 @@ func save_file(file_path: String) -> void:
 				Global.get_core().append_to_recent_files(file_path)
 				file.close()
 
+				_save_bookmarks()
 				Signals.check_options.emit()
 				return
 			1:
@@ -203,6 +204,7 @@ func load_file(file_path: String) -> void:
 
 				Signals.check_options.emit()
 				update_indentation_settings(false)
+				_load_bookmarks()
 				return
 			1:
 				mode = compatible_modes[0]
