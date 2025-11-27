@@ -463,9 +463,17 @@ func _handle_save_file(file_path: String) -> void:
 
 func _save_bookmarks() -> void:
 	var bookmarks := Global.get_editor().get_bookmarked_lines()
-	var data: Dictionary[String, PackedInt32Array] = Settings.read_data("files", "bookmarks", Dictionary({}, TYPE_STRING, "", null, TYPE_PACKED_INT32_ARRAY, "", null))
+	var data: Dictionary[String, PackedInt32Array]
+	if Project.has_project():
+		data = Project.current_project.get_value("files", "bookmarks", Dictionary({}, TYPE_STRING, "", null, TYPE_PACKED_INT32_ARRAY, "", null))
+	else:
+		data = Settings.read_data("files", "bookmarks", Dictionary({}, TYPE_STRING, "", null, TYPE_PACKED_INT32_ARRAY, "", null))
 	data[Global.get_file_path()] = bookmarks
-	Settings.write_data("files", "bookmarks", data)
+	if Project.has_project():
+		Project.current_project.set_value("files", "bookmarks", data)
+		Project.current_project.save(Project.get_current_project_path())
+	else:
+		Settings.write_data("files", "bookmarks", data)
 
 ## Handles load file with current mode. Makes base directory recursive.
 func _handle_load_file(file_path: String) -> void:
@@ -492,7 +500,11 @@ func _handle_load_file(file_path: String) -> void:
 
 
 func _load_bookmarks() -> void:
-	var data: Dictionary[String, PackedInt32Array] = Settings.read_data("files", "bookmarks", Dictionary({}, TYPE_STRING, "", null, TYPE_PACKED_INT32_ARRAY, "", null))
+	var data: Dictionary[String, PackedInt32Array]
+	if Project.has_project():
+		data = Project.current_project.get_value("files", "bookmarks", Dictionary({}, TYPE_STRING, "", null, TYPE_PACKED_INT32_ARRAY, "", null))
+	else:
+		data = Settings.read_data("files", "bookmarks", Dictionary({}, TYPE_STRING, "", null, TYPE_PACKED_INT32_ARRAY, "", null))
 	Global.get_editor().clear_bookmarked_lines()
 	for i in data.get(Global.get_file_path(), []):
 		Global.get_editor().set_line_as_bookmarked(i, true)
