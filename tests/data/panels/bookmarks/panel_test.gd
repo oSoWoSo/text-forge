@@ -21,8 +21,9 @@ func test_panel_instantiates_correctly() -> void:
 
 func test_panel_extends_text_forge_panel() -> void:
 	# Check if script is attached and extends TextForgePanel
-	var script = panel.get_script()
+	var script: Script = panel.get_script()
 	assert_object(script).is_not_null()
+	assert_str(script.get_base_script().get_global_name()).is_equal("TextForgePanel")
 
 func test_has_items_container() -> void:
 	assert_object(panel.items).is_not_null()
@@ -52,6 +53,7 @@ func test_item_scene_constant_exists() -> void:
 	# The ITEM constant should be defined
 	var script = panel.get_script()
 	assert_object(script).is_not_null()
+	assert_object(script.ITEM).is_not_null()
 
 func test_panel_layout_structure() -> void:
 	# Verify basic layout structure
