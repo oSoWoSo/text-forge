@@ -14,6 +14,8 @@ func before_test() -> void:
 
 func after_test() -> void:
 	if close_script:
+		if Signals.close_file.is_connected(close_script._run_action):
+			Signals.close_file.disconnect(close_script._run_action)
 		close_script.free()
 
 func test_initialize_sets_requires_file() -> void:
