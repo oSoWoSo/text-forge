@@ -459,12 +459,10 @@ func _handle_save_file(file_path: String) -> void:
 
 
 func _save_bookmarks() -> void:
-	print("Save bookmarks")
 	var bookmarks := Global.get_editor().get_bookmarked_lines()
 	var data: Dictionary[String, PackedInt32Array] = Settings.read_data("files", "bookmarks", Dictionary({}, TYPE_STRING, "", null, TYPE_PACKED_INT32_ARRAY, "", null))
 	data[Global.get_file_path()] = bookmarks
 	Settings.write_data("files", "bookmarks", data)
-
 
 ## Handles load file with current mode. Makes base directory recursive.
 func _handle_load_file(file_path: String) -> void:
