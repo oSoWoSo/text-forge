@@ -31,7 +31,6 @@ func test_initialize_connects_to_close_file_signal() -> void:
 			break
 	assert_bool(found).is_true()
 
-
 func test_script_extends_action_script() -> void:
 	assert_object(close_script).is_instanceof(ActionScript)
 
