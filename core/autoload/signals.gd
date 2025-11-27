@@ -29,6 +29,8 @@ signal save_request(from: int)
 signal save_finished(to: int)
 ## Requests open find panel.
 signal open_find_panel
+## Requests open bookmarks panel.
+signal open_bookmarks_panel
 ## Requests shift find result selection.
 signal shift_find_result(next: bool)
 ## Requests replace all find results.

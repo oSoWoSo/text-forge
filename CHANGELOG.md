@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning (2.0)](https://semver.org/spec/
 
 ### Added
 - Mode-driven indentation settings ([#136](https://github.com/text-forge/text-forge/pull/136))
+- Bookmarks support and bookmarks panel ([#137](https://github.com/text-forge/text-forge/pull/137))
 
 ### Fixed
 - Changelog is not displayed in editor ([#133](https://github.com/text-forge/text-forge/pull/133))

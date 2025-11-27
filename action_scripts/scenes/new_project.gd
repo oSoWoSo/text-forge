@@ -66,6 +66,7 @@ func _on_create_pressed() -> void:
 	config.set_value("files", "open", "")
 	config.set_value("files", "caret_line", 0)
 	config.set_value("files", "caret_column", 0)
+	config.set_value("files", "bookmarks", Dictionary({}, TYPE_STRING, "", null, TYPE_PACKED_INT32_ARRAY, "", null))
 	var err := config.save(path_button.text)
 	if err == OK:
 		Global.send_notification(Global.Notification.INFO, "New project created at {0}.".format([path_button.text]))

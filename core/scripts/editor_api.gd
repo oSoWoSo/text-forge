@@ -152,6 +152,7 @@ func save_file(file_path: String) -> void:
 				Global.get_core().append_to_recent_files(file_path)
 				file.close()
 
+				_save_bookmarks()
 				Signals.check_options.emit()
 				return
 			1:
@@ -203,6 +204,8 @@ func load_file(file_path: String) -> void:
 
 				Signals.check_options.emit()
 				update_indentation_settings(false)
+				_load_bookmarks()
+				Global.get_editor().type_timer_timeout.emit()
 				return
 			1:
 				mode = compatible_modes[0]
@@ -454,8 +457,24 @@ func _handle_save_file(file_path: String) -> void:
 	file.store_buffer(mode_script._string_to_buffer(Global.get_editor_text()))
 	Global.get_core().append_to_recent_files(file_path)
 	file.close()
+	_save_bookmarks()
 	Signals.check_options.emit()
 
+
+## Saves bookmarks based on file path in editor data or project file.
+func _save_bookmarks() -> void:
+	var bookmarks := Global.get_editor().get_bookmarked_lines()
+	var data: Dictionary[String, PackedInt32Array]
+	if Project.has_project():
+		data = Project.current_project.get_value("files", "bookmarks", Dictionary({}, TYPE_STRING, "", null, TYPE_PACKED_INT32_ARRAY, "", null))
+	else:
+		data = Settings.read_data("files", "bookmarks", Dictionary({}, TYPE_STRING, "", null, TYPE_PACKED_INT32_ARRAY, "", null))
+	data[Global.get_file_path()] = bookmarks
+	if Project.has_project():
+		Project.current_project.set_value("files", "bookmarks", data)
+		Project.current_project.save(Project.get_current_project_path())
+	else:
+		Settings.write_data("files", "bookmarks", data)
 
 ## Handles load file with current mode. Makes base directory recursive.
 func _handle_load_file(file_path: String) -> void:
@@ -475,8 +494,22 @@ func _handle_load_file(file_path: String) -> void:
 	Global.set_editor_text(mode_script._buffer_to_string(buffer))
 	Global.get_core().append_to_recent_files(file_path)
 	Global.set_editor_disabled(false)
+	_load_bookmarks()
 	Signals.check_options.emit()
+	Global.get_editor().type_timer_timeout.emit()
 	update_indentation_settings()
+
+
+## Loads bookmarks based on file path from project file or editor data.
+func _load_bookmarks() -> void:
+	var data: Dictionary[String, PackedInt32Array]
+	if Project.has_project():
+		data = Project.current_project.get_value("files", "bookmarks", Dictionary({}, TYPE_STRING, "", null, TYPE_PACKED_INT32_ARRAY, "", null))
+	else:
+		data = Settings.read_data("files", "bookmarks", Dictionary({}, TYPE_STRING, "", null, TYPE_PACKED_INT32_ARRAY, "", null))
+	Global.get_editor().clear_bookmarked_lines()
+	for i in data.get(Global.get_file_path(), []):
+		Global.get_editor().set_line_as_bookmarked(i, true)
 
 
 ## Returns [code]true[/code] if [param file_path] extension is in [param mode] extensions.
