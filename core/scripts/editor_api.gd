@@ -205,6 +205,7 @@ func load_file(file_path: String) -> void:
 				Signals.check_options.emit()
 				update_indentation_settings(false)
 				_load_bookmarks()
+				Global.get_editor().type_timer_timeout.emit()
 				return
 			1:
 				mode = compatible_modes[0]
