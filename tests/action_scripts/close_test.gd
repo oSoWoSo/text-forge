@@ -31,11 +31,6 @@ func test_initialize_connects_to_close_file_signal() -> void:
 			break
 	assert_bool(found).is_true()
 
-func test_run_action_returns_early_with_unsaved_changes() -> void:
-	# This test verifies the early return behavior
-	# Since we can't easily mock Global singleton, we test the script structure
-	# The actual behavior would be tested in integration tests
-	assert_object(close_script).is_not_null()
 
 func test_script_extends_action_script() -> void:
 	assert_object(close_script).is_instanceof(ActionScript)
