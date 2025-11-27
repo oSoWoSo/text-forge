@@ -15,6 +15,7 @@ func _ready() -> void:
 	add_child(type_timer, false, Node.INTERNAL_MODE_FRONT)
 
 	type_timer_timeout.connect(func(): code_completion_requested.emit())
+	set_gutter_clickable(0, true)
 
 
 ## Returns char index in [param line] and [param column], useful for use original [LineEdit]
@@ -49,3 +50,11 @@ func get_caret_global_draw_pos(caret_index: int = 0, center := false) -> Vector2
 
 func _on_text_changed() -> void:
 	type_timer.start()
+
+
+func _on_gutter_clicked(line: int, gutter: int) -> void:
+	if not editable:
+		return
+	if gutter != 0: # Just pass bookmarks
+		return
+	set_line_as_bookmarked(line, not is_line_bookmarked(line))

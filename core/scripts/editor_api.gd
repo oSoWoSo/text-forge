@@ -454,7 +454,16 @@ func _handle_save_file(file_path: String) -> void:
 	file.store_buffer(mode_script._string_to_buffer(Global.get_editor_text()))
 	Global.get_core().append_to_recent_files(file_path)
 	file.close()
+	_save_bookmarks()
 	Signals.check_options.emit()
+
+
+func _save_bookmarks() -> void:
+	print("Save bookmarks")
+	var bookmarks := Global.get_editor().get_bookmarked_lines()
+	var data: Dictionary[String, PackedInt32Array] = Settings.read_data("files", "bookmarks", Dictionary({}, TYPE_STRING, "", null, TYPE_PACKED_INT32_ARRAY, "", null))
+	data[Global.get_file_path()] = bookmarks
+	Settings.write_data("files", "bookmarks", data)
 
 
 ## Handles load file with current mode. Makes base directory recursive.
@@ -475,8 +484,17 @@ func _handle_load_file(file_path: String) -> void:
 	Global.set_editor_text(mode_script._buffer_to_string(buffer))
 	Global.get_core().append_to_recent_files(file_path)
 	Global.set_editor_disabled(false)
+	_load_bookmarks()
 	Signals.check_options.emit()
+	Global.get_editor().type_timer_timeout.emit()
 	update_indentation_settings()
+
+
+func _load_bookmarks() -> void:
+	var data: Dictionary[String, PackedInt32Array] = Settings.read_data("files", "bookmarks", Dictionary({}, TYPE_STRING, "", null, TYPE_PACKED_INT32_ARRAY, "", null))
+	Global.get_editor().clear_bookmarked_lines()
+	for i in data.get(Global.get_file_path(), []):
+		Global.get_editor().set_line_as_bookmarked(i, true)
 
 
 ## Returns [code]true[/code] if [param file_path] extension is in [param mode] extensions.

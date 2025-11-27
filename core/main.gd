@@ -380,7 +380,7 @@ func _handle_menu_option_state(id: int, menu: PopupMenu, rootmenu: String = "") 
 
 ## Will append [code]*[/code] to file name to show it was changed.
 func _on_editor_text_changed() -> void:
-	if not file_label.text.ends_with("*"):
+	if not Global.has_unsaved_change() and not Global.is_editor_disabled():
 		file_label.text += "*"
 
 

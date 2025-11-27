@@ -350,8 +350,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 2.0
 offset_top = 2.0
-offset_right = -2.0
-offset_bottom = -2.0
+offset_right = 198.0
+offset_bottom = 80.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -504,6 +504,8 @@ metadata/_tab_index = 4
 [connection signal="pressed" from="CanvasLayer/Replace popup/Margin/HBox/Previous" to="CanvasLayer/Replace popup" method="_on_previous_pressed"]
 [connection signal="pressed" from="CanvasLayer/Replace popup/Margin/HBox/Close" to="CanvasLayer/Replace popup" method="_on_close_pressed"]
 [connection signal="code_completion_requested" from="Margin/Sections/PanelManager/LeftSpliter/RightSpliter/BottomSpliter/Editor" to="Margin/Sections/PanelManager/LeftSpliter/RightSpliter/BottomSpliter/Editor/API" method="_on_editor_code_completion_requested"]
+[connection signal="gutter_clicked" from="Margin/Sections/PanelManager/LeftSpliter/RightSpliter/BottomSpliter/Editor" to="Margin/Sections/PanelManager/LeftSpliter/RightSpliter/BottomSpliter/Editor" method="_on_gutter_clicked"]
+[connection signal="gutter_clicked" from="Margin/Sections/PanelManager/LeftSpliter/RightSpliter/BottomSpliter/Editor" to="." method="_on_editor_text_changed" unbinds=2]
 [connection signal="text_changed" from="Margin/Sections/PanelManager/LeftSpliter/RightSpliter/BottomSpliter/Editor" to="." method="_on_editor_text_changed"]
 [connection signal="text_changed" from="Margin/Sections/PanelManager/LeftSpliter/RightSpliter/BottomSpliter/Editor" to="Margin/Sections/PanelManager/LeftSpliter/RightSpliter/BottomSpliter/Editor" method="_on_text_changed"]
 [connection signal="pressed" from="Margin/Sections/BottomBar/CaretPos" to="Margin/Sections/BottomBar/CaretPos" method="_on_pressed"]

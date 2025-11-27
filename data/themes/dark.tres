@@ -1,10 +1,11 @@
-[gd_resource type="Theme" load_steps=60 format=3 uid="uid://biemqm07w26kl"]
+[gd_resource type="Theme" load_steps=62 format=3 uid="uid://biemqm07w26kl"]
 
 [ext_resource type="Texture2D" uid="uid://bwarwcjjx7it3" path="res://assets/active.png" id="1_26g0h"]
 [ext_resource type="Texture2D" uid="uid://dat7uwrm3mo45" path="res://assets/active_disabled.png" id="2_xqe5d"]
 [ext_resource type="Texture2D" uid="uid://4ymdoc7w7sv7" path="res://assets/deactive.png" id="3_7ki5i"]
 [ext_resource type="Texture2D" uid="uid://nn2nmwxds2nh" path="res://assets/deactive_disabled.png" id="4_atsne"]
 [ext_resource type="FontFile" uid="uid://d03vkdeo2egtn" path="res://assets/JetBrainsMono-Regular.ttf" id="5_xqe5d"]
+[ext_resource type="Texture2D" uid="uid://cdkkyowyamacf" path="res://assets/bookmark.svg" id="6_7ki5i"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tusby"]
 content_margin_left = 5.0
@@ -21,6 +22,17 @@ content_margin_top = 10.0
 content_margin_right = 10.0
 content_margin_bottom = 10.0
 bg_color = Color(0.11834, 0.167543, 0.216756, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_28nt2"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.0823529, 0.121569, 0.160784, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qjhx0"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -300,6 +312,8 @@ bg_color = Color(0, 0, 0, 0)
 AboutTabContainer/base_type = &"TabContainer"
 AboutTabContainer/styles/panel = SubResource("StyleBoxFlat_tusby")
 AcceptDialog/styles/panel = SubResource("StyleBoxFlat_26g0h")
+BookmarkPanel/base_type = &"PanelContainer"
+BookmarkPanel/styles/panel = SubResource("StyleBoxFlat_28nt2")
 BottomBarLabel/base_type = &"Label"
 BottomBarLabel/colors/font_color = Color(0.56784326, 0.583465, 0.5990904, 1)
 BottomBarLabel/font_sizes/font_size = 14
@@ -321,12 +335,14 @@ CheckBox/icons/radio_unchecked_disabled = SubResource("CompressedTexture2D_amhry
 CheckBox/icons/unchecked = ExtResource("3_7ki5i")
 CheckBox/icons/unchecked_disabled = ExtResource("4_atsne")
 CheckBox/styles/focus = SubResource("StyleBoxEmpty_amhry")
+CodeEdit/colors/bookmark_color = Color(1, 1, 0.47843137, 0.60784316)
 CodeEdit/colors/caret_color = Color(1, 1, 1, 1)
 CodeEdit/colors/current_line_color = Color(0.356863, 0.45098, 0.541176, 0.156863)
 CodeEdit/colors/line_length_guideline_color = Color(0.116654, 0.179424, 0.242188, 1)
 CodeEdit/colors/selection_color = Color(1, 1, 1, 0.117647)
 CodeEdit/constants/caret_width = 2
 CodeEdit/fonts/font = ExtResource("5_xqe5d")
+CodeEdit/icons/bookmark = ExtResource("6_7ki5i")
 CodeEdit/styles/completion = SubResource("StyleBoxFlat_cuqy7")
 CodeEdit/styles/focus = SubResource("StyleBoxEmpty_tipki")
 CodeEdit/styles/normal = SubResource("StyleBoxFlat_sugp2")
