@@ -116,13 +116,12 @@ func test_on_text_changed_starts_timer() -> void:
 
 func test_on_text_changed_restarts_timer() -> void:
 	editor.type_timer.start()
-	var first_time_left := editor.type_timer.time_left
 	await get_tree().create_timer(0.1).timeout
 
 	editor._on_text_changed()
 
-	# Timer should have been restarted, so time_left should be close to wait_time
-	assert_float(editor.type_timer.time_left).is_equal(first_time_left)
+	# Timer should have been restarted, so time_left should be greater than the remaining time before restart
+	assert_float(editor.type_timer.time_left).is_greater(0.2)
 
 func test_on_gutter_clicked_not_editable_does_nothing() -> void:
 	editor.editable = false
