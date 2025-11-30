@@ -5,18 +5,15 @@ extends Control
 
 ## Available option types in menus.
 enum OptionTypes {
-	## Separator items.
 	SEPARATOR = -1,
-	## Regular items.
 	REGULAR,
-	## Submenu node items.
 	SUBMENU,
-	## Checkbox items.
 	CHECKBOX,
-	## Radio checkbox items.
 	RADIO_CHECKBOX,
 }
 
+## Default window title.
+const WINDOW_TITLE = "Text Forge"
 ## Section for menu data in config file.
 const DATA_SECTION = "main_menu"
 ## Suffix for menu keys.
@@ -26,12 +23,13 @@ const SUBMENU_SUFFIX = "_submenu"
 ## Prefix for menu names in translation file.
 const MENU_TRANSLATION_PREFIX = "menu."
 
-## [MenuBar] that will keep menu buttons. Menu buttons will be [PopupMenu]s.
+## [MenuBar] that will keep menu buttons. Menu buttons will be [PopupMenu]s (See [MenuBar] for more
+## infromation).
 @export var menu_container: MenuBar
-## This [Label] will be placed above [member editor], its [param text] will be file name and its
-## [param tooltip] will be file path. See [method GlobalAccess.get_file_name],
-## [method GlobalAccess.get_file_path], [method GlobalAccess.set_file_name],
-## [method GlobalAccess.set_file_path] for standard setter and getter.
+## This [Label] will be placed between [member menu_container] and [member editor], its [param text]
+## will be file name and its [param tooltip] will be file path.[br][br]
+## - Setters: [method GlobalAccess.set_file_name], [method GlobalAccess.set_file_path][br]
+## - Getters: [method GlobalAccess.get_file_name], [method GlobalAccess.get_file_path]
 @export var file_label: Label
 ## Editor node, you can find more options in [Editor] class.
 @export var editor: Editor
@@ -43,7 +41,8 @@ const MENU_TRANSLATION_PREFIX = "menu."
 @export var about: Window
 ## Module Profiler.
 @export var module_profiler: MenuButton
-@export var replace_popup: PopupPanel
+## [ReplacePopup] for template completion.
+@export var replace_popup: ReplacePopup
 
 ## Recent files [PopupMenu], see also [method _reload_recent_files].
 var recent_files_submenu: PopupMenu
@@ -51,131 +50,81 @@ var recent_files_submenu: PopupMenu
 var templates_submenu: PopupMenu
 ## Configurations loaded from [constant S.MAIN_UI_DATA].
 var main_menu_data: Dictionary
+## Cached translation data with [method TextForgeTranslator.cache_source].
 var _translation_data: Dictionary[String, Dictionary]
 
 # This is start point of Text Forge
 func _ready() -> void:
-	Project.project_opened.connect(func(): get_window().title = "%s - Text Forge" % Project.get_project_name())
-	Project.project_closed.connect(func(): get_window().title = "Text Forge")
+	# Change window name based on project name
+	Project.project_opened.connect(func(): get_window().title = "%s - %s" % [Project.get_project_name(), WINDOW_TITLE])
+	Project.project_closed.connect(func(): get_window().title = WINDOW_TITLE)
+	# Connect module profiler signal
 	scripts.child_order_changed.connect(Signals.refresh_module_profiler)
 	# Open file with drag and drop feature
 	get_window().files_dropped.connect(func(files: PackedStringArray): Signals.open_file.emit(files[0]))
+	# Cache translation data
 	_translation_data = TFT.cache_source(S.TRANSLATION_FILE)
-
 	# Connect reload_recent_files request signal
 	Signals.reload_recent_files.connect(_reload_recent_files)
-	Signals.check_options.connect(_post_initialize, CONNECT_ONE_SHOT)
-
-	_initialize_themes()
+	# Handle settings
+	_initialize_themes() # Updating themes before loading settings
 	_handle_settings()
 
-	# load data in main_menu_data
-	_load_main_menu_data()
-	# Load main menu items
-	_load_main_menu()
-
 	# Load action scripts
+	# 1. Load menu structure data and then items
+	_load_main_menu_data()
+	_load_main_menu()
+	# 3. Add post-initialize hook
+	Signals.check_options.connect(_post_initialize, CONNECT_ONE_SHOT)
+	# 4. Load action scripts
 	_load_scripts()
 
 
+## Updates theme folder with internal themes. Skips existing themes.
 func _initialize_themes() -> void:
+	# Make directory
 	if not DirAccess.dir_exists_absolute(S.globalize_path(S.FOLDER_THEMES)):
 		DirAccess.make_dir_recursive_absolute(S.globalize_path(S.FOLDER_THEMES))
-
+	# Check each internal theme
 	for t in DirAccess.get_files_at(S.FOLDER_INTERNAL_THEMES):
 		if t.get_extension().to_lower() != "tres" or FileAccess.file_exists(S.FOLDER_THEMES.path_join(t)):
 			continue
-
+		# Copy theme
 		var file := FileAccess.open(S.FOLDER_THEMES.path_join(t), FileAccess.WRITE)
 		file.store_buffer(FileAccess.get_file_as_bytes(S.FOLDER_INTERNAL_THEMES.path_join(t)))
 		file.close()
 
 
-func _post_initialize() -> void:
-	_handle_cmdline_arguments()
-
-	_handle_load_last_file()
-
-
+## Defines core-related presets and loads them. This function supports dynamic reload for mode,
+## theme, and indentation.
 func _handle_settings() -> void:
+	# Connect dynamic reload
 	if not Signals.settings_changed.is_connected(_handle_settings):
 		Signals.settings_changed.connect(_handle_settings)
-
 	# Define presets
-
+	# 1. Load last file at start
 	Settings.define_preset("files", "load_last_file_at_start", true)
 	Settings.define_preset("files", "ask_before_load_last_file_at_start", false)
-
 	Settings.define_preset("notifications", "automatic_load_last_file_at_start", true)
-
+	# 2. Indentation
 	Settings.define_preset("edit", "indent_with_space", false)
 	Settings.define_preset("edit", "indent_size", 4)
-
+	# 3. Theme
 	Settings.define_preset("editor_ui", "theme_name", "dark")
-
 	# Load settings
-
+	# 1. Indentation
 	Global.get_editor_api().update_indentation_settings(false)
+	# 2. Theme
 	if not FileAccess.file_exists(S.TEMPLATE_THEME.format([Settings.get_setting("editor_ui", "theme_name")])):
 		Settings.restore_default("editor_ui", "theme_name")
 	get_window().set_theme(U.load_resource(S.TEMPLATE_THEME.format([Settings.get_setting("editor_ui", "theme_name")])))
+	# Dynamic reload
+	# 1. Mode reload
 	var current_mode := Global.get_editor_api().current_mode
 	if current_mode:
 		Global.get_editor_api()._unload_current_mode()
 		await U.wait()
 		Global.get_editor_api()._change_mode_to(current_mode)
-
-
-## Appends [param file_path] in [constant S.RECENT_FILES_DATA]. New file will be in top
-## of list. This function will emit [signal SignalBus.reload_recent_files].
-func append_to_recent_files(file_path: String) -> void:
-	var file: FileAccess
-	var files: String
-	files = FileAccess.get_file_as_string(S.RECENT_FILES_DATA)
-
-	file = FileAccess.open(S.RECENT_FILES_DATA, FileAccess.WRITE)
-	file.store_string(file_path + "\n" + files)
-	file.close()
-
-	Signals.reload_recent_files.emit()
-
-
-func show_about() -> void:
-	about.show()
-
-
-func _handle_cmdline_arguments() -> void:
-	var args := OS.get_cmdline_args()
-	args.append_array(OS.get_cmdline_user_args())
-	if args.is_empty():
-		return
-
-	for arg in args:
-		if arg.begins_with("uid://") or arg == "--scene":
-			continue
-		if arg.is_relative_path():
-			arg = S.globalize_path(arg)
-		Signals.open_file.emit(arg)
-
-
-func _handle_load_last_file() -> void:
-	if Global.has_file():
-		return
-	if not Settings.get_setting_bool("files", "load_last_file_at_start"):
-		return
-	if Global.get_last_file_path() == "":
-		return
-
-	if Settings.get_setting_bool("files", "ask_before_load_last_file_at_start"):
-		add_child(Factory.confirmation_dialog("Do you want to load your last opened file?", "Yes", "No", "Load last file", Callable(), _load_last_file.bind(false), true))
-	else:
-		_load_last_file(true)
-
-func _load_last_file(is_automatic := true) -> void:
-	Signals.open_file.emit(Global.get_last_file_path())
-	if is_automatic and Settings.get_setting_bool("notifications", "automatic_load_last_file_at_start"):
-		Global.send_notification(Global.Notification.INFO, "Your last opened file was loaded!", "You can change this behavior or disable this notification in preferences.")
-	editor.grab_focus()
 
 
 ## Loads data in [member main_menu_data], uses [constant S.MAIN_UI_DATA] and [constant DATA_SECTION].
@@ -188,72 +137,95 @@ func _load_main_menu_data() -> void:
 
 ## This function will load data from UI source and generate buttons.
 func _load_main_menu() -> void:
-	var config := ConfigFile.new()
-	config.load(S.globalize_path(S.MAIN_UI_DATA))
-
-	for menu_item: String in config.get_section_keys(DATA_SECTION):
+	# For each menu
+	for menu_item: String in main_menu_data:
+		# Skip next steps for submenu items
 		if menu_item.ends_with(SUBMENU_SUFFIX):
-			continue # skip next steps for submenu items
-
+			continue
+		# Items of current menu
 		var current_menu: Array = main_menu_data.get(menu_item)
-
-		# create new menu button
+		# Create new menu button
 		var new_menu_button := PopupMenu.new()
-		# english menu name, remove menu suffix and capitalize it
-		var menu_name: String = menu_item.erase(menu_item.rfind(MENU_SUFFIX), MENU_SUFFIX.length())
+		# English menu name, remove menu suffix and capitalize it
+		var menu_name: String = menu_item.trim_suffix(MENU_SUFFIX)
 		menu_name = menu_name.capitalize()
-
-		# translate name
-		new_menu_button.name = TFT.get_text_from_cache(MENU_TRANSLATION_PREFIX + menu_name.to_snake_case(), _translation_data)
-
-		# for each option in current menu
+		# Translate name
+		new_menu_button.name = TFT.get_text_from_cache(
+			MENU_TRANSLATION_PREFIX + menu_name.to_snake_case(),
+			_translation_data,
+		)
+		# For each option in current menu
 		for item: Dictionary in current_menu:
-			# set item "popup", see _load_scripts for use case
+			# Set item "popup", see _load_scripts for use case
 			main_menu_data[menu_item][current_menu.find(item)]["popup"] = new_menu_button
-
+			# Translate text
 			var item_text := TFT.get_text_from_cache(item.get("key", ""), _translation_data)
-
+			# Add item
 			match item.get("type", OptionTypes.REGULAR):
 				OptionTypes.REGULAR:
 					new_menu_button.add_item(item_text, item.get("code", -1))
 				OptionTypes.SUBMENU:
-					_create_submenu(new_menu_button, item, config)
+					_create_submenu(new_menu_button, item)
 				OptionTypes.SEPARATOR:
 					new_menu_button.add_separator(item_text)
 				OptionTypes.CHECKBOX:
 					new_menu_button.add_check_item(item_text, item.get("code", -1))
 				OptionTypes.RADIO_CHECKBOX:
 					new_menu_button.add_radio_check_item(item_text, item.get("code", -1))
-
-		# connect menu to handle state function
+		# Connect menu to handle state function
 		new_menu_button.id_pressed.connect(_handle_menu_option_state.bind(new_menu_button))
-
-		# add menu to menus
+		# Add menu to menus
 		menu_container.add_child(new_menu_button)
 	get_window().min_size.x = menu_container.get_combined_minimum_size().x + 10
 
 
-## Creates a submenu in [param root_menu] based on [param root_option] data and [param config_file].
-func _create_submenu(root_menu: PopupMenu, root_option: Dictionary, config_file: ConfigFile) -> void:
+## This function will load action script for each item in menu, if script doesn't exists will
+## disable the item. Emits [signal SignalBus.check_option] after load.
+func _load_scripts() -> void:
+	var paths := PackedStringArray()
+	var low_priority_paths := PackedStringArray()
+	for menu: String in main_menu_data:
+		for item: Dictionary in main_menu_data[menu]:
+			# Ignore separators
+			if item.get("type", OptionTypes.REGULAR) == OptionTypes.SEPARATOR:
+				continue
+			# Create script path
+			# 46 is unicode for "."
+			var script_path: String = S.TEMPLATE_ACTION_SCRIPT.format([item.get("text", "").to_snake_case().remove_char(46)])
+			# Disable items without script (except submenu roots)
+			if not FileAccess.file_exists(S.globalize_path(script_path)):
+				if item.has("popup") and item.get("type", OptionTypes.REGULAR) != OptionTypes.SUBMENU:
+					item.get("popup").set_item_disabled(item.get("popup").get_item_index(item.get("code", 0)), true)
+				continue
+			# Add items in file menu to high priority list and other in low priority list
+			if menu == "file_menu":
+				paths.append(script_path)
+			else:
+				low_priority_paths.append(script_path)
+	# Start loading
+	U.load_resources_threaded(paths, _connect_script, Signals.check_options.emit)
+	U.load_resources_threaded(low_priority_paths, _connect_script, Signals.check_options.emit)
+
+
+## Creates a submenu in [param root_menu] based on [param root_option] data.
+func _create_submenu(root_menu: PopupMenu, root_option: Dictionary) -> void:
 	var submenu := PopupMenu.new()
 	match root_option.get("text", ""):
-		"Recent Files": # needs special action
+		# Needs special action
+		"Recent Files":
 			recent_files_submenu = submenu
-
 			_reload_recent_files()
-
-		"New With Template": # needs special action
+		# Needs special action
+		"New With Template":
 			templates_submenu = submenu
-
 			reload_templates()
-
-		"By Extensions": # needs load from another script
+		# Needs spacial action
+		"By Extensions":
 			Extensions.menu = submenu
 			submenu.id_pressed.connect(Extensions._menu_id_pressed)
 			Extensions.setup_extensions()
-
-		_: # just load items to another popup menu for other submenus
-			for submenu_item: Dictionary in config_file.get_value(DATA_SECTION, root_option.get("text", "").to_snake_case() + SUBMENU_SUFFIX):
+		_: # Just load items to popup menu for other submenus
+			for submenu_item: Dictionary in main_menu_data[root_option.get("text", "").to_snake_case() + SUBMENU_SUFFIX]:
 				var submenu_name: String = root_option.get("text", "").to_snake_case() + SUBMENU_SUFFIX
 				main_menu_data[submenu_name][main_menu_data[submenu_name].find(submenu_item)]["popup"] = submenu
 				match submenu_item.get("type", OptionTypes.REGULAR):
@@ -265,159 +237,28 @@ func _create_submenu(root_menu: PopupMenu, root_option: Dictionary, config_file:
 						submenu.add_check_item(TFT.get_text(submenu_item.get("key", "")), submenu_item.get("code", -1))
 					_:
 						Global.send_notification(Global.Notification.ERROR, "Can't add item to submenu!", "Currently regular, separator, and checkbox items are available for submenus.")
-			# connect submenu to handle state function
+			# Connect submenu to handle state function
 			submenu.id_pressed.connect(_handle_menu_option_state.bind(submenu))
-
-	# connect submenu to handle state function for special items (It will call MultiActionScripts)
+	# Connect submenu to handle state function for special items (It will call MultiActionScripts)
 	if not submenu.id_pressed.is_connected(_handle_menu_option_state):
 		submenu.id_pressed.connect(_handle_menu_option_state.bind(submenu, root_option.get("text", "")))
-	# add submenu
+	# Add submenu
 	root_menu.add_submenu_node_item(TFT.get_text(root_option.get("key", "")), submenu, root_option.get("code", -1))
-	# disable empty submenus
+	# Disable empty submenus
 	if submenu.item_count == 0:
 		root_menu.set_item_disabled(-1, true)
 
 
-## This function will load script for each item in menu, if script doesn't exists will disable the item.
-## Emits [signal SignalBus.check_option] after load.
-func _load_scripts() -> void:
-	var paths := PackedStringArray()
-	var low_priority_paths := PackedStringArray()
-	for menu: String in main_menu_data:
-		for item: Dictionary in main_menu_data[menu]:
-			if item.get("type", OptionTypes.REGULAR) == OptionTypes.SEPARATOR: # ignore separators
-				continue
-
-			var script_path: String = S.TEMPLATE_ACTION_SCRIPT.format([item.get("text", "").to_snake_case().replace(".", "")])
-
-			if not FileAccess.file_exists(S.globalize_path(script_path)):
-				# disable items without script (except submenu roots)
-				if item.has("popup") and item.get("type", OptionTypes.REGULAR) != OptionTypes.SUBMENU:
-					item.get("popup").set_item_disabled(item.get("popup").get_item_index(item.get("code", 0)), true)
-				continue
-
-			if menu == "file_menu":
-				paths.append(script_path)
-			else:
-				low_priority_paths.append(script_path)
-
-	U.load_resources_threaded(paths, _connect_script, _main_scripts_loaded)
-	U.load_resources_threaded(low_priority_paths, _connect_script, _all_scripts_loaded)
-
-
-func _main_scripts_loaded() -> void:
-	Signals.check_options.emit()
-
-
-func _connect_script(path: String, res: Resource) -> void:
-	var item: Dictionary
-	for menu: String in main_menu_data:
-		for option: Dictionary in main_menu_data[menu]:
-			if S.TEMPLATE_ACTION_SCRIPT.format([option.get("text", "").to_snake_case().replace(".", "")]) == path:
-				item = option
-	var script = res.new()
-	# for MultiActionScripts (submenu roots)
-	if item.get("type", OptionTypes.REGULAR) == OptionTypes.SUBMENU:
-		Signals.run_subscript.connect(script.run)
-	# for ActionScripts (regular, checkbox, radio checkbox)
-	else:
-		Signals.run_script.connect(script.run)
-
-	Signals.check_options.connect(script._check_option)
-
-	script.id = item.get("code", -1)
-	script.menu = item.get("popup")
-	script.name = item.get("text", "").to_snake_case().replace(".", "")
-
-	scripts.add_child.call_deferred(script)
-
-
-func _all_scripts_loaded() -> void:
-	Signals.check_options.emit() # emit signal for first option check
-
-
-## This function will recive pressing signals from all items in menu, handle state changing and call
-## [signal SignalBus.script_run] or [signal SignalBus.run_subscript].
-func _handle_menu_option_state(id: int, menu: PopupMenu, rootmenu: String = "") -> void:
-	var index = menu.get_item_index(id)
-
-	# for checkable options
-	if menu.is_item_checkable(index) and not menu.is_item_radio_checkable(index):
-		menu.toggle_item_checked(index)
-
-	# for radio checkable options
-	if menu.is_item_radio_checkable(index):
-		if menu.is_item_checked(index): # ignore select currently selected option
-			return
-		menu.toggle_item_checked(index) # toggle selected option state
-
-		# search for related radio options and set them to unchecked
-		var check_index = index - 1
-		while true: # options before selected option
-			if check_index < 0:
-				break
-			# break when touch an option that isn't radio checkbox
-			if not menu.is_item_radio_checkable(check_index):
-				break
-			menu.set_item_checked(check_index, false)
-			check_index -= 1
-
-		check_index = index + 1
-		while true: # options after selected option
-			if check_index + 1 > menu.item_count:
-				break
-			# break when touch an option that isn't radio checkbox
-			if not menu.is_item_radio_checkable(check_index):
-				break
-			menu.set_item_checked(check_index, false)
-			check_index += 1
-
-	if not rootmenu:
-		Signals.run_script.emit(id)
-	else:
-		Signals.run_subscript.emit(id, menu, rootmenu)
-
-
-## Will append [code]*[/code] to file name to show it was changed.
-func _on_editor_text_changed() -> void:
-	if not Global.has_unsaved_change() and not Global.is_editor_disabled():
-		file_label.text += "*"
-
-
-## Reloads recent files list, use [signal SignalBus.reload_recent_files] for standard call.
-func _reload_recent_files() -> void:
-	# Clear submenu
-	recent_files_submenu.clear()
-
-	# Load recent files
-	if FileAccess.file_exists(S.globalize_path(S.RECENT_FILES_DATA)):
-		var recent_files_list = FileAccess.get_file_as_string(S.RECENT_FILES_DATA).split("\n", false)
-
-		recent_files_list = S.merge_unique(recent_files_list, []) # Remove duplicate items
-
-		for recent in recent_files_list:
-			if recent_files_submenu.item_count == 15: # Limit list to 15 items
-				break
-			if not FileAccess.file_exists(S.globalize_path(recent)): # Remove non-existent items
-				continue
-
-			recent_files_submenu.add_item(recent.replace("\\", "/"))
-
-	# Save recent files again (to remove repeated and non-existent items)
-	var recent_files := PackedStringArray()
-	for recent in recent_files_submenu.item_count:
-		recent_files.append(recent_files_submenu.get_item_text(recent))
-	if "\n".join(recent_files) != FileAccess.get_file_as_string(S.RECENT_FILES_DATA):
-		var file = FileAccess.open(S.RECENT_FILES_DATA, FileAccess.WRITE)
-		file.store_string("\n".join(recent_files))
-		file.close()
+## Post-initialize when main action scripts loaded.
+func _post_initialize() -> void:
+	_handle_cmdline_arguments() # OS "Open With..." option
+	_handle_load_last_file() # "Load last file at start" feature
 
 
 ## Reloads templates list.
 func reload_templates() -> void:
 	if not DirAccess.dir_exists_absolute(S.globalize_path(S.FOLDER_TEMPLATES)):
 		DirAccess.make_dir_recursive_absolute(S.globalize_path(S.FOLDER_TEMPLATES))
-
 	templates_submenu.clear()
 	for template: String in DirAccess.get_files_at(S.FOLDER_TEMPLATES):
 		templates_submenu.add_item(template.get_file().get_basename())
@@ -435,5 +276,163 @@ func load_template(_name: String) -> void:
 	start_replace_action(S.PATTERN_PLACEHOLDER)
 
 
+## Starts replace action, see [function ReplacePopup.start].
 func start_replace_action(pattern: String) -> void:
 	replace_popup.start(pattern)
+
+
+## Appends [param file_path] in [constant S.RECENT_FILES_DATA]. New file will be in top of list.
+## This function will emit [signal SignalBus.reload_recent_files].
+func append_to_recent_files(file_path: String) -> void:
+	var file_access := FileAccess.open(S.RECENT_FILES_DATA, FileAccess.WRITE)
+	var current_files := FileAccess.get_file_as_string(S.RECENT_FILES_DATA)
+	file_access.store_string(file_path + "\n" + current_files)
+	file_access.close()
+	Signals.reload_recent_files.emit()
+
+
+## Shows about window.
+func show_about() -> void:
+	about.show()
+
+
+## Will append [code]*[/code] to file name to show it was changed.
+func _on_editor_text_changed() -> void:
+	Global.mark_file_as_unsaved()
+
+
+## Reloads recent files list, use [signal SignalBus.reload_recent_files] for standard call.
+func _reload_recent_files() -> void:
+	# Clear submenu
+	recent_files_submenu.clear()
+	# Load recent files
+	if FileAccess.file_exists(S.globalize_path(S.RECENT_FILES_DATA)):
+		var recent_files_list = FileAccess.get_file_as_string(S.RECENT_FILES_DATA).split("\n", false)
+		recent_files_list = S.merge_unique(recent_files_list, []) # Remove duplicate items
+		for recent in recent_files_list:
+			if recent_files_submenu.item_count == 15: # Limit list to 15 items
+				break
+			if not FileAccess.file_exists(S.globalize_path(recent)): # Remove non-existent items
+				continue
+			recent_files_submenu.add_item(recent.replace("\\", "/"))
+	# Save recent files again (to remove repeated and non-existent items)
+	var recent_files := PackedStringArray()
+	for recent in recent_files_submenu.item_count:
+		recent_files.append(recent_files_submenu.get_item_text(recent))
+	if "\n".join(recent_files) != FileAccess.get_file_as_string(S.RECENT_FILES_DATA):
+		var file = FileAccess.open(S.RECENT_FILES_DATA, FileAccess.WRITE)
+		file.store_string("\n".join(recent_files))
+		file.close()
+
+
+## Connects loaded script to its menu option and initializes it.
+func _connect_script(path: String, res: Resource) -> void:
+	var item: Dictionary
+	var was_found := false
+	for menu: String in main_menu_data:
+		for option: Dictionary in main_menu_data[menu]:
+			if S.TEMPLATE_ACTION_SCRIPT.format([option.get("text", "").to_snake_case().remove_char(46)]) == path:
+				item = option
+				was_found = true
+				break
+		if was_found:
+			break
+	var script = res.new()
+	# For MultiActionScripts (submenu roots)
+	if item.get("type", OptionTypes.REGULAR) == OptionTypes.SUBMENU:
+		Signals.run_subscript.connect(script.run)
+	# For ActionScripts (regular, checkbox, radio checkbox)
+	else:
+		Signals.run_script.connect(script.run)
+	# Initialize action script
+	Signals.check_options.connect(script._check_option)
+	script.id = item.get("code", -1)
+	script.menu = item.get("popup")
+	script.name = item.get("text", "").to_snake_case().remove_char(46)
+	# Add child
+	scripts.add_child.call_deferred(script)
+
+
+## This function will recive pressing signals from all items in menu, handle state changing and call
+## [signal SignalBus.script_run] or [signal SignalBus.run_subscript].
+func _handle_menu_option_state(id: int, menu: PopupMenu, rootmenu: String = "") -> void:
+	var index = menu.get_item_index(id)
+	# For checkable options
+	if menu.is_item_checkable(index) and not menu.is_item_radio_checkable(index):
+		menu.toggle_item_checked(index)
+	# For radio checkable options
+	if menu.is_item_radio_checkable(index):
+		if menu.is_item_checked(index): # Ignore select currently selected option
+			return
+		menu.toggle_item_checked(index) # Toggle selected option state
+		# Search for related radio options and set them to unchecked
+		var check_index = index - 1
+		while true: # Options before selected option
+			if check_index < 0:
+				break
+			# Break when touch an option that isn't radio checkbox
+			if not menu.is_item_radio_checkable(check_index):
+				break
+			menu.set_item_checked(check_index, false)
+			check_index -= 1
+		check_index = index + 1
+		while true: # Options after selected option
+			if check_index + 1 > menu.item_count:
+				break
+			# Break when touch an option that isn't radio checkbox
+			if not menu.is_item_radio_checkable(check_index):
+				break
+			menu.set_item_checked(check_index, false)
+			check_index += 1
+	# Call signal
+	if not rootmenu:
+		Signals.run_script.emit(id)
+	else:
+		Signals.run_subscript.emit(id, menu, rootmenu)
+
+
+## Handles OS "Open With..." option.
+func _handle_cmdline_arguments() -> void:
+	var args := OS.get_cmdline_args()
+	args.append_array(OS.get_cmdline_user_args())
+	if args.is_empty():
+		return
+	for arg in args:
+		if arg.begins_with("uid://") or arg == "--scene":
+			continue
+		if arg.is_relative_path():
+			arg = S.globalize_path(arg)
+		Signals.open_file.emit(arg)
+		break # Currently we can support just one file, so this line skips next files
+
+
+## Checks for "Load last file at start" feature.
+func _handle_load_last_file() -> void:
+	if (Global.has_file()
+		or not Settings.get_setting_bool("files", "load_last_file_at_start")
+		or Global.get_last_file_path() == ""):
+		return
+	if Settings.get_setting_bool("files", "ask_before_load_last_file_at_start"):
+		add_child(Factory.confirmation_dialog(
+			"Do you want to load your last opened file?",
+			"Yes",
+			"No",
+			"Load last file",
+			Callable(),
+			_load_last_file.bind(false), true)
+		)
+	else:
+		_load_last_file(true)
+
+
+## Loads opened last file. When [param is_automatic] is [code]true[/code], sends a notification to
+## say this action was done.
+func _load_last_file(is_automatic := true) -> void:
+	Signals.open_file.emit(Global.get_last_file_path())
+	if is_automatic and Settings.get_setting_bool("notifications", "automatic_load_last_file_at_start"):
+		Global.send_notification(
+			Global.Notification.INFO,
+			"Your last opened file was loaded!",
+			"You can change this behavior or disable this notification in preferences."
+		)
+	editor.grab_focus()

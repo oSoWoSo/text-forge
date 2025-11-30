@@ -1,4 +1,6 @@
+class_name IndentationSettings
 extends MenuButton
+## Shows indentation settings to user and provides settings changing.
 
 func _ready() -> void:
 	Global.get_editor_api().indentation_settings_updated.connect(_update_label)
@@ -19,5 +21,6 @@ func _on_id_pressed(id: int) -> void:
 			add_child(Factory.single_line_input("Indent Size", "Set", change_indent_size, true))
 
 
+## Applies indent size change.
 func change_indent_size(value: String) -> void:
 	Global.get_editor_api().change_indent_size(max(int(value), 1))

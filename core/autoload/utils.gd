@@ -2,6 +2,7 @@ class_name Utils
 extends Node
 ## Keeps useful and helper functions for global access.
 
+## Available syntax colors.
 enum SyntaxColors {
 	BUILTIN,
 	COMMENT,
@@ -26,7 +27,8 @@ enum SyntaxColors {
 	TYPE_3,
 }
 
-const SYNTAX_COLORS_MAP = {
+## Maps each [enum SyntaxColors] to one string in themes.
+const SYNTAX_COLORS_MAP: Dictionary[SyntaxColors, String] = {
 	SyntaxColors.BUILTIN: "builtin",
 	SyntaxColors.COMMENT: "comment",
 	SyntaxColors.CUSTOM_1: "custom1",
@@ -56,7 +58,11 @@ func deprecated() -> void:
 	caller.pop_front()
 	var deprecated_func := _format_stack(caller.pop_front())
 	var caller_formated := caller.map(_format_stack)
-	Global.send_notification(Global.Notification.WARNING, "A deprecated function used!", "Please report this to avoid future bugs:\n{0}\nis used by\n{1}".format([deprecated_func, "\n".join(caller_formated)]))
+	Global.send_notification(
+		Global.Notification.WARNING,
+		"A deprecated function used!",
+		"Please report this to avoid future bugs:\n{0}\nis used by\n{1}".format([deprecated_func, "\n".join(caller_formated)])
+	)
 	var helper_message := ["Deprecated function in core detected!", "Please use Help > Submit Issue to report it."]
 	if caller_formated[0].begins_with("user://"):
 		var regex := RegEx.new()
@@ -64,15 +70,21 @@ func deprecated() -> void:
 		var result := regex.search(caller_formated[0])
 		match result.get_string("type"):
 			"modes":
-				helper_message = ["Deprecated function in {0} mode detected!".format([result.get_string("folder")]), "Please report this to mode provider."]
+				helper_message = [
+					"Deprecated function in {0} mode detected!".format([result.get_string("folder")]),
+					"Please report this to mode provider."
+				]
 			"extensions":
-				helper_message = ["Deprecated function in {0} extension detected!".format([result.get_string("folder")]), "Please report this to extension provider."]
+				helper_message = [
+					"Deprecated function in {0} extension detected!".format([result.get_string("folder")]),
+					"Please report this to extension provider."
+				]
 			_:
 				helper_message = ["Deprecated function in unknown external module dected!", ""]
 	Global.send_notification(Global.Notification.INFO, helper_message[0], helper_message[1])
 
 
-## Creates a [SceneTreeTime] with given [aram time] and wait until it's [signal SceneTreeTimer.timeout]
+## Creates a [SceneTreeTimer] with given p[aram time] and wait until it's [signal SceneTreeTimer.timeout]
 ## signal. Usage:
 ## [codeblock]
 ## print("first print...")
@@ -107,6 +119,7 @@ func load_resources_threaded(paths: PackedStringArray, for_each: Callable, after
 	loader.start()
 
 
+## Returns [Color] of given key in current theme.
 func get_syntax_color(token_name: SyntaxColors) -> Color:
 	return get_window().get_theme_color(SYNTAX_COLORS_MAP[token_name], "SyntaxColors")
 
@@ -114,7 +127,8 @@ func get_syntax_color(token_name: SyntaxColors) -> Color:
 func _format_stack(stack: Dictionary) -> String:
 	stack["line"] = str(stack["line"])
 	var _stack: Dictionary[String, String] = Dictionary(stack, TYPE_STRING, "", null, TYPE_STRING, "", null)
-	return stack["source"].replace("res://", "").replace(S.globalize_path("user://"), "user://") + ":" + str(stack["line"]) + ":" + stack["function"] + "()"
+	return stack["source"].replace("res://", "") \
+	.replace(S.globalize_path("user://"), "user://") + ":" + str(stack["line"]) + ":" + stack["function"] + "()"
 
 
 ## Threaded resource loader for multiple resources.

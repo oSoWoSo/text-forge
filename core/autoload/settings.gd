@@ -40,11 +40,39 @@ const PRESETS_FILE := "user://presets.cfg"
 ## File path to configuration data.
 const DATA_FILE := "user://data.cfg"
 
-var config := ConfigFile.new()
+## [ConfigFile] loaded for settings.
+var settings := ConfigFile.new()
+## [ConfigFile] loaded for presets.
+var presets := ConfigFile.new()
+## [ConfigFile] loaded for editor data.
+var data := ConfigFile.new()
 
 func _ready() -> void:
 	if FileAccess.file_exists(S.globalize_path(DATA_FILE)):
-		config.load(S.globalize_path(DATA_FILE))
+		var err := data.load(S.globalize_path(DATA_FILE))
+		if err:
+			Global.send_notification(
+				Global.Notification.ERROR,
+				"Failed to open data file!",
+				"Error code: " + str(err)
+			)
+	if FileAccess.file_exists(S.globalize_path(PRESETS_FILE)):
+		var err := presets.load(S.globalize_path(PRESETS_FILE))
+		if err:
+			Global.send_notification(
+				Global.Notification.ERROR,
+				"Failed to open presets file!",
+				"Error code: " + str(err)
+			)
+	if FileAccess.file_exists(S.globalize_path(SETTINGS_FILE)):
+		var err := settings.load(S.globalize_path(SETTINGS_FILE))
+		if err:
+			Global.send_notification(
+				Global.Notification.ERROR,
+				"Failed to open settings file!",
+				"Error code: " + str(err)
+			)
+
 
 ## Returns stored setting, if [param default] is [code]null[/code] will load it from
 ## [method get_default] (witch will be [code]null[/code] if this preset was not defined), otherwise
@@ -53,14 +81,7 @@ func _ready() -> void:
 func get_setting(section: String, key: String, default: Variant = null) -> Variant:
 	if default == null:
 		default = get_default(section, key)
-	if not FileAccess.file_exists(S.globalize_path(SETTINGS_FILE)):
-		return default
-	var setting := ConfigFile.new()
-	var err := setting.load(S.globalize_path(SETTINGS_FILE))
-	if err:
-		Global.send_notification(Global.Notification.ERROR, "Can't load settings file!", "Error code: " + str(err))
-		return default
-	return setting.get_value(section, key, default)
+	return settings.get_value(section, key, default)
 
 
 ## Same as [method get_setting] but just for [bool] values. (for static typing)
@@ -75,26 +96,28 @@ func restore_default(section: String, key: String) -> void:
 
 ## Sets [param velue] for given setting and save settings.
 func set_setting(section: String, key: String, value: Variant = null) -> void:
-	var setting = ConfigFile.new()
-	if FileAccess.file_exists(S.globalize_path(SETTINGS_FILE)):
-		setting.load(S.globalize_path(SETTINGS_FILE))
-	setting.set_value(section, key, value)
-	var err = setting.save(SETTINGS_FILE)
+	settings.set_value(section, key, value)
+	var err := settings.save(SETTINGS_FILE)
 	if err:
-		Global.send_notification(Global.Notification.ERROR, "Can't save settings file!", "Error code: " + str(err))
+		Global.send_notification(
+			Global.Notification.ERROR,
+			"Can't save settings file!",
+			"Error code: " + str(err)
+		)
 
 
 ## Defines new preset, it means this preset will have default value ([param default]) and can reset
 ## linked setting to it, if your module uses any setting, you should define presets for them in
 ## module initialization with this function.
 func define_preset(section: String, key: String, default: Variant = null) -> void:
-	var setting = ConfigFile.new()
-	if FileAccess.file_exists(S.globalize_path(PRESETS_FILE)):
-		setting.load(S.globalize_path(PRESETS_FILE))
-	setting.set_value(section, key, default)
-	var err = setting.save(PRESETS_FILE)
+	presets.set_value(section, key, default)
+	var err := presets.save(PRESETS_FILE)
 	if err:
-		Global.send_notification(Global.Notification.ERROR, "Can't save preset source!", "Error code: " + str(err))
+		Global.send_notification(
+			Global.Notification.ERROR,
+			"Can't save preset source!",
+			"Error code: " + str(err)
+		)
 
 
 ## Returns default value for given preset, witch can be set by [method define_preset]. For
@@ -102,25 +125,22 @@ func define_preset(section: String, key: String, default: Variant = null) -> voi
 func get_default(section: String, key: String) -> Variant:
 	if not FileAccess.file_exists(S.globalize_path(PRESETS_FILE)):
 		return null
-	var setting := ConfigFile.new()
-	var err := setting.load(S.globalize_path(PRESETS_FILE))
-	if err:
-		Global.send_notification(Global.Notification.ERROR, "Can't load presets file!", "Error code: " + str(err))
-		return null
-	if setting.has_section_key(section, key):
-		return setting.get_value(section, key)
+	if presets.has_section_key(section, key):
+		return presets.get_value(section, key)
 	else:
 		return null
 
 
+## Reads data from [member data].
 func read_data(section: String, key: String, default = null) -> Variant:
-	return config.get_value(section, key, default)
+	return data.get_value(section, key, default)
 
 
+## Writes data to [member data].
 func write_data(section: String, key: String, value = null) -> void:
-	config.set_value(section, key, value)
-	_save_config()
+	data.set_value(section, key, value)
+	_save_data()
 
 
-func _save_config() -> void:
-	config.save(DATA_FILE)
+func _save_data() -> void:
+	data.save(DATA_FILE)

@@ -10,7 +10,7 @@ extends Node
 func confirmation_dialog(
 		text := "", ok_text := "OK", cancel_text := "Cancel", title := "Please Confirm",
 		canceled := Callable(), confirmed := Callable(), show := true
-) -> ConfirmationDialog:
+	) -> ConfirmationDialog:
 	var dialog := ConfirmationDialog.new()
 	dialog.dialog_text = text
 	dialog.ok_button_text = ok_text
@@ -27,10 +27,11 @@ func confirmation_dialog(
 	return dialog
 
 
+## Creates new [AcceptDialog] based on parameters.
 func accept_dialog(
 		text := "", title := "Alert!", confirmed := Callable(), size := Vector2i(500, 50),
 		autowrap := false, show := true
-) -> AcceptDialog:
+	) -> AcceptDialog:
 	var dialog := AcceptDialog.new()
 	dialog.title = title
 	dialog.initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_MAIN_WINDOW_SCREEN
@@ -49,7 +50,7 @@ func accept_dialog(
 ## [PopupPanel] > [MarginContainer] > [HBoxContainer].
 func single_line_input(
 		placeholder := "", button_text := "OK", output := Callable(), show := true
-) -> PopupPanel:
+	) -> PopupPanel:
 	var panel := PopupPanel.new()
 	var line_edit := LineEdit.new()
 	var button := Button.new()
@@ -79,7 +80,7 @@ func file_dialog(
 		file_mode := FileDialog.FILE_MODE_SAVE_FILE, access := FileDialog.ACCESS_FILESYSTEM,
 		filters := PackedStringArray(), callback := Callable(), show := true, current_dir := "",
 		current_path := "", auto_free_on_select := true
-) -> FileDialog:
+	) -> FileDialog:
 	var dialog := FileDialog.new()
 	dialog.file_mode = file_mode
 	dialog.access = access

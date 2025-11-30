@@ -4,40 +4,41 @@
 [ext_resource type="Script" uid="uid://dqkf6ihia5ew7" path="res://action_scripts/scenes/extension_item.gd" id="2_7rrhf"]
 
 [node name="Extensions" type="Window" node_paths=PackedStringArray("tree", "tabs", "item", "extensions_list")]
+oversampling_override = 1.0
 title = "Extensions"
 initial_position = 2
 size = Vector2i(600, 400)
 popup_window = true
 min_size = Vector2i(400, 300)
 script = ExtResource("1_sqje5")
-tree = NodePath("MarginContainer/VBoxContainer/HSplitContainer/Tree")
-tabs = NodePath("MarginContainer/VBoxContainer/HSplitContainer/TabContainer")
-item = NodePath("PanelContainer")
-extensions_list = NodePath("MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Extension Manager/ScrollContainer/HFlowContainer")
+tree = NodePath("Margin/VBox/HSplit/Tree")
+tabs = NodePath("Margin/VBox/HSplit/TabContainer")
+item = NodePath("ExtensionInstance")
+extensions_list = NodePath("Margin/VBox/HSplit/TabContainer/ExtensionManager/ScrollContainer/Extensions")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="Margin" type="MarginContainer" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="VBox" type="VBoxContainer" parent="Margin"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="Actions" type="HBoxContainer" parent="Margin/VBox"]
 layout_mode = 2
 
-[node name="Install" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="Install" type="Button" parent="Margin/VBox/Actions"]
 layout_mode = 2
 text = "Install Extension"
 
-[node name="HSplitContainer" type="HSplitContainer" parent="MarginContainer/VBoxContainer"]
+[node name="HSplit" type="HSplitContainer" parent="Margin/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
 split_offset = 150
 
-[node name="Tree" type="Tree" parent="MarginContainer/VBoxContainer/HSplitContainer"]
+[node name="Tree" type="Tree" parent="Margin/VBox/HSplit"]
 visible = false
 layout_mode = 2
 allow_reselect = true
@@ -45,25 +46,25 @@ hide_folding = true
 hide_root = true
 select_mode = 1
 
-[node name="TabContainer" type="TabContainer" parent="MarginContainer/VBoxContainer/HSplitContainer"]
+[node name="TabContainer" type="TabContainer" parent="Margin/VBox/HSplit"]
 layout_mode = 2
 size_flags_horizontal = 3
 current_tab = 0
 tabs_visible = false
 
-[node name="Extension Manager" type="MarginContainer" parent="MarginContainer/VBoxContainer/HSplitContainer/TabContainer"]
+[node name="ExtensionManager" type="MarginContainer" parent="Margin/VBox/HSplit/TabContainer"]
 layout_mode = 2
 metadata/_tab_index = 0
 
-[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Extension Manager"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Margin/VBox/HSplit/TabContainer/ExtensionManager"]
 layout_mode = 2
 
-[node name="HFlowContainer" type="HFlowContainer" parent="MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Extension Manager/ScrollContainer"]
+[node name="Extensions" type="HFlowContainer" parent="Margin/VBox/HSplit/TabContainer/ExtensionManager/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="PanelContainer" type="PanelContainer" parent="." node_paths=PackedStringArray("text", "enable", "uninstall")]
+[node name="ExtensionInstance" type="PanelContainer" parent="." node_paths=PackedStringArray("text", "enable", "uninstall")]
 visible = false
 offset_left = 168.0
 offset_top = 10.0
@@ -71,37 +72,37 @@ offset_right = 590.0
 offset_bottom = 80.0
 size_flags_horizontal = 3
 script = ExtResource("2_7rrhf")
-text = NodePath("VBoxContainer/Label")
-enable = NodePath("VBoxContainer/HBoxContainer/CheckBox")
-uninstall = NodePath("VBoxContainer/HBoxContainer/Button")
+text = NodePath("VBox/Name")
+enable = NodePath("VBox/Actions/Status")
+uninstall = NodePath("VBox/Actions/Uninstall")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+[node name="VBox" type="VBoxContainer" parent="ExtensionInstance"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="PanelContainer/VBoxContainer"]
+[node name="Name" type="Label" parent="ExtensionInstance/VBox"]
 layout_mode = 2
 text = "Example Extension"
 horizontal_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+[node name="Actions" type="HBoxContainer" parent="ExtensionInstance/VBox"]
 layout_mode = 2
 alignment = 1
 
-[node name="CheckBox" type="CheckBox" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+[node name="Status" type="CheckBox" parent="ExtensionInstance/VBox/Actions"]
 layout_mode = 2
 text = "Disabled "
 
-[node name="Export" type="Button" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+[node name="Export" type="Button" parent="ExtensionInstance/VBox/Actions"]
 layout_mode = 2
 text = "Export"
 
-[node name="Button" type="Button" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+[node name="Uninstall" type="Button" parent="ExtensionInstance/VBox/Actions"]
 layout_mode = 2
 text = "Uninstall"
 
 [connection signal="close_requested" from="." to="." method="_on_close_requested"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Install" to="." method="_on_install_pressed"]
-[connection signal="item_selected" from="MarginContainer/VBoxContainer/HSplitContainer/Tree" to="." method="_on_tree_item_selected"]
-[connection signal="toggled" from="PanelContainer/VBoxContainer/HBoxContainer/CheckBox" to="PanelContainer" method="_on_check_box_toggled"]
-[connection signal="pressed" from="PanelContainer/VBoxContainer/HBoxContainer/Export" to="PanelContainer" method="_on_export_pressed"]
-[connection signal="pressed" from="PanelContainer/VBoxContainer/HBoxContainer/Button" to="PanelContainer" method="_on_button_pressed"]
+[connection signal="pressed" from="Margin/VBox/Actions/Install" to="." method="_on_install_pressed"]
+[connection signal="item_selected" from="Margin/VBox/HSplit/Tree" to="." method="_on_tree_item_selected"]
+[connection signal="toggled" from="ExtensionInstance/VBox/Actions/Status" to="ExtensionInstance" method="_on_status_toggled"]
+[connection signal="pressed" from="ExtensionInstance/VBox/Actions/Export" to="ExtensionInstance" method="_on_export_pressed"]
+[connection signal="pressed" from="ExtensionInstance/VBox/Actions/Uninstall" to="ExtensionInstance" method="_on_uninstall_pressed"]

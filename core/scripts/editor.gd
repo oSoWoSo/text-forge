@@ -11,15 +11,13 @@ var type_timer := Timer.new()
 func _ready() -> void:
 	type_timer.wait_time = 0.3
 	type_timer.one_shot = true
-	type_timer.timeout.connect(func(): type_timer_timeout.emit())
+	type_timer.timeout.connect(type_timer_timeout.emit)
 	add_child(type_timer, false, Node.INTERNAL_MODE_FRONT)
-
-	type_timer_timeout.connect(func(): code_completion_requested.emit())
+	type_timer_timeout.connect(code_completion_requested.emit)
 	set_gutter_clickable(0, true)
 
 
-## Returns char index in [param line] and [param column], useful for use original [LineEdit]
-## functions with [String] options.
+## Returns char index in [param line] and [param column], useful for [String]-based functions.
 func get_char_index(line: int, column: int) -> int:
 	var before = ""
 	var counter = 0
@@ -30,7 +28,8 @@ func get_char_index(line: int, column: int) -> int:
 	return before.length() + column
 
 
-## Returns [code]true[/code] if this line in in a selection.
+## Returns [code]true[/code] if this line is including a selection. Any line between each selection
+## origin and caret pair is with selection.
 func is_selection_in_line(line: int) -> bool:
 	for caret in get_caret_count():
 		var selection = [get_selection_origin_line(caret), get_caret_line(caret)]
@@ -45,9 +44,15 @@ func is_selection_in_line(line: int) -> bool:
 ## When [param center] is [code]true[/code] returned position will be in center of caret, otherwise
 ## will be under caret.
 func get_caret_global_draw_pos(caret_index: int = 0, center := false) -> Vector2:
-	return get_caret_draw_pos(caret_index) + global_position + Vector2(get_window().position) + Vector2(0, 0.0 if center else get_theme_font_size("font_size") / 2.0)
+	return (
+		get_caret_draw_pos(caret_index)
+		+ global_position
+		+ Vector2(get_window().position)
+		+ Vector2(0, 0.0 if center else get_theme_font_size("font_size") / 2.0)
+	)
 
 
+## Restarts type timer at each text change.
 func _on_text_changed() -> void:
 	type_timer.start()
 

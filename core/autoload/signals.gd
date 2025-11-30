@@ -73,8 +73,9 @@ func _log_notification(type: Global.Notification, title: String, text: String) -
 	print_rich("{0}{1}[/color]{2}{3}".format([start, title, "\n\t" if text != "" else "", text]))
 
 
-## Connected to [signal save_request]. Creates a save change [ConfirmationDialog] and show it, [param confirmed] signal will connected
-## to [method _save_changes] and [param canceled] will connected to [method _resum_after_save].
+## Connected to [signal save_request]. Creates a save change [ConfirmationDialog] and show it,
+## [param confirmed] signal will connected to [method _save_changes] and [param canceled] will
+## connected to [method _resum_after_save].
 func _handle_save_request(from: int) -> void:
 	if get_child_count():
 		# When recieves other request when dialog in visible, handles that request with current dialog.
@@ -82,9 +83,13 @@ func _handle_save_request(from: int) -> void:
 		save_finished.emit(from)
 	else:
 		add_child(Factory.confirmation_dialog(
-				"You have unsaved changes in currently opened file, what do you want to do with them?",
-				"Save", "Discard", "You have unsaved changes!", _resume_after_save.bind(from),
-				_save_changes.bind(from), true
+			"You have unsaved changes in currently opened file, what do you want to do with them?",
+			"Save",
+			"Discard",
+			"You have unsaved changes!",
+			_resume_after_save.bind(from),
+			_save_changes.bind(from),
+			true
 		))
 
 
@@ -106,5 +111,6 @@ func _resume_after_save(to: int) -> void:
 	run_script.emit(to)
 
 
+## Emits [signal module_profiler_refresh] signal.
 func refresh_module_profiler() -> void:
 	module_profiler_refresh.emit()

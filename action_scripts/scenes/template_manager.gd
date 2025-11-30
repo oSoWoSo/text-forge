@@ -1,8 +1,14 @@
+class_name TemplateManagerWindow
 extends Window
+## A window to edit or remove templates.
 
+## List of templates.
 @export var templates: ItemList
+## Panel to show preview.
 @export var preview_panel: VBoxContainer
+## Template neme in preview.
 @export var template_name: Label
+## Template content in preview.
 @export var preview: RichTextLabel
 
 func _ready() -> void:

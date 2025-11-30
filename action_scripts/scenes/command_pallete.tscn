@@ -7,39 +7,40 @@ font_size = 14
 font_color = Color(1, 1, 1, 0.34902)
 
 [node name="Popup" type="Popup" node_paths=PackedStringArray("options", "sample", "input")]
+oversampling_override = 1.0
 initial_position = 2
 size = Vector2i(400, 282)
 visible = true
 script = ExtResource("1_2hb76")
-options = NodePath("PanelContainer/VBoxContainer/ScrollContainer/VBoxContainer")
-sample = NodePath("PanelContainer/VBoxContainer/Button")
-input = NodePath("PanelContainer/VBoxContainer/LineEdit")
+options = NodePath("Panel/VBox/Scroll/Commands")
+sample = NodePath("Panel/VBox/Instance")
+input = NodePath("Panel/VBox/SearchBox")
 
-[node name="PanelContainer" type="PanelContainer" parent="."]
+[node name="Panel" type="PanelContainer" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+[node name="VBox" type="VBoxContainer" parent="Panel"]
 layout_mode = 2
 
-[node name="LineEdit" type="LineEdit" parent="PanelContainer/VBoxContainer"]
+[node name="SearchBox" type="LineEdit" parent="Panel/VBox"]
 layout_mode = 2
 placeholder_text = "Search for command"
 
-[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/VBoxContainer"]
+[node name="Scroll" type="ScrollContainer" parent="Panel/VBox"]
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/ScrollContainer"]
+[node name="Commands" type="VBoxContainer" parent="Panel/VBox/Scroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Button" type="Button" parent="PanelContainer/VBoxContainer"]
+[node name="Instance" type="Button" parent="Panel/VBox"]
 visible = false
 layout_mode = 2
 theme_type_variation = &"CommandButton"
@@ -47,7 +48,22 @@ text = "New"
 alignment = 0
 text_overrun_behavior = 3
 
-[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/Button"]
+[node name="Name" type="RichTextLabel" parent="Panel/VBox/Instance"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 5.0
+offset_top = -11.5
+offset_right = 244.0
+offset_bottom = 11.5
+grow_vertical = 2
+mouse_filter = 1
+bbcode_enabled = true
+scroll_active = false
+vertical_alignment = 1
+
+[node name="Shorcut" type="Label" parent="Panel/VBox/Instance"]
 layout_mode = 1
 anchors_preset = 6
 anchor_left = 1.0
@@ -65,20 +81,5 @@ horizontal_alignment = 1
 vertical_alignment = 1
 text_overrun_behavior = 1
 
-[node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer/VBoxContainer/Button"]
-layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_left = 5.0
-offset_top = -11.5
-offset_right = 244.0
-offset_bottom = 11.5
-grow_vertical = 2
-mouse_filter = 1
-bbcode_enabled = true
-scroll_active = false
-vertical_alignment = 1
-
-[connection signal="text_changed" from="PanelContainer/VBoxContainer/LineEdit" to="." method="_on_line_edit_text_changed"]
-[connection signal="text_submitted" from="PanelContainer/VBoxContainer/LineEdit" to="." method="_on_line_edit_text_submitted"]
+[connection signal="text_changed" from="Panel/VBox/SearchBox" to="." method="_on_search_box_text_changed"]
+[connection signal="text_submitted" from="Panel/VBox/SearchBox" to="." method="_on_search_box_text_submitted"]

@@ -1,18 +1,31 @@
+class_name ProjectSettingsWindow
 extends Window
+## A window to view and modify project settings.
 
+## Path to project file item's instance.
 const FILE_NODE_SCN: PackedScene = preload("res://action_scripts/scenes/project_file_item.tscn")
 
+## [TextEdit] for project details.
 @export var details_edit: TextEdit
+## List of excluded files.
 @export var exclude_files: VBoxContainer
+## Button to change icon.
 @export var icon_button: Button
+## List of include files.
 @export var include_files: VBoxContainer
+## [LineEdit] for project name.
 @export var name_edit: LineEdit
+## [LineEdit] for project tags.
 @export var tags_edit: LineEdit
 
 func _ready() -> void:
 	name_edit.text = Project.current_project.get_value("project", "name")
 	details_edit.text = Project.current_project.get_value("project", "details")
-	icon_button.text = Project.current_project.get_value("project", "icon") if Project.current_project.has_section_key("project", "icon") else "Select file"
+	icon_button.text = (
+		Project.current_project.get_value("project", "icon")
+		if Project.current_project.has_section_key("project", "icon")
+		else "Select file"
+	)
 	tags_edit.text = Project.current_project.get_value("project", "tags")
 	for include in Project.current_project.get_value("files", "include"):
 		var n: HBoxContainer = FILE_NODE_SCN.instantiate()
@@ -63,9 +76,26 @@ func _on_add_include_pressed(type: int) -> void:
 
 
 func _on_icon_pressed() -> void:
-	add_child(Factory.file_dialog(FileDialog.FILE_MODE_OPEN_FILE, FileDialog.ACCESS_FILESYSTEM,
-			["*.bmp,*.dds,*.ktx,*.exr,*.hdr,*.jpg,*.jpeg,*.png,*.tga,*.svg,*.webp;Image Files;image/bmp,image/vnd.ms-dds,image/ktx,image/exr,image/vnd.radiance,image/jpeg,image/png,image/x-tga,image/svg+xml,image/webp"],
-			_icon_selected, true, OS.get_system_dir(OS.SYSTEM_DIR_PICTURES), ""))
+	add_child(Factory.file_dialog(
+		FileDialog.FILE_MODE_OPEN_FILE,
+		FileDialog.ACCESS_FILESYSTEM,
+		[
+			"*.png;PNG Image;image/png",
+			"*.jpg,*.jpeg;JPEG Image;image/jpeg",
+			"*.svg;SVG Image;image/svg+xml",
+			"*.bmp;BitMap Image;image/bmp",
+			"*.webp;WEBP Image;image/webp",
+			"*.tga;X-TGA Image;image/x-tga",
+			"*.hdr;HDR Image (Radiance);image/vnd.radiance",
+			"*.dds;DDS Image;image/vnd.ms-dds",
+			"*.ktx;KTX Image;image/ktx",
+			"*.exr;EXR Image;image/exr",
+		],
+		_icon_selected,
+		true,
+		OS.get_system_dir(OS.SYSTEM_DIR_PICTURES),
+		""
+	))
 
 
 func _on_save_pressed() -> void:
@@ -84,7 +114,11 @@ func _on_save_pressed() -> void:
 	config.set_value("project", "name", name_edit.text)
 	config.set_value("project", "details", details_edit.text)
 	if icon_button.text.get_extension().to_lower() in S.IMAGE_EXTS:
-		if FileAccess.get_file_as_bytes(config.get_value("project", "icon", "")) != FileAccess.get_file_as_bytes(icon_button.text):
+		if (
+				FileAccess.get_file_as_bytes(config.get_value("project", "icon", ""))
+				!=
+				FileAccess.get_file_as_bytes(icon_button.text)
+			):
 			config.set_value("project", "icon", Project.cache_icon(icon_button.text))
 	config.set_value("project", "tags", tags_edit.text.strip_edges())
 	config.set_value("files", "include", include_files.get_children().map(func(file):

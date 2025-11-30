@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://px4l4s68t3f0" path="res://action_scripts/scenes/mode_manager.gd" id="1_hbc7b"]
 
 [node name="Window" type="Window" node_paths=PackedStringArray("mode_list", "about", "mode_kit_button")]
+oversampling_override = 1.0
 title = "Mode Manager"
 initial_position = 2
 size = Vector2i(600, 400)

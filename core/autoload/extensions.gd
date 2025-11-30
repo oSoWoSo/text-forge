@@ -27,6 +27,7 @@ extends Node
 ## change it. Each extension have a ID and this ID is name of extension folder.[br]
 ## [b]Note:[/b] Extension entries will load as childern of [code]/root/Extensions[/code].
 
+## Emits when loading extensions completed.
 signal extensions_loaded
 
 ## Keeps [PopupMenu] for extensions in main menus. Will seted by [Core].
@@ -78,7 +79,10 @@ func install_extension(path: String) -> void:
 	var reader = ZIPReader.new()
 	var err := reader.open(path)
 	if err:
-		Global.send_notification(Global.Notification.ERROR, "Can't load this file!", "Load {0} for install extension failed. Error code: {1}".format([path, str(err)]))
+		Global.send_notification(
+			Global.Notification.ERROR,
+			"Can't load this file!", "Load {0} for install extension failed. Error code: {1}".format([path, str(err)])
+		)
 		return
 
 	if not DirAccess.dir_exists_absolute(S.globalize_path(S.FOLDER_EXTENSIONS)):
@@ -88,6 +92,12 @@ func install_extension(path: String) -> void:
 
 	var files = reader.get_files()
 	for file_path in files:
+		if not file_path.begins_with("extensions/"):
+			Global.send_notification(
+				Global.Notification.ERROR,
+				"Scurity alert!",
+				path + " containes a file outside extensions folder: " + file_path + "\nThis file extraction was skipped!"
+			)
 		if file_path.ends_with("/"):
 			root_dir.make_dir_recursive(file_path)
 			continue
@@ -99,7 +109,14 @@ func install_extension(path: String) -> void:
 
 	Global.get_editor_api().reload_modes()
 	Global.send_notification(Global.Notification.INFO, "Install extension completed.")
-	add_child(Factory.confirmation_dialog("Unpack extension completed, Do you want to reload extensions to use it?", "Yes, Reload", "No, Later", "Do you want reload extensions?", Callable(), setup_extensions))
+	add_child(Factory.confirmation_dialog(
+		"Unpack extension completed, Do you want to reload extensions to use it?",
+		"Yes, Reload",
+		"No, Later",
+		"Do you want reload extensions?",
+		Callable(),
+		setup_extensions
+	))
 
 
 ## Cleanups all extensions with calling [code]on_deactivate[/code] for each enabled extension and
@@ -108,10 +125,8 @@ func install_extension(path: String) -> void:
 func cleanup_all_extensions() -> void:
 	if not get_child_count():
 		return
-
 	for xtn: String in extensions.keys().filter(func(item): return item in enabled_extensions):
 		get_node(xtn).call(extensions[xtn]["on_deactivate"])
-
 	await get_tree().process_frame
 	S.free_all_children(self)
 
@@ -120,7 +135,6 @@ func cleanup_all_extensions() -> void:
 func set_extension_enabled(id: String, enabled: bool = true) -> void:
 	if not id in extensions:
 		return
-
 	if not enabled:
 		if enabled_extensions.has(id):
 			enabled_extensions.erase(id)
@@ -134,7 +148,6 @@ func set_extension_enabled(id: String, enabled: bool = true) -> void:
 			entry.name = id
 			add_child(entry)
 			entry.call(extensions[id]["on_activate"])
-
 	Settings.write_data("extensions", "enabled", enabled_extensions)
 
 
@@ -155,12 +168,11 @@ func uninstall_extension(id: String) -> void:
 	if id in enabled_extensions:
 		set_extension_enabled(id, false)
 		await get_tree().process_frame
-
 	if has_node(id):
 		get_node(id).call(extensions[id]["uninstall"])
 	else:
-		U.load_resource(S.FOLDER_EXTENSIONS.path_join(id).path_join(extensions[id]["entry"])).new().call(extensions[id]["uninstall"])
-
+		U.load_resource(S.FOLDER_EXTENSIONS.path_join(id).path_join(extensions[id]["entry"])).new() \
+		.call(extensions[id]["uninstall"])
 	await get_tree().process_frame
 	OS.move_to_trash(S.globalize_path(S.FOLDER_EXTENSIONS.path_join(id)))
 
@@ -175,21 +187,17 @@ func _load_enabled_list() -> void:
 	enabled_extensions = Settings.read_data("extensions", "enabled", [])
 
 
-## Loads extensions from [constant S.FOLDER_EXTENSIONS], each extension is a folder and
-## must have a [code]extension.cfg[/code].
+## Loads extensions from [constant S.FOLDER_EXTENSIONS], each extension is a folder and must have a
+## [code]extension.cfg[/code].
 func _load_extensions() -> void:
 	extensions = {}
-
 	if not DirAccess.dir_exists_absolute(S.globalize_path(S.FOLDER_EXTENSIONS)):
 		DirAccess.make_dir_absolute(S.globalize_path(S.FOLDER_EXTENSIONS))
-
 	var config := ConfigFile.new()
 	for xtn: String in DirAccess.get_directories_at(S.FOLDER_EXTENSIONS):
 		if not FileAccess.file_exists(S.globalize_path(S.TEMPLATE_EXTENSION_CONFIG.format([xtn]))):
 			continue
-
 		config.load(S.globalize_path(S.TEMPLATE_EXTENSION_CONFIG.format([xtn])))
-
 		extensions[xtn] = {}
 		extensions[xtn]["name"] = config.get_value("main", "name", "null")
 		extensions[xtn]["folder"] = config.get_value("main", "folder", "default")
@@ -197,12 +205,10 @@ func _load_extensions() -> void:
 		extensions[xtn]["description"] = config.get_value("main", "description", "There is no description.")
 		extensions[xtn]["author"] = config.get_value("main", "author", "null")
 		extensions[xtn]["license"] = config.get_value("main", "license", "unlicesed")
-
 		extensions[xtn]["entry"] = config.get_value("excute", "entry", "extension.gd")
 		extensions[xtn]["dependencies"] = config.get_value("excute", "dependencies", {})
 		extensions[xtn]["on_activate"] = config.get_value("excute", "on_active", "_activate_extension")
 		extensions[xtn]["on_deactivate"] = config.get_value("excute", "on_active", "_deactivate_extension")
 		extensions[xtn]["uninstall"] = config.get_value("excute", "on_active", "_remove_extension")
-
 		if extensions[xtn]["folder"] == "default":
 			extensions[xtn]["folder"] = xtn

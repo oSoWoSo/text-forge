@@ -1,5 +1,8 @@
+class_name BackupAPI
 extends Node
-## Backup core of Text Forge
+## Backup core of Text Forge.
+##
+## A global API to work with backups.
 
 ## Emits when a backup saved.
 signal backup_saved(was_auto: bool)
@@ -48,7 +51,6 @@ func get_backups_list() -> Dictionary[String, Dictionary]:
 	config.load(S.globalize_path(S.BACKUP_DATABASE))
 	if not config.has_section("backups"):
 		return Dictionary({}, TYPE_STRING, "", null, TYPE_DICTIONARY, "", null)
-
 	var list: Dictionary[String, Dictionary]
 	for file_item in config.get_section_keys("backups"):
 		var file_backups = config.get_value("backups", file_item, {})
@@ -63,7 +65,8 @@ func restore_backup(code: String, path: String) -> void:
 	Global.set_file_name(path.get_file())
 	Global.set_editor_disabled(false)
 	Global.set_editor_text(content)
-	Signals.save_request.emit(-1)
+	Signals.check_options.emit()
+	Global.mark_file_as_unsaved()
 	Global.send_notification(Global.Notification.INFO, "Backup sucefully restored.")
 
 
@@ -74,7 +77,6 @@ func backup_file(as_auto: bool) -> void:
 	var config := ConfigFile.new()
 	if FileAccess.file_exists(S.globalize_path(S.BACKUP_DATABASE)):
 		config.load(S.globalize_path(S.BACKUP_DATABASE))
-
 	var file_backups: Dictionary = config.get_value("backups", Global.get_file_path(), {})
 	var backup_id := _generate_new_backup_id()
 	if backup_id == "":
@@ -128,7 +130,6 @@ func _remove_old_backups() -> void:
 	var config := ConfigFile.new()
 	if FileAccess.file_exists(S.globalize_path(S.BACKUP_DATABASE)):
 		config.load(S.globalize_path(S.BACKUP_DATABASE))
-
 	if not config.has_section("backups"):
 		return
 	for file_item in config.get_section_keys("backups"):

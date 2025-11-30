@@ -1,5 +1,8 @@
+class_name BackupStatus
 extends TextureRect
+## Shows backup icon when editor saves a backup.
 
+## Timer to hide icon.
 @export var hide_timer: Timer
 
 func _ready() -> void:
@@ -11,7 +14,8 @@ func _ready() -> void:
 func _on_backup_saved(was_auto: bool) -> void:
 	texture = load("res://assets/backup.png")
 	tooltip_text = "Backup Status\n{0} backup saved: {1}".format([
-		"Auto" if was_auto else "Manual", Time.get_datetime_string_from_system(false, true)
+		"Auto" if was_auto else "Manual",
+		Time.get_datetime_string_from_system(false, true)
 	])
 	modulate = Color.WHITE
 	show()
@@ -21,8 +25,9 @@ func _on_backup_saved(was_auto: bool) -> void:
 func _on_backup_failed(was_auto: bool) -> void:
 	texture = load("res://assets/backup_fail.png")
 	tooltip_text = "Backup Status\n{0} backup failed: {1}".format([
-		"Auto" if was_auto else "Manual", Time.get_datetime_string_from_system(false, true)
+		"Auto" if was_auto else "Manual",
+		Time.get_datetime_string_from_system(false, true)
 	])
-	modulate = Color.WHITE
+	modulate = Color.INDIAN_RED
 	show()
 	hide_timer.start()

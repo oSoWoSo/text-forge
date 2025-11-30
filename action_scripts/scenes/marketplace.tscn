@@ -6,6 +6,7 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sqdyf"]
 
 [node name="Marketplace" type="Window" node_paths=PackedStringArray("packages", "version_edit", "i_name", "i_author", "i_category", "i_version", "i_min_editor_version", "i_dates", "i_tags", "i_description", "i_images", "infomration_popup", "install_button", "search", "filter")]
+oversampling_override = 1.0
 title = "Marketplace"
 initial_position = 2
 size = Vector2i(800, 600)

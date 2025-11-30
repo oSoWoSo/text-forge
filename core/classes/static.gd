@@ -62,10 +62,12 @@ const EDITOR_VERSION = "0.2.0"
 ## [RegEx] pattern for template placeholders.
 const PATTERN_PLACEHOLDER = r"\{\{\{(.*?)\}\}\}"
 
+## Maps all array members to [int].
 static func map_array_to_int(array: Array) -> Array[int]:
 	return Array(array.map(func(e): return int(e)), TYPE_INT, "", null)
 
 
+## Globalizes given [param path].
 static func globalize_path(path: String) -> String:
 	if path.begins_with("res://"):
 		if OS.has_feature("editor"):
@@ -76,11 +78,13 @@ static func globalize_path(path: String) -> String:
 	return ProjectSettings.globalize_path(path)
 
 
+## Calls [method Node.queue_free] for all children of given [param node].
 static func free_all_children(node: Node) -> void:
 	for c in node.get_children():
 		c.queue_free()
 
 
+## Merges two [Array]s and removes duplicated items.
 static func merge_unique(array1: Array, array2: Array) -> Array:
 	var merged_array = []
 	for i in array1:
@@ -92,6 +96,7 @@ static func merge_unique(array1: Array, array2: Array) -> Array:
 	return merged_array
 
 
+## Adds a fade-out tween for given [param object].
 static func fade_out(object: Node, duration := 1.0) -> Tween:
 	var tween := object.create_tween()
 	tween.tween_property(object, "modulate", Color.TRANSPARENT, duration)

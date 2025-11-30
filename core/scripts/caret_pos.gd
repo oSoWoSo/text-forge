@@ -1,6 +1,10 @@
+class_name CaretPos
 extends Button
+## Shows caret position and provides fast caret move.
 
+## [LineEdit] to change line.
 @export var line: LineEdit
+## [LineEdit] to change column.
 @export var column: LineEdit
 
 func _ready() -> void:

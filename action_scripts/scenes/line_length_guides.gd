@@ -4,5 +4,5 @@ extends Window
 @export var submit: Button
 
 func _ready() -> void:
-	submit.pressed.connect(func(): close_requested.emit())
-	input.text_submitted.connect(func(text): close_requested.emit())
+	submit.pressed.connect(close_requested.emit)
+	input.text_submitted.connect(close_requested.emit.unbind(1))

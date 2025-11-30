@@ -1,11 +1,18 @@
+class_name PreferencesWindow
 extends Window
+## A window to view and modify preferences.
+##
+## This is a user interface, see [SettingsAPI] for code.
 
+## Container to keep each section.
 @export var container: TabContainer
+## Tree for section changig.
 @export var tree: Tree
 
 func _on_close_requested() -> void:
 	Signals.settings_changed.emit()
 	queue_free()
+
 
 func _ready() -> void:
 	var config := ConfigFile.new()

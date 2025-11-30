@@ -1,11 +1,19 @@
+class_name SettingOption
 extends HBoxContainer
+## A ready-made scene to use as one setting option (in [PreferencesWindow]).
 
+## List of option types.
 @export var options: TabContainer
+## Option label.
 @export var label: Label
 
+## Option section.
 var section: String
+## Option key.
 var key: String
+## Default value.
 var default = null
+## Current value.
 var value
 
 func _ready() -> void:
@@ -26,7 +34,11 @@ func _ready() -> void:
 			options.current_tab = 3
 			options.get_child(3).text = ", ".join(value.map(func(item): return str(item)))
 		_:
-			Global.send_notification(Global.Notification.ERROR, "Invalid Setting Type!", "There isn't support for type {0} (in {1} > {2})".format([str(typeof(value)), section, key]))
+			Global.send_notification(
+				Global.Notification.ERROR,
+				"Invalid Setting Type!",
+				"There isn't support for type {0} (in {1} > {2})".format([str(typeof(value)), section, key])
+			)
 			queue_free()
 
 func _on_check_box_pressed() -> void:

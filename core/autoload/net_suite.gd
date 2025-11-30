@@ -10,14 +10,19 @@ func _ready() -> void:
 ## َ    - [param callback]: [Callable] to connect to [signal HTTPRequest.request_completed].[br]
 ## َ    - [param request]: Optional request with keys:[br]
 ## َ        - [code]"url"[/code]: URL to request.[br]
-## َ        - [code]"raw"[/code] (Optional, default [code]false[/code]): Uses [method HTTPRequest.request_raw] insted of [method HTTPRequest.request] when [code]true[/code].[br]
-## َ        - [code]"custom_headers"[/code] (Optional, default is empty [PackedStringArray]): Custom headers to send request.[br]
+## َ        - [code]"raw"[/code] (Optional, default [code]false[/code]): Uses [method HTTPRequest.request_raw]
+##           insted of [method HTTPRequest.request] when [code]true[/code].[br]
+## َ        - [code]"custom_headers"[/code] (Optional, default is empty [PackedStringArray]): Custom
+##           headers to send request.[br]
 ## َ        - [code]"method"[/code] (Optional, default [constant HTTPClient.METHOD_GET]): Request method.[br]
-## َ        - [code]"request_data_raw"[/code] (Optional, default empty [PackedByteArray]): Binary body when [code]"url"[/code] is [code]true[/code].[br]
-## َ        - [code]"request_data"[/code] (Optional, default empty [String]): String body when [code]"url"[/code] is [code]false[/code] (default).[br]
+## َ        - [code]"request_data_raw"[/code] (Optional, default empty [PackedByteArray]): Binary body
+##           when [code]"url"[/code] is [code]true[/code].[br]
+## َ        - [code]"request_data"[/code] (Optional, default empty [String]): String body when [code]"url"[/code]
+##           is [code]false[/code] (default).[br]
 ## َ    - [param timeout]: Optional timeout in seconds.[br]
 ## َ    - [param download_file]: The file to download into.[br][br]
-## [b]Note:[/b] All parameters are optional, but if you need to send a request in this function you should set a value for [param request] [code]"url"[/code] key.[br][br]
+## [b]Note:[/b] All parameters are optional, but if you need to send a request in this function you
+## should set a value for [param request] [code]"url"[/code] key.[br][br]
 ## [b]See also:[/b] [HTTPRequest], [HTTPClient]
 func http_request(callback := Callable(), request := {}, timeout := 0.0, download_file := "") -> HTTPRequest:
 	var hr := HTTPRequest.new()

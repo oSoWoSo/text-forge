@@ -29,7 +29,6 @@ func _ready() -> void:
 	# define presets
 	Settings.define_preset(CONFIG_SECTION, CONFIG_MAIN_KEY, "en")
 	Settings.define_preset(CONFIG_SECTION, CONFIG_FALLBACK_KEY, "en")
-
 	Signals.settings_changed.connect(_load_config)
 	_load_config()
 
@@ -47,20 +46,19 @@ func set_language(language_code: String = "default", fallback_code: String = "de
 		language_code = Settings.get_default(CONFIG_SECTION, CONFIG_MAIN_KEY)
 	if fallback_code == "default":
 		fallback_code = Settings.get_default(CONFIG_SECTION, CONFIG_FALLBACK_KEY)
-
 	language = language_code
 	fallback = fallback_code
-
 	Settings.set_setting(CONFIG_SECTION, CONFIG_MAIN_KEY, language)
 	Settings.set_setting(CONFIG_SECTION, CONFIG_FALLBACK_KEY, fallback)
 
 
+## Caches trnaslation source to a [Dictionary][[String],[Dictionary]]. You can use this with
+## [method get_text_from_cache] later.
 func cache_source(source_file: String) -> Dictionary[String,Dictionary]:
 	var data: Dictionary[String, Dictionary] = {}
 	if not FileAccess.file_exists(S.globalize_path(source_file)):
 		print("Can't cache translation data\nFile {0} doesn't exist!".format([source_file]))
 		return data
-
 	var file := FileAccess.open(S.globalize_path(source_file), FileAccess.READ)
 	var column_names := file.get_csv_line()
 	while file.get_position() < file.get_length():
@@ -78,7 +76,6 @@ func cache_source(source_file: String) -> Dictionary[String,Dictionary]:
 func get_text_from_cache(key: String, cache: Dictionary[String, Dictionary]) -> String:
 	if key == "":
 		return ""
-
 	if not cache.has(key):
 		return key
 	var map := cache.get(key, {}) as Dictionary[String, String]
@@ -91,31 +88,37 @@ func get_text_from_cache(key: String, cache: Dictionary[String, Dictionary]) -> 
 
 ## Returns translated text from a saved [b]csv[/b] file, possible exceptions:[br]
 ##  - [param source_file] does not exist: [code]Can't load translation data[/code] error, returns [param key].[br]
-##  - [member language] does not exist but the [member fallback] is successful: [code]Translation fallback to %fallback%[/code] warning, returns translated key to fallback language.[br]
+##  - [member language] does not exist but the [member fallback] is successful: [code]Translation fallback to %fallback%[/code]
+##    warning, returns translated key to fallback language.[br]
 ##  - [member language] and [member fallback] do not exist: [code]Invalid language code![/code] error, returns [param key].[br]
 ##  - [param key] does not exist: [code]Invalid translation key![/code] error, returns [param key].[br][br]
 ## [b]Note:[/b] If [param source_file] is [code]"default"[/code], will use [constant S.TRANSLATION_FILE].
 func get_text(key: String, source_file: String = "default") -> String:
 	if source_file == "default":
 		source_file = S.TRANSLATION_FILE
-
 	if key == "":
 		return ""
-
 	if not FileAccess.file_exists(S.globalize_path(source_file)):
 		print("Can't load translation data\nFile {0} doesn't exist!".format([source_file]))
 		return key
-
 	var file := FileAccess.open(S.globalize_path(source_file), FileAccess.READ)
 	var column_names := file.get_csv_line()
 	var lang
 	if not column_names.has(language):
 		if not column_names.has(fallback):
-			print("Invalid language code!\nLanguage {0} doesn't exist in {1}, usign fallback language ({2}) failed.".format([language, source_file, fallback]))
+			print(
+				"Invalid language code!"
+				+ "\n"
+				+ "Language {0} doesn't exist in {1}, usign fallback language ({2}) failed.".format([language, source_file, fallback])
+			)
 			file.close()
 			return key
 		else:
-			print("Translation fallback to {0}".format([fallback]), "\n", "Can't find language {0} in translation source: {1}, using fallback language".format([language, source_file]))
+			print(
+				"Translation fallback to {0}".format([fallback]),
+				"\n",
+				"Can't find language {0} in translation source: {1}, using fallback language".format([language, source_file])
+			)
 			lang = fallback
 	else:
 		lang = language
@@ -129,7 +132,6 @@ func get_text(key: String, source_file: String = "default") -> String:
 			return line[index] if line.size() > index else line[1]
 	print("Invalid translation key!\nCan't find key \"{0}\" in translation source: {1}".format([key, source_file]))
 	file.close()
-
 	return key
 
 

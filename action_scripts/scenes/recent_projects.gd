@@ -1,6 +1,10 @@
+class_name RecentProjectsWindow
 extends Window
+## A window to open recent projects.
 
+## Example of project item.
 @export var project_item: Button
+## List of projects.
 @export var project_list: VBoxContainer
 
 func _ready() -> void:
@@ -9,7 +13,10 @@ func _ready() -> void:
 		var config := ConfigFile.new()
 		var err := config.load(Project.recent_menu.get_item_text(i))
 		if err:
-			Global.send_notification(Global.Notification.ERROR, "Failed to read project file: " + Project.recent_menu.get_item_text(i))
+			Global.send_notification(
+				Global.Notification.ERROR,
+				"Failed to read project file: " + Project.recent_menu.get_item_text(i)
+			)
 			continue
 		var icon_path: String = config.get_value("project", "icon", "")
 		if icon_path and FileAccess.file_exists(icon_path):
