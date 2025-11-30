@@ -60,4 +60,5 @@ func _sort_commands(a: String, b: String, text: String) -> bool:
 
 
 func _on_search_box_text_submitted(new_text: String) -> void:
-	options.get_child(0).pressed.emit()
+	if options.get_child_count() > 0:
+		options.get_child(0).pressed.emit()
