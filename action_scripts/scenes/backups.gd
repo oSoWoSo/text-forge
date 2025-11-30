@@ -9,7 +9,7 @@ extends Window
 
 ## A list of all backups based on file paths.
 var backups: Dictionary[String, Dictionary]
-## Currently selected tab of [member file_list].
+## Currently selected item of [member file_list].
 var current_file: String
 ## Currently selected item of [member backup_list].
 var current_backup: String
