@@ -475,7 +475,7 @@ func _load_last_file(is_automatic := true) -> void:
 	editor.grab_focus()
 
 
-## Helper to generate sript path for a menu option.
+## Helper to generate script path for a menu option.
 func _get_script_path_for_item(item: Dictionary) -> String:
 	return S.TEMPLATE_ACTION_SCRIPT.format(
 		[item.get("text", "").to_snake_case().remove_char(46)]
