@@ -126,6 +126,13 @@ func _complete_package_information(
 		)
 		return
 	var _info = JSON.parse_string(body.get_string_from_utf8())
+	if _info == null:
+		Global.send_notification(
+			Global.Notification.ERROR,
+			"Failed to parse package information!",
+			"Invalid JSON response from server."
+		)
+		return
 	match get_compatibility_status(_info["compatible_versions"]):
 		CompatibilityStatus.INCOMPATIBLE:
 			install_button.text = "Install"
