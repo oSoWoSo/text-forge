@@ -3,10 +3,10 @@ extends ActionScript
 ## Base class for [ActionScript]s with convert case feature.
 ##
 ## This is useful template for action scripts with features that:[br]
-## - Haven't complex operations[br]
+## - Don't have complex operations[br]
 ## - Can work with multi-caret edit mode[br]
 ## - Can work well with [Editor]'s "keep selection" feature[br]
-## - Don't changes text length (for example case converting)[br][br]
+## - Don't change text length (for example case converting)[br][br]
 ## [b]Note:[/b] You can use this class for action scripts that changes text length, but automated
 ## selection restore will select area with same length as unchanged text![br][br]
 ## [b]Example Usage:[/b]
@@ -59,7 +59,7 @@ func _run_action() -> void:
 
 ## Formats given [param text] and returns formatted version to class functions for replace. This
 ## will call for each selected text and should return formatted version of that selected text in
-## each call. Before override (for example in emtpy script that extends [CaseActionScript]) it will
+## each call. Before override (for example in empty script that extends [CaseActionScript]) it will
 ## return [param text].
 func _format_text(text: String) -> String:
 	return text

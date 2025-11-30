@@ -3,7 +3,7 @@ extends Window
 ## Marketplace to view and install external packages.
 ##
 ## See [url=https://github.com/text-forge/mp]text-forge/mp[/url] repository for backend source.[br]
-## Visit [url=https://text-forge.github.io/marketplace]Online Marketplce[/url] to explore
+## Visit [url=https://text-forge.github.io/marketplace]Online Marketpalce[/url] to explore
 ## marketplace without editor.
 
 ## Status of compatibility between package and editor.
@@ -43,7 +43,7 @@ const PACK_INFORMATION = "pack.json"
 ## Package information images.
 @export var i_images: HBoxContainer
 ## Package information popup window.
-@export var infomration_popup: Window
+@export var information_popup: Window
 ## Package information install button.
 @export var install_button: Button
 ## Search [LineEdit].
@@ -106,7 +106,7 @@ func _on_package_information_requested(id: String) -> void:
 		tag.text = t
 		tag.set_theme_type_variation("PackageBadgeLabel")
 		i_tags.add_child(tag)
-	infomration_popup.show()
+	information_popup.show()
 
 
 func _complete_package_information(
@@ -171,7 +171,7 @@ func _install_package(pack_info: Dictionary, _info: Dictionary) -> void:
 		"Please don't close marketplace window!",
 		"Downloading and installing package is in progress..."
 	)
-	infomration_popup.hide()
+	information_popup.hide()
 
 
 func _complete_installation(

@@ -9,7 +9,7 @@ signal search_started
 
 ## When [code]true[/code], disables all tests.
 const DISABLE_ALL := false
-## When [code]true[/code], starts [i]Perfomance Test[/i].
+## When [code]true[/code], starts [i]Performance Test[/i].
 const PERFORMANCE_ALL := true
 ## When [code]true[/code], [i]Performance Test[/i] will monitor startup time.
 const PERFORMANCE_STARTUP := true

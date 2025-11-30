@@ -11,7 +11,7 @@ func _ready() -> void:
 ## َ    - [param request]: Optional request with keys:[br]
 ## َ        - [code]"url"[/code]: URL to request.[br]
 ## َ        - [code]"raw"[/code] (Optional, default [code]false[/code]): Uses [method HTTPRequest.request_raw]
-##           insted of [method HTTPRequest.request] when [code]true[/code].[br]
+##           instead of [method HTTPRequest.request] when [code]true[/code].[br]
 ## َ        - [code]"custom_headers"[/code] (Optional, default is empty [PackedStringArray]): Custom
 ##           headers to send request.[br]
 ## َ        - [code]"method"[/code] (Optional, default [constant HTTPClient.METHOD_GET]): Request method.[br]

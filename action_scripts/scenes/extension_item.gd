@@ -67,12 +67,12 @@ func _export_self(path: String) -> void:
 	var writer = ZIPPacker.new()
 	var err = writer.open(path)
 	if err != OK:
-		Global.send_notification(Global.Notification.ERROR, "Cann't export extension!", "Error code: " + str(err))
+		Global.send_notification(Global.Notification.ERROR, "Can't export extension!", "Error code: " + str(err))
 		return
 	for f in DirAccess.get_files_at(S.FOLDER_EXTENSIONS.path_join(id)):
 		writer.start_file(id.path_join(f))
 		var file := FileAccess.open(S.FOLDER_EXTENSIONS.path_join(id).path_join(f), FileAccess.READ)
-		writer.write_file(file.get_as_text().to_utf8_buffer())
+		writer.write_file(file.get_buffer(file.get_length()))
 		writer.close_file()
 	writer.close()
 	Global.send_notification(Global.Notification.INFO, "Export extension completed.", "Exported file: " + path)

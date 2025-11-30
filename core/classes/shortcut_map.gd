@@ -5,6 +5,6 @@ extends Resource
 ## Map from shortcut name strings to their [InputEventKey] shortcuts.
 @export var map: Dictionary[String, InputEventKey] = {}
 
-## Returns saved [InputEventKey] shortcut for givrn [param name] or empty [InputEventKey].
+## Returns saved [InputEventKey] shortcut for given [param name] or empty [InputEventKey].
 func get_shortcut(name: String) -> InputEventKey:
 	return map.get(name, InputEventKey.new())

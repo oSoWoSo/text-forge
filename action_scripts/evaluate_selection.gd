@@ -5,8 +5,8 @@ func _initialize() -> void:
 
 
 func _run_action() -> void:
-	if Global.get_editor().get_caret_count():
-		Global.send_notification(Global.Notification.WARNING, "Exulate selection only supports main caret!")
+	if Global.get_editor().get_caret_count() > 1:
+		Global.send_notification(Global.Notification.WARNING, "Evaluate selection only supports main caret!")
 	var expression = Expression.new()
 	expression.parse(Global.get_editor().get_selected_text(0))
 	var result = expression.execute([], self)

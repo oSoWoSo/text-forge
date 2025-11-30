@@ -5,7 +5,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sqdyf"]
 
-[node name="Marketplace" type="Window" node_paths=PackedStringArray("packages", "version_edit", "i_name", "i_author", "i_category", "i_version", "i_min_editor_version", "i_dates", "i_tags", "i_description", "i_images", "infomration_popup", "install_button", "search", "filter")]
+[node name="Marketplace" type="Window" node_paths=PackedStringArray("packages", "version_edit", "i_name", "i_author", "i_category", "i_version", "i_min_editor_version", "i_dates", "i_tags", "i_description", "i_images", "information_popup", "install_button", "search", "filter")]
 oversampling_override = 1.0
 title = "Marketplace"
 initial_position = 2
@@ -23,7 +23,7 @@ i_dates = NodePath("Info/Margin/VBox/Footer/Dates")
 i_tags = NodePath("Info/Margin/VBox/Tags")
 i_description = NodePath("Info/Margin/VBox/Description")
 i_images = NodePath("Info/Margin/VBox/Scroll/Images")
-infomration_popup = NodePath("Info")
+information_popup = NodePath("Info")
 install_button = NodePath("Info/Margin/VBox/Actions/Install")
 search = NodePath("Margin/VBox/Header/Find/Search")
 filter = NodePath("Margin/VBox/Header/Find/Filter")

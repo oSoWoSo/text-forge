@@ -4,15 +4,15 @@ func _initialize() -> void:
 	requires_file = true
 
 func _run_action() -> void:
-	Global.get_editor().begin_complex_operation()
-	Global.get_editor().begin_multicaret_edit()
 	if Global.get_editor().delimiter_comments.size() == 0:
 		Global.send_notification(
 			Global.Notification.ERROR,
-			"There is now comment delimiter!",
+			"There is no comment delimiter!",
 			"Please select a mode with comment delimiter."
 		)
 		return
+	Global.get_editor().begin_complex_operation()
+	Global.get_editor().begin_multicaret_edit()
 	var text = Global.get_editor_text().split("\n")
 	for caret in Global.get_editor().get_caret_count():
 		for line in range(

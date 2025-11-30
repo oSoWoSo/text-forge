@@ -6,7 +6,7 @@ extends Window
 
 ## Container to keep each section.
 @export var container: TabContainer
-## Tree for section changig.
+## Tree for section changing.
 @export var tree: Tree
 
 func _on_close_requested() -> void:

@@ -107,9 +107,9 @@ func get_text(key: String, source_file: String = "default") -> String:
 	if not column_names.has(language):
 		if not column_names.has(fallback):
 			print(
-				"Invalid language code!"
-				+ "\n"
-				+ "Language {0} doesn't exist in {1}, usign fallback language ({2}) failed.".format([language, source_file, fallback])
+				"Invalid language code!",
+				"\n",
+				"Language {0} doesn't exist in {1}, using fallback language ({2}) failed.".format([language, source_file, fallback])
 			)
 			file.close()
 			return key

@@ -6,7 +6,7 @@ extends Window
 @export var templates: ItemList
 ## Panel to show preview.
 @export var preview_panel: VBoxContainer
-## Template neme in preview.
+## Template name in preview.
 @export var template_name: Label
 ## Template content in preview.
 @export var preview: RichTextLabel
