@@ -19,9 +19,10 @@ func _run_action() -> void:
 				Global.get_editor().get_selection_from_line(caret),
 				Global.get_editor().get_selection_to_line(caret) + 1
 			):
-			if Global.get_editor().is_in_comment(line) != -1:
+			var comment_pos := Global.get_editor().is_in_comment(line)
+			if comment_pos != -1:
 				text[line] = text.get(line).erase(
-					Global.get_editor().is_in_comment(line),
+					comment_pos,
 					Global.get_editor().get_comment_delimiters()[0].length()
 				)
 			else:

@@ -125,8 +125,9 @@ func import_mode(path: String) -> void:
 			Global.send_notification(
 				Global.Notification.ERROR,
 				"Scurity alert!",
-				path + " file containes a file outside modes folder: " + file_path + "\nThis file extraction was skipped!"
+				path + " file contains a file outside modes folder: " + file_path + "\nThis file extraction was skipped!"
 			)
+			continue
 		if file_path.ends_with("/"):
 			root_dir.make_dir_recursive(file_path)
 			continue

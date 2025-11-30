@@ -39,8 +39,9 @@ func close_project() -> void:
 		await get_tree().process_frame
 	if has_project():
 		current_project.set_value("files", "open", Global.get_file_path() if Global.has_file() else "")
-		current_project.set_value("files", "caret_line", Global.get_editor().get_caret_line())
-		current_project.set_value("files", "caret_column", Global.get_editor().get_caret_column())
+		if Global.has_file():
+			current_project.set_value("files", "caret_line", Global.get_editor().get_caret_line())
+			current_project.set_value("files", "caret_column", Global.get_editor().get_caret_column())
 		var err := current_project.save(get_current_project_path())
 		if err:
 			Global.send_notification(Global.Notification.ERROR, "Failed to close project!", "Error code: " + str(err))
@@ -125,7 +126,13 @@ func load_recent_projects() -> void:
 		recent_projects.append(recent_menu.get_item_text(recent))
 	var existing_content: String = FileAccess.get_file_as_string(S.RECENT_PROJECTS_DATA) if FileAccess.file_exists(S.RECENT_PROJECTS_DATA) else ""
 	if "\n".join(recent_projects) != existing_content:
-		var file = FileAccess.open(S.RECENT_PROJECTS_DATA, FileAccess.WRITE)
+		var file := FileAccess.open(S.RECENT_PROJECTS_DATA, FileAccess.WRITE)
+		if not file:
+			Global.send_notification(
+				Global.Notification.ERROR,
+				"Failed to save recent projects!"
+			)
+			return
 		file.store_string("\n".join(recent_projects))
 		file.close()
 
@@ -190,8 +197,8 @@ func get_project_name() -> String:
 	return current_project.get_value("project", "name", "Unnamed Project")
 
 
-## Returns path to curent project file.
+## Returns path to current project file.
 func get_current_project_path() -> String:
-	if has_project():
+	if has_project() and recent_menu.get_item_count() != 0:
 		return recent_menu.get_item_text(0)
 	return ""

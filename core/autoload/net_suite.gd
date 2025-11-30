@@ -6,7 +6,7 @@ func _ready() -> void:
 	child_exiting_tree.connect(Signals.refresh_module_profiler.unbind(1))
 
 
-## Creates a new [HTTPRequest] and intiailizes it with these optioanl parameters:[br]
+## Creates a new [HTTPRequest] and initializes it with these optional parameters:[br]
 ## َ    - [param callback]: [Callable] to connect to [signal HTTPRequest.request_completed].[br]
 ## َ    - [param request]: Optional request with keys:[br]
 ## َ        - [code]"url"[/code]: URL to request.[br]

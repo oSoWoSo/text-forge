@@ -63,7 +63,7 @@ bbcode_enabled = true
 scroll_active = false
 vertical_alignment = 1
 
-[node name="Shorcut" type="Label" parent="Panel/VBox/Instance"]
+[node name="Shortcut" type="Label" parent="Panel/VBox/Instance"]
 layout_mode = 1
 anchors_preset = 6
 anchor_left = 1.0

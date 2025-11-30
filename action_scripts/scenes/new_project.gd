@@ -107,8 +107,15 @@ func _on_create_pressed() -> void:
 
 
 func _on_add_exclude_pressed(type: int) -> void:
-	add_child(Factory.file_dialog(type, FileDialog.ACCESS_FILESYSTEM, [],
-	_add_file.bind(exclude_files), true, OS.get_system_dir(OS.SYSTEM_DIR_DOCUMENTS), ""))
+	add_child(Factory.file_dialog(
+		type,
+		FileDialog.ACCESS_FILESYSTEM,
+		[],
+		_add_file.bind(exclude_files),
+		true,
+		OS.get_system_dir(OS.SYSTEM_DIR_DOCUMENTS),
+		""
+	))
 
 
 func _on_icon_pressed() -> void:

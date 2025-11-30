@@ -1,6 +1,6 @@
 extends ActionScript
 
-func _run_action():
+func _run_action() -> void:
 	if Global.has_unsaved_change():
 		Signals.save_request.emit(id)
 		return

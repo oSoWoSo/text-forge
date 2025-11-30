@@ -52,7 +52,7 @@ func set_language(language_code: String = "default", fallback_code: String = "de
 	Settings.set_setting(CONFIG_SECTION, CONFIG_FALLBACK_KEY, fallback)
 
 
-## Caches trnaslation source to a [Dictionary][[String],[Dictionary]]. You can use this with
+## Caches translation source to a [Dictionary][[String],[Dictionary]]. You can use this with
 ## [method get_text_from_cache] later.
 func cache_source(source_file: String) -> Dictionary[String,Dictionary]:
 	var data: Dictionary[String, Dictionary] = {}

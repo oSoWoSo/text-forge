@@ -42,21 +42,14 @@ func _ready() -> void:
 
 
 func _add_file(path, container: VBoxContainer) -> void:
-	if path is PackedStringArray:
-		for p in path:
-			if p in container.get_children().map(func(file): return file.get_child(0).text):
-				continue
-			var n: HBoxContainer = FILE_NODE_SCN.instantiate()
-			n.get_child(0).text = p
-			n.get_child(1).pressed.connect(_remove_file.bind(p, container))
-			n.show()
-			container.add_child(n)
-	else:
-		if path in container.get_children().map(func(file): return file.get_child(0).text):
-			return
+	var paths: Array = path if path is PackedStringArray else [path]
+	var existing := container.get_children().map(func(file): return file.get_child(0).text)
+	for p in paths:
+		if p in existing:
+			continue
 		var n: HBoxContainer = FILE_NODE_SCN.instantiate()
-		n.get_child(0).text = path
-		n.get_child(1).pressed.connect(_remove_file.bind(path, container))
+		n.get_child(0).text = p
+		n.get_child(1).pressed.connect(_remove_file.bind(p, container))
 		n.show()
 		container.add_child(n)
 

@@ -123,8 +123,6 @@ func define_preset(section: String, key: String, default: Variant = null) -> voi
 ## Returns default value for given preset, witch can be set by [method define_preset]. For
 ## none-existent preset will return [code]null[/code] without any error.
 func get_default(section: String, key: String) -> Variant:
-	if not FileAccess.file_exists(S.globalize_path(PRESETS_FILE)):
-		return null
 	if presets.has_section_key(section, key):
 		return presets.get_value(section, key)
 	else:
@@ -143,4 +141,10 @@ func write_data(section: String, key: String, value = null) -> void:
 
 
 func _save_data() -> void:
-	data.save(DATA_FILE)
+	var err := data.save(DATA_FILE)
+	if err:
+		Global.send_notification(
+			Global.Notification.ERROR,
+			"Can't save data file!",
+			"Error code: " + str(err)
+		)

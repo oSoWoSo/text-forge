@@ -32,9 +32,10 @@ func _ready() -> void:
 		container.add_child(scroll)
 		var page := tree.create_item()
 		page.set_text(0, scroll.name)
-		if tab.get_child_count() == 0: scroll.queue_free()
+		if tab.get_child_count() == 0:
+			scroll.queue_free()
 	if tree.get_root().get_child_count():
-		tree.set_selected(tree.get_root().get_first_child(),0)
+		tree.set_selected(tree.get_root().get_first_child(), 0)
 
 
 func _on_tree_item_selected() -> void:

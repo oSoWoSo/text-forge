@@ -96,8 +96,9 @@ func install_extension(path: String) -> void:
 			Global.send_notification(
 				Global.Notification.ERROR,
 				"Scurity alert!",
-				path + " containes a file outside extensions folder: " + file_path + "\nThis file extraction was skipped!"
+				path + " contains a file outside extensions folder: " + file_path + "\nThis file extraction was skipped!"
 			)
+			continue
 		if file_path.ends_with("/"):
 			root_dir.make_dir_recursive(file_path)
 			continue

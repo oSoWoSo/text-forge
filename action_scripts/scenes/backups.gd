@@ -53,6 +53,6 @@ func _pick_save_path() -> void:
 	))
 
 
-func _restore_backup(path: String):
+func _restore_backup(path: String) -> void:
 	BackupCore.restore_backup(backups[current_file][current_backup], path)
 	queue_free()

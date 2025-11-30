@@ -21,7 +21,7 @@ func _on_popup_panel_about_to_popup() -> void:
 
 
 func _on_go_pressed() -> void:
-	Global.get_editor().set_caret_line(int(line.text))
+	Global.get_editor().set_caret_line(int(line.text) - 1)
 	Global.get_editor().set_caret_column(int(column.text))
 	get_child(0).hide()
 	Global.get_editor().grab_focus()

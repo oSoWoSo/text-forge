@@ -90,7 +90,7 @@ func _export_mode(path: String) -> void:
 	var writer = ZIPPacker.new()
 	var err = writer.open(path)
 	if err != OK:
-		Global.send_notification(Global.Notification.ERROR, "Cann't export mode!", "Error code: " + str(err))
+		Global.send_notification(Global.Notification.ERROR, "Can't export mode!", "Error code: " + str(err))
 		return
 	_add_folder_to_zip(writer, "user://modes/".path_join(mode_informations[current_mode_index]["id"]))
 	writer.close()
@@ -99,8 +99,12 @@ func _export_mode(path: String) -> void:
 
 func _add_folder_to_zip(writer: ZIPPacker, path: String) -> void:
 	for file in DirAccess.get_files_at(path):
+		var file_bytes := FileAccess.get_file_as_bytes(path.path_join(file))
+		if file_bytes.is_empty() and FileAccess.get_open_error() != OK:
+			push_warning("Failed to read file: " + path.path_join(file))
+			continue
 		writer.start_file(path.erase(0, 7).path_join(file))
-		writer.write_file(FileAccess.get_file_as_bytes(path.path_join(file)))
+		writer.write_file(file_bytes)
 		writer.close_file()
 	for dir in DirAccess.get_directories_at(path):
 		_add_folder_to_zip(writer, path.path_join(dir))
@@ -108,7 +112,7 @@ func _add_folder_to_zip(writer: ZIPPacker, path: String) -> void:
 
 func _on_remove_pressed() -> void:
 	add_child(Factory.confirmation_dialog(
-		"Remove this mode from your modes? You can restore them from your Recycle Bin.",
+		"Remove this mode from your modes? You can restore it from your system trash.",
 		"Yes, remove",
 		"Cancel",
 		"Remove Mode?",
@@ -130,7 +134,7 @@ func _save_package(path: String) -> void:
 	var writer = ZIPPacker.new()
 	var err = writer.open(path)
 	if err != OK:
-		Global.send_notification(Global.Notification.ERROR, "Cann't export mode kit!", "Error code: " + str(err))
+		Global.send_notification(Global.Notification.ERROR, "Can't export mode kit!", "Error code: " + str(err))
 		return
 	for index in mode_list.get_selected_items():
 		_add_folder_to_zip(writer, S.FOLDER_MODES.path_join(mode_informations[index]["id"]))
