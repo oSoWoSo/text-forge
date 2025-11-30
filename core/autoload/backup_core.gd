@@ -73,7 +73,7 @@ func restore_backup(code: String, path: String) -> Error:
 	Global.set_editor_text(content)
 	Signals.check_options.emit()
 	Global.mark_file_as_unsaved()
-	Global.send_notification(Global.Notification.INFO, "Backup sucefully restored.")
+	Global.send_notification(Global.Notification.INFO, "Backup successfully restored.")
 	return OK
 
 
