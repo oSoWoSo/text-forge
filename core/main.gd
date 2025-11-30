@@ -235,7 +235,7 @@ func _create_submenu(root_menu: PopupMenu, root_option: Dictionary) -> void:
 		"New With Template":
 			templates_submenu = submenu
 			reload_templates()
-		# Needs spacial action
+		# Needs special action
 		"By Extensions":
 			Extensions.menu = submenu
 			submenu.id_pressed.connect(Extensions._menu_id_pressed)
