@@ -447,7 +447,7 @@ func _handle_load_last_file() -> void:
 	if (Global.has_file()
 		or not Settings.get_setting_bool("files", "load_last_file_at_start")
 		or Global.get_last_file_path() == ""
-		or not FileAccess.file_exists(Global.get_file_path())):
+		or not FileAccess.file_exists(Global.get_last_file_path())):
 		return
 	if Settings.get_setting_bool("files", "ask_before_load_last_file_at_start"):
 		add_child(Factory.confirmation_dialog(
