@@ -210,8 +210,8 @@ func _load_extensions() -> void:
 		extensions[xtn]["license"] = config.get_value("main", "license", "unlicesed")
 		extensions[xtn]["entry"] = config.get_value("excute", "entry", "extension.gd")
 		extensions[xtn]["dependencies"] = config.get_value("excute", "dependencies", {})
-		extensions[xtn]["on_activate"] = config.get_value("excute", "on_active", "_activate_extension")
-		extensions[xtn]["on_deactivate"] = config.get_value("excute", "on_active", "_deactivate_extension")
-		extensions[xtn]["uninstall"] = config.get_value("excute", "on_active", "_remove_extension")
+		extensions[xtn]["on_activate"] = config.get_value("excute", "on_activate", "_activate_extension")
+		extensions[xtn]["on_deactivate"] = config.get_value("excute", "on_deactivate", "_deactivate_extension")
+		extensions[xtn]["uninstall"] = config.get_value("excute", "uninstall", "_remove_extension")
 		if extensions[xtn]["folder"] == "default":
 			extensions[xtn]["folder"] = xtn
