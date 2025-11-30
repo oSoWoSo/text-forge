@@ -354,6 +354,12 @@ func _reload_recent_files() -> void:
 		recent_files.append(recent_files_submenu.get_item_text(recent))
 	if "\n".join(recent_files) != recent_files_old:
 		var file = FileAccess.open(S.RECENT_FILES_DATA, FileAccess.WRITE)
+		if not file:
+			Global.send_notification(
+				Global.Notification.ERROR,
+				"Failed to save recent files!"
+			)
+			return
 		file.store_string("\n".join(recent_files))
 		file.close()
 
