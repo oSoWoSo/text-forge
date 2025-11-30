@@ -16,7 +16,10 @@ func setup(item_id: String, label: String, enabled: bool = false) -> ExtensionIn
 	id = item_id
 	text.text = label
 	enable.button_pressed = enabled
-	_on_status_toggled(enabled)
+	if enabled:
+		enable.text = "Enabled "
+	else:
+		enable.text = "Disabled "
 	show()
 	return self
 

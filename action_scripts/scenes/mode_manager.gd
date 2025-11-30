@@ -55,17 +55,30 @@ func _import_mode(path: String) -> void:
 
 func _on_data_changed(new_text: String) -> void:
 	var config = ConfigFile.new()
-	config.load(S.globalize_path("user://modes".path_join(mode_informations[current_mode_index]["id"]).path_join("mode.cfg")))
+	var err := config.load(S.globalize_path("user://modes".path_join(mode_informations[current_mode_index]["id"]).path_join("mode.cfg")))
+	if err:
+		add_child(Factory.accept_dialog(
+			"Failed to load mode information: Error " + str(err),
+			"Failed to change mode information!"
+		))
+		return
 	config.set_value("mode", "name", about.get_child(0).text.strip_edges())
 	config.set_value("mode", "version", about.get_child(1).text.strip_edges())
 	config.set_value("mode", "author", about.get_child(2).text.strip_edges())
 	config.set_value(
 		"mode",
 		"extensions",
-		Array(about.get_child(3).text.split(",")).map(func(item: String): return item.strip_edges())
+		Array(about.get_child(3).text.split(","))\
+		.map(func(item: String): return item.strip_edges())\
+		.filter(func(item: String): return not item.is_empty())
 	)
 	config.set_value("mode", "description", about.get_child(4).text.strip_edges())
-	config.save(S.globalize_path("user://modes".path_join(mode_informations[current_mode_index]["id"]).path_join("mode.cfg")))
+	err = config.save(S.globalize_path("user://modes".path_join(mode_informations[current_mode_index]["id"]).path_join("mode.cfg")))
+	if err:
+		add_child(Factory.accept_dialog(
+			"Failed to update mode information: Error " + str(err),
+			"Failed to change mode information!"
+		))
 
 
 func _on_edit_script_pressed() -> void:
@@ -152,7 +165,7 @@ func _on_create_kit_toggled(toggled_on: bool) -> void:
 		about.hide()
 	else:
 		mode_kit_button.text = "Create Mode Kit..."
-		if mode_list.get_selected_items() == PackedInt32Array():
+		if mode_list.get_selected_items().is_empty():
 			mode_list.select_mode = ItemList.SELECT_SINGLE
 			mode_list.deselect_all()
 			return

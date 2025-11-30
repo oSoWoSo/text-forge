@@ -21,9 +21,9 @@ func _on_popup_panel_about_to_popup() -> void:
 
 
 func _on_go_pressed() -> void:
-	if not line.text.is_valid_int() and not column.text.is_valid_int():
+	if not line.text.is_valid_int() or not column.text.is_valid_int():
 		return
-	Global.get_editor().set_caret_line(clampi(int(line.text) - 1, 0, Global.get_editor().get_line_count()))
+	Global.get_editor().set_caret_line(clampi(int(line.text) - 1, 0, Global.get_editor().get_line_count() - 1))
 	Global.get_editor().set_caret_column(int(column.text))
 	get_child(0).hide()
 	Global.get_editor().grab_focus()

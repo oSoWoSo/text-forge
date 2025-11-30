@@ -16,7 +16,7 @@ const VERSION = "1.0"
 var current_project := ConfigFile.new()
 ## Recent projects.
 var recent_menu := PopupMenu.new()
-## List of all project files. (Will be setted from other modules)
+## List of all project files. (Will be set from other modules)
 var all_files: Array[String] = []
 
 func _ready() -> void:
@@ -146,7 +146,7 @@ func append_to_recent_projects(file_path: String) -> void:
 	file = FileAccess.open(S.RECENT_PROJECTS_DATA, FileAccess.WRITE)
 	if not file:
 		Global.send_notification(
-			GlobalAccess.Notification.ERROR,
+			Global.Notification.ERROR,
 			"Failed to update recent projects list!",
 			"Error code: " + str(FileAccess.get_open_error())
 		)

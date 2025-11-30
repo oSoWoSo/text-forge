@@ -91,8 +91,10 @@ func install_extension(path: String) -> void:
 	var root_dir = DirAccess.open(S.FOLDER_EXTENSIONS)
 
 	var files = reader.get_files()
-	for file_path in files:
-		if not file_path.begins_with("extensions/"):
+	for file_path: String in files:
+		# Reject entries not under extensions/ OR containing any ".." path segment.
+		file_path = file_path.simplify_path()
+		if not file_path.begins_with("extensions/") or file_path.split("/").has(".."):
 			Global.send_notification(
 				Global.Notification.ERROR,
 				"Scurity alert!",

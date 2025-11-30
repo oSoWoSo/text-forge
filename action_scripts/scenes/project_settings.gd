@@ -52,6 +52,7 @@ func _add_file(path, container: VBoxContainer) -> void:
 		n.get_child(1).pressed.connect(_remove_file.bind(p, container))
 		n.show()
 		container.add_child(n)
+		existing.append(p)
 
 
 func _icon_selected(path: String) -> void:
@@ -107,9 +108,28 @@ func _on_save_pressed() -> void:
 	config.set_value("project", "name", name_edit.text)
 	config.set_value("project", "details", details_edit.text)
 	if icon_button.text.get_extension().to_lower() in S.IMAGE_EXTS:
-		var old_bytes := FileAccess.get_file_as_bytes(config.get_value("project", "icon", ""))
-		var new_bytes := FileAccess.get_file_as_bytes(icon_button.text)
-		if new_bytes != old_bytes or old_bytes.is_empty():
+		# Validate the new icon file exists
+		if not FileAccess.file_exists(icon_button.text):
+			add_child(Factory.accept_dialog(
+				"The selected icon file does not exist or is not accessible.",
+				"Icon Error!",
+				Callable(),
+				Vector2i(500, 50),
+				true,
+				true
+			))
+			return
+		var old_icon_path: String = config.get_value("project", "icon", "")
+		var should_update := false
+		if old_icon_path.is_empty() or not FileAccess.file_exists(old_icon_path):
+			# No previous icon or previous icon no longer exists - set new icon
+			should_update = true
+		else:
+			# Both files exist - compare their contents
+			var old_bytes := FileAccess.get_file_as_bytes(old_icon_path)
+			var new_bytes := FileAccess.get_file_as_bytes(icon_button.text)
+			should_update = (old_bytes != new_bytes)
+		if should_update:
 			config.set_value("project", "icon", Project.cache_icon(icon_button.text))
 	config.set_value("project", "tags", tags_edit.text.strip_edges())
 	config.set_value("files", "include", include_files.get_children().map(func(file):

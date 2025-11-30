@@ -1,15 +1,15 @@
 class_name CommandPalette
 extends Popup
-## Command palette to provide fast search and run way.
+## Command palette that provides a fast way to search for and run commands.
 
-## Command items.
+## Container for all command option buttons.
 @export var options: VBoxContainer
-## Instance item.
+## Template button used when instancing command options.
 @export var sample: Button
 ## Input search box.
 @export var input: LineEdit
 
-## List of avialable commands.
+## List of available commands.
 var commands := {}
 
 func _ready() -> void:
@@ -35,8 +35,8 @@ func _on_search_box_text_changed(new_text: String) -> void:
 				+ item.substr(item.findn(new_text)
 				+ new_text.length())
 			)
-		option.get_child(1).append_text(modified_text)
-		option.get_child(0).text = commands[item][0]
+		option.get_child(0).append_text(modified_text)
+		option.get_child(1).text = commands[item][0]
 		if option.get_child(0).text == "(Unset)": option.get_child(0).hide()
 		option.pressed.connect(commands[item][1])
 		option.pressed.connect(self.hide)

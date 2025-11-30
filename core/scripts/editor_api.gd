@@ -120,8 +120,10 @@ func import_mode(path: String) -> void:
 	var root_dir = DirAccess.open("user://")
 	# Extract file
 	var files = reader.get_files()
-	for file_path in files:
-		if not file_path.begins_with("modes/"):
+	for file_path: String in files:
+		# Reject entries not under modes/ OR containing any ".." path segment.
+		file_path = file_path.simplify_path()
+		if not file_path.begins_with("modes/") or file_path.split("/").has(".."):
 			Global.send_notification(
 				Global.Notification.ERROR,
 				"Security alert!",
@@ -432,6 +434,7 @@ func _change_mode_to(mode: Dictionary) -> Error:
 	var initialize_error := new_mode_script._initialize_mode()
 	if initialize_error:
 		self.remove_child(new_mode_script)
+		new_mode_script.queue_free()
 	if Global.temprory_children.has("current_mode_script"):
 		# Remove catched mode script
 		if initialize_error == OK:

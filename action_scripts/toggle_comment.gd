@@ -13,18 +13,22 @@ func _run_action() -> void:
 		return
 	Global.get_editor().begin_complex_operation()
 	Global.get_editor().begin_multicaret_edit()
+	var start_key := Global.get_editor().get_delimiter_start_key(0)
+	var end_key := Global.get_editor().get_delimiter_end_key(0)
 	var text := Global.get_editor_text().split("\n")
 	for caret in Global.get_editor().get_caret_count():
-		for line in range(
-				Global.get_editor().get_selection_from_line(caret),
-				Global.get_editor().get_selection_to_line(caret) + 1
-			):
-			var comment_pos := Global.get_editor().is_in_comment(line)
-			if comment_pos != -1:
-				text[line] = text[line].erase(text[line].find(Global.get_editor().get_comment_delimiters()[0]), Global.get_editor().get_comment_delimiters()[0].length())
-			else:
-				var insert_pos := text[line].length() - text[line].strip_edges(true, false).length()
-				text[line] = text[line].insert(insert_pos, Global.get_editor().get_comment_delimiters()[0])
+		var line := Global.get_editor().get_caret_line(caret)
+		var column := Global.get_editor().get_caret_column(caret)
+		var delimiter_start := Global.get_editor().get_delimiter_start_position(line, column)
+		var delimiter_end := Global.get_editor().get_delimiter_end_position(line, column)
+		if delimiter_start == Vector2(-1, -1) or delimiter_end == Vector2(-1, -1):
+			var insert_pos := text[line].length() - text[line].strip_edges(true, false).length()
+			text[line] = text[line].insert(insert_pos, start_key)
+			if end_key:
+				text[line] += end_key
+		else:
+			text[delimiter_start.y] = text[delimiter_start.y].erase(delimiter_start.x, start_key.length())
+			text[delimiter_end.y] = text[delimiter_end.y].erase(delimiter_end.x - end_key.length(), end_key.length())
 	Global.set_editor_text("\n".join(text))
 	Global.get_editor().end_multicaret_edit()
 	Global.get_editor().end_complex_operation()

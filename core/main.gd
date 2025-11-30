@@ -24,7 +24,7 @@ const SUBMENU_SUFFIX = "_submenu"
 const MENU_TRANSLATION_PREFIX = "menu."
 
 ## [MenuBar] that will keep menu buttons. Menu buttons will be [PopupMenu]s (See [MenuBar] for more
-## infromation).
+## information).
 @export var menu_container: MenuBar
 ## This [Label] will be placed between [member menu_container] and [member editor], its [param text]
 ## will be file name and its [param tooltip] will be file path.[br][br]
@@ -50,6 +50,8 @@ var recent_files_submenu: PopupMenu
 var templates_submenu: PopupMenu
 ## Configurations loaded from [constant S.MAIN_UI_DATA].
 var main_menu_data: Dictionary
+## Protects [method _handle_settings] from multiple runs at same time.
+var _is_reloading_settings := false
 ## Cached translation data with [method TextForgeTranslator.cache_source].
 var _translation_data: Dictionary[String, Dictionary]
 
@@ -68,6 +70,7 @@ func _ready() -> void:
 	Signals.reload_recent_files.connect(_reload_recent_files)
 	# Handle settings
 	_initialize_themes() # Updating themes before loading settings
+	_define_presets()
 	_handle_settings()
 
 	# Load action scripts
@@ -91,16 +94,18 @@ func _initialize_themes() -> void:
 			continue
 		# Copy theme
 		var file := FileAccess.open(S.FOLDER_THEMES.path_join(t), FileAccess.WRITE)
+		if not file:
+			Global.send_notification(
+				Global.Notification.ERROR,
+				"Failed to create theme file at %s" % S.FOLDER_THEMES.path_join(t)
+			)
+			continue
 		file.store_buffer(FileAccess.get_file_as_bytes(S.FOLDER_INTERNAL_THEMES.path_join(t)))
 		file.close()
 
 
-## Defines core-related presets and loads them. This function supports dynamic reload for mode,
-## theme, and indentation.
-func _handle_settings() -> void:
-	# Connect dynamic reload
-	if not Signals.settings_changed.is_connected(_handle_settings):
-		Signals.settings_changed.connect(_handle_settings)
+## Defines core-related presets.
+func _define_presets() -> void:
 	# Define presets
 	# 1. Load last file at start
 	Settings.define_preset("files", "load_last_file_at_start", true)
@@ -111,6 +116,16 @@ func _handle_settings() -> void:
 	Settings.define_preset("edit", "indent_size", 4)
 	# 3. Theme
 	Settings.define_preset("editor_ui", "theme_name", "dark")
+
+
+## Loads core-related settings. This function supports dynamic reload for mode, theme, and indentation.
+func _handle_settings() -> void:
+	if _is_reloading_settings:
+		return
+	_is_reloading_settings = true
+	# Connect dynamic reload
+	if not Signals.settings_changed.is_connected(_handle_settings):
+		Signals.settings_changed.connect(_handle_settings)
 	# Load settings
 	# 1. Indentation
 	Global.get_editor_api().update_indentation_settings(false)
@@ -125,6 +140,7 @@ func _handle_settings() -> void:
 		Global.get_editor_api()._unload_current_mode()
 		await U.wait()
 		Global.get_editor_api()._change_mode_to(current_mode)
+	_is_reloading_settings = false
 
 
 ## Loads data in [member main_menu_data], uses [constant S.MAIN_UI_DATA] and [constant DATA_SECTION].
@@ -191,7 +207,7 @@ func _load_scripts() -> void:
 				continue
 			# Create script path
 			# 46 is unicode for "."
-			var script_path: String = S.TEMPLATE_ACTION_SCRIPT.format([item.get("text", "").to_snake_case().remove_char(46)])
+			var script_path := _get_script_path_for_item(item)
 			# Disable items without script (except submenu roots)
 			if not FileAccess.file_exists(S.globalize_path(script_path)):
 				if item.has("popup") and item.get("type", OptionTypes.REGULAR) != OptionTypes.SUBMENU:
@@ -270,7 +286,15 @@ func load_template(_name: String) -> void:
 	await U.wait()
 	Global.set_file_name("New file")
 	Global.set_file_path("Unsaved")
-	Global.set_editor_text(FileAccess.get_file_as_string(S.TEMPLATE_TEMPLATES.format([_name])))
+	var path := S.TEMPLATE_TEMPLATES.format([_name])
+	if not FileAccess.file_exists(path):
+		Global.send_notification(
+			Global.Notification.ERROR,
+			"Template not found",
+			"Template '%s' could not be loaded." % _name
+		)
+		return
+	Global.set_editor_text(FileAccess.get_file_as_string(path))
 	Global.set_editor_disabled(false)
 	Signals.check_options.emit()
 	start_replace_action(S.PATTERN_PLACEHOLDER)
@@ -303,11 +327,20 @@ func _on_editor_text_changed() -> void:
 
 ## Reloads recent files list, use [signal SignalBus.reload_recent_files] for standard call.
 func _reload_recent_files() -> void:
+	if not recent_files_submenu:
+		return
+	var recent_files_old := FileAccess.get_file_as_string(S.RECENT_FILES_DATA)
+	if FileAccess.get_open_error():
+		Global.send_notification(
+			Global.Notification.ERROR,
+			"Failed to reload recent files!"
+		)
+		return
 	# Clear submenu
 	recent_files_submenu.clear()
 	# Load recent files
 	if FileAccess.file_exists(S.globalize_path(S.RECENT_FILES_DATA)):
-		var recent_files_list = FileAccess.get_file_as_string(S.RECENT_FILES_DATA).split("\n", false)
+		var recent_files_list = recent_files_old.split("\n", false)
 		recent_files_list = S.merge_unique(recent_files_list, []) # Remove duplicate items
 		for recent in recent_files_list:
 			if recent_files_submenu.item_count == 15: # Limit list to 15 items
@@ -319,7 +352,7 @@ func _reload_recent_files() -> void:
 	var recent_files := PackedStringArray()
 	for recent in recent_files_submenu.item_count:
 		recent_files.append(recent_files_submenu.get_item_text(recent))
-	if "\n".join(recent_files) != FileAccess.get_file_as_string(S.RECENT_FILES_DATA):
+	if "\n".join(recent_files) != recent_files_old:
 		var file = FileAccess.open(S.RECENT_FILES_DATA, FileAccess.WRITE)
 		file.store_string("\n".join(recent_files))
 		file.close()
@@ -331,7 +364,7 @@ func _connect_script(path: String, res: Resource) -> void:
 	var was_found := false
 	for menu: String in main_menu_data:
 		for option: Dictionary in main_menu_data[menu]:
-			if S.TEMPLATE_ACTION_SCRIPT.format([option.get("text", "").to_snake_case().remove_char(46)]) == path:
+			if _get_script_path_for_item(option) == path:
 				item = option
 				was_found = true
 				break
@@ -367,18 +400,14 @@ func _handle_menu_option_state(id: int, menu: PopupMenu, rootmenu: String = "") 
 		menu.toggle_item_checked(index) # Toggle selected option state
 		# Search for related radio options and set them to unchecked
 		var check_index = index - 1
-		while true: # Options before selected option
-			if check_index < 0:
-				break
+		while check_index >= 0: # Options before selected option
 			# Break when touch an option that isn't radio checkbox
 			if not menu.is_item_radio_checkable(check_index):
 				break
 			menu.set_item_checked(check_index, false)
 			check_index -= 1
 		check_index = index + 1
-		while true: # Options after selected option
-			if check_index + 1 > menu.item_count:
-				break
+		while check_index < menu.item_count: # Options after selected option
 			# Break when touch an option that isn't radio checkbox
 			if not menu.is_item_radio_checkable(check_index):
 				break
@@ -398,11 +427,12 @@ func _handle_cmdline_arguments() -> void:
 	if args.is_empty():
 		return
 	for arg in args:
-		if arg.begins_with("uid://") or arg == "--scene":
+		if arg.begins_with("uid://") or arg.begins_with("--"):
 			continue
 		if arg.is_relative_path():
 			arg = S.globalize_path(arg)
-		Signals.open_file.emit(arg)
+		if FileAccess.file_exists(arg):
+			Signals.open_file.emit(arg)
 		break # Currently we can support just one file, so this line skips next files
 
 
@@ -410,7 +440,8 @@ func _handle_cmdline_arguments() -> void:
 func _handle_load_last_file() -> void:
 	if (Global.has_file()
 		or not Settings.get_setting_bool("files", "load_last_file_at_start")
-		or Global.get_last_file_path() == ""):
+		or Global.get_last_file_path() == ""
+		or not FileAccess.file_exists(Global.get_file_path())):
 		return
 	if Settings.get_setting_bool("files", "ask_before_load_last_file_at_start"):
 		add_child(Factory.confirmation_dialog(
@@ -436,3 +467,10 @@ func _load_last_file(is_automatic := true) -> void:
 			"You can change this behavior or disable this notification in preferences."
 		)
 	editor.grab_focus()
+
+
+## Helper to generate sript path for a menu option.
+func _get_script_path_for_item(item: Dictionary) -> String:
+	return S.TEMPLATE_ACTION_SCRIPT.format(
+		[item.get("text", "").to_snake_case().remove_char(46)]
+	)

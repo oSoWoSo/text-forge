@@ -90,6 +90,15 @@ func backup_file(as_auto: bool) -> void:
 		backup_failed.emit(as_auto)
 		return
 	var file := FileAccess.open(S.globalize_path(S.TEMPLATE_BACKUP_FILE.format([backup_id])), FileAccess.WRITE)
+	if not file:
+		if not as_auto:
+			Global.send_notification(
+				Global.Notification.ERROR,
+				"Failed to save backup!",
+				"Could not open backup file for writing."
+			)
+		backup_failed.emit(as_auto)
+		return
 	file.store_string(Global.get_editor_text())
 	file.close()
 	file_backups[Time.get_datetime_string_from_system(false, true)] = backup_id
