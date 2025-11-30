@@ -8,8 +8,14 @@ func _run_action() -> void:
 	if Global.get_editor().get_caret_count() > 1:
 		Global.send_notification(Global.Notification.WARNING, "Evaluate selection only supports main caret!")
 	var expression = Expression.new()
-	expression.parse(Global.get_editor().get_selected_text(0))
+	var error = expression.parse(Global.get_editor().get_selected_text(0))
+	if error != OK:
+		Global.send_notification(Global.Notification.ERROR, "Failed to parse expression!")
+		return
 	var result = expression.execute([], self)
+	if expression.has_execute_failed():
+		Global.send_notification(Global.Notification.ERROR, "Failed to execute expression!")
+		return
 	var selection = Vector2i(Global.get_editor().get_selection_origin_line(), Global.get_editor().get_selection_origin_column())
 	var caret = Vector2i(Global.get_editor().get_caret_line(), Global.get_editor().get_caret_column())
 	Global.set_editor_text(Global.get_editor_text().substr(0, Global.get_editor().get_char_index(selection.x, selection.y)) + str(result) + Global.get_editor_text().substr(Global.get_editor().get_char_index(caret.x, caret.y)))
