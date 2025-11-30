@@ -284,8 +284,8 @@ func start_replace_action(pattern: String) -> void:
 ## Appends [param file_path] in [constant S.RECENT_FILES_DATA]. New file will be in top of list.
 ## This function will emit [signal SignalBus.reload_recent_files].
 func append_to_recent_files(file_path: String) -> void:
-	var file_access := FileAccess.open(S.RECENT_FILES_DATA, FileAccess.WRITE)
 	var current_files := FileAccess.get_file_as_string(S.RECENT_FILES_DATA)
+	var file_access := FileAccess.open(S.RECENT_FILES_DATA, FileAccess.WRITE)
 	file_access.store_string(file_path + "\n" + current_files)
 	file_access.close()
 	Signals.reload_recent_files.emit()

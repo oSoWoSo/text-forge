@@ -59,7 +59,13 @@ func get_backups_list() -> Dictionary[String, Dictionary]:
 
 
 ## Restores current backup to given [param path] from given [param code] backup.
-func restore_backup(code: String, path: String) -> void:
+func restore_backup(code: String, path: String) -> Error:
+	if not FileAccess.file_exists(S.TEMPLATE_BACKUP_FILE.format([code])):
+		Global.send_notification(
+			Global.Notification.ERROR,
+			"Failed to find backup file!"
+		)
+		return ERR_DOES_NOT_EXIST
 	var content := FileAccess.get_file_as_string(S.TEMPLATE_BACKUP_FILE.format([code]))
 	Global.set_file_path(path)
 	Global.set_file_name(path.get_file())
@@ -68,6 +74,7 @@ func restore_backup(code: String, path: String) -> void:
 	Signals.check_options.emit()
 	Global.mark_file_as_unsaved()
 	Global.send_notification(Global.Notification.INFO, "Backup sucefully restored.")
+	return OK
 
 
 ## Makes a backup from current file.

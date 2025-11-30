@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cytf7ju37wxoy"]
 
-[ext_resource type="Script" uid="uid://c4f2372irjy6e" path="res://action_scripts/scenes/command_pallete.gd" id="1_2hb76"]
+[ext_resource type="Script" uid="uid://c4f2372irjy6e" path="res://action_scripts/scenes/command_palette.gd" id="1_y6aej"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_x336v"]
 font_size = 14
@@ -11,7 +11,7 @@ oversampling_override = 1.0
 initial_position = 2
 size = Vector2i(400, 282)
 visible = true
-script = ExtResource("1_2hb76")
+script = ExtResource("1_y6aej")
 options = NodePath("Panel/VBox/Scroll/Commands")
 sample = NodePath("Panel/VBox/Instance")
 input = NodePath("Panel/VBox/SearchBox")

@@ -12,16 +12,18 @@ func _ready() -> void:
 
 
 func _update_caret_pos() -> void:
-	text = "{0} : {1}".format([Global.get_editor().get_caret_line(), Global.get_editor().get_caret_column()])
+	text = "{0} : {1}".format([Global.get_editor().get_caret_line() + 1, Global.get_editor().get_caret_column()])
 
 
 func _on_popup_panel_about_to_popup() -> void:
-	line.text = str(Global.get_editor().get_caret_line())
+	line.text = str(Global.get_editor().get_caret_line() + 1)
 	column.text = str(Global.get_editor().get_caret_column())
 
 
 func _on_go_pressed() -> void:
-	Global.get_editor().set_caret_line(int(line.text) - 1)
+	if not line.text.is_valid_int() and not column.text.is_valid_int():
+		return
+	Global.get_editor().set_caret_line(clampi(int(line.text) - 1, 0, Global.get_editor().get_line_count()))
 	Global.get_editor().set_caret_column(int(column.text))
 	get_child(0).hide()
 	Global.get_editor().grab_focus()

@@ -144,6 +144,13 @@ func append_to_recent_projects(file_path: String) -> void:
 	if FileAccess.file_exists(S.RECENT_PROJECTS_DATA):
 		files = FileAccess.get_file_as_string(S.RECENT_PROJECTS_DATA)
 	file = FileAccess.open(S.RECENT_PROJECTS_DATA, FileAccess.WRITE)
+	if not file:
+		Global.send_notification(
+			GlobalAccess.Notification.ERROR,
+			"Failed to update recent projects list!",
+			"Error code: " + str(FileAccess.get_open_error())
+		)
+		return
 	file.store_string(file_path.replace("\\", "/") + "\n" + files)
 	file.close()
 	load_recent_projects()

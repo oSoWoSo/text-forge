@@ -34,6 +34,7 @@ func _ready() -> void:
 		page.set_text(0, scroll.name)
 		if tab.get_child_count() == 0:
 			scroll.queue_free()
+			page.free()
 	if tree.get_root().get_child_count():
 		tree.set_selected(tree.get_root().get_first_child(), 0)
 

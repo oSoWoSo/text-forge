@@ -16,8 +16,7 @@ func setup(item_id: String, label: String, enabled: bool = false) -> ExtensionIn
 	id = item_id
 	text.text = label
 	enable.button_pressed = enabled
-	if enabled:
-		enable.text = "Enabled "
+	_on_status_toggled(enabled)
 	show()
 	return self
 
@@ -34,7 +33,7 @@ func _on_status_toggled(toggled_on: bool) -> void:
 ## Sends a confirmation request to uninstall extension.
 func _on_uninstall_pressed() -> void:
 	add_child(Factory.confirmation_dialog(
-		"Are you sure about uninstall this extension?",
+		"Are you sure you want to uninstall this extension?",
 		"Yes",
 		"Cancel",
 		"Please Confirm",
@@ -64,15 +63,25 @@ func _on_export_pressed() -> void:
 
 ## Exports current extension.
 func _export_self(path: String) -> void:
-	var writer = ZIPPacker.new()
-	var err = writer.open(path)
-	if err != OK:
+	var writer := ZIPPacker.new()
+	var err := writer.open(path)
+	if err:
 		Global.send_notification(Global.Notification.ERROR, "Can't export extension!", "Error code: " + str(err))
 		return
 	for f in DirAccess.get_files_at(S.FOLDER_EXTENSIONS.path_join(id)):
+		var src_path := S.FOLDER_EXTENSIONS.path_join(id).path_join(f)
+		var file := FileAccess.open(src_path, FileAccess.READ)
+		if not file:
+			var open_err := FileAccess.get_open_error()
+			Global.send_notification(
+				Global.Notification.ERROR,
+				"Can't export extension file!",
+				"File: %s\nError code: %s" % [src_path, str(open_err)]
+			)
+			continue
 		writer.start_file(id.path_join(f))
-		var file := FileAccess.open(S.FOLDER_EXTENSIONS.path_join(id).path_join(f), FileAccess.READ)
 		writer.write_file(file.get_buffer(file.get_length()))
+		file.close()
 		writer.close_file()
 	writer.close()
 	Global.send_notification(Global.Notification.INFO, "Export extension completed.", "Exported file: " + path)

@@ -13,7 +13,7 @@ func _run_action() -> void:
 		return
 	Global.get_editor().begin_complex_operation()
 	Global.get_editor().begin_multicaret_edit()
-	var text = Global.get_editor_text().split("\n")
+	var text := Global.get_editor_text().split("\n")
 	for caret in Global.get_editor().get_caret_count():
 		for line in range(
 				Global.get_editor().get_selection_from_line(caret),
@@ -21,12 +21,10 @@ func _run_action() -> void:
 			):
 			var comment_pos := Global.get_editor().is_in_comment(line)
 			if comment_pos != -1:
-				text[line] = text.get(line).erase(
-					comment_pos,
-					Global.get_editor().get_comment_delimiters()[0].length()
-				)
+				text[line] = text[line].erase(text[line].find(Global.get_editor().get_comment_delimiters()[0]), Global.get_editor().get_comment_delimiters()[0].length())
 			else:
-				text[line] = Global.get_editor().get_comment_delimiters()[0] + text.get(line)
+				var insert_pos := text[line].length() - text[line].strip_edges(true, false).length()
+				text[line] = text[line].insert(insert_pos, Global.get_editor().get_comment_delimiters()[0])
 	Global.set_editor_text("\n".join(text))
 	Global.get_editor().end_multicaret_edit()
 	Global.get_editor().end_complex_operation()

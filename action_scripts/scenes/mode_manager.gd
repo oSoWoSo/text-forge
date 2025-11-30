@@ -65,7 +65,7 @@ func _on_data_changed(new_text: String) -> void:
 		Array(about.get_child(3).text.split(",")).map(func(item: String): return item.strip_edges())
 	)
 	config.set_value("mode", "description", about.get_child(4).text.strip_edges())
-	config.save("user://modes".path_join(mode_informations[current_mode_index]["id"]).path_join("mode.cfg"))
+	config.save(S.globalize_path("user://modes".path_join(mode_informations[current_mode_index]["id"]).path_join("mode.cfg")))
 
 
 func _on_edit_script_pressed() -> void:
@@ -100,7 +100,7 @@ func _export_mode(path: String) -> void:
 func _add_folder_to_zip(writer: ZIPPacker, path: String) -> void:
 	for file in DirAccess.get_files_at(path):
 		var file_bytes := FileAccess.get_file_as_bytes(path.path_join(file))
-		if file_bytes.is_empty() and FileAccess.get_open_error() != OK:
+		if FileAccess.get_open_error() != OK:
 			push_warning("Failed to read file: " + path.path_join(file))
 			continue
 		writer.start_file(path.erase(0, 7).path_join(file))

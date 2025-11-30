@@ -3,7 +3,7 @@ extends Window
 ## Marketplace to view and install external packages.
 ##
 ## See [url=https://github.com/text-forge/mp]text-forge/mp[/url] repository for backend source.[br]
-## Visit [url=https://text-forge.github.io/marketplace]Online Marketpalce[/url] to explore
+## Visit [url=https://text-forge.github.io/marketplace]Online Marketplace[/url] to explore
 ## marketplace without editor.
 
 ## Status of compatibility between package and editor.
@@ -190,6 +190,13 @@ func _complete_installation(
 		return
 	var path: String = data["file"]
 	var downloaded := FileAccess.open(path, FileAccess.WRITE)
+	if downloaded == null:
+		Global.send_notification(
+			Global.Notification.ERROR,
+			"Failed to save package!",
+			"Could not open file for writing: " + path
+		)
+		return
 	downloaded.store_buffer(body)
 	downloaded.close()
 	match data["category"]:
@@ -247,7 +254,7 @@ func get_compatibility_status(compatible_versions: String) -> CompatibilityStatu
 	var regex := RegEx.new()
 	regex.compile(r">(?<min_e>=?)(?<min>\d+\.\d+\.\d+)(?: <(?<max_e>=?)(?<max>\d+\.\d+\.\d+))? \|\| \?(?<unv>\d+\.\d+\.\d+)")
 	var result := regex.search(compatible_versions)
-	if regex.search(compatible_versions) == null:
+	if not result:
 		Global.send_notification(
 			Global.Notification.ERROR,
 			"Invalid package version information!",

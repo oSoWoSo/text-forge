@@ -107,11 +107,9 @@ func _on_save_pressed() -> void:
 	config.set_value("project", "name", name_edit.text)
 	config.set_value("project", "details", details_edit.text)
 	if icon_button.text.get_extension().to_lower() in S.IMAGE_EXTS:
-		if (
-				FileAccess.get_file_as_bytes(config.get_value("project", "icon", ""))
-				!=
-				FileAccess.get_file_as_bytes(icon_button.text)
-			):
+		var old_bytes := FileAccess.get_file_as_bytes(config.get_value("project", "icon", ""))
+		var new_bytes := FileAccess.get_file_as_bytes(icon_button.text)
+		if new_bytes != old_bytes or old_bytes.is_empty():
 			config.set_value("project", "icon", Project.cache_icon(icon_button.text))
 	config.set_value("project", "tags", tags_edit.text.strip_edges())
 	config.set_value("files", "include", include_files.get_children().map(func(file):

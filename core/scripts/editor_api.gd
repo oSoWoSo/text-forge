@@ -124,7 +124,7 @@ func import_mode(path: String) -> void:
 		if not file_path.begins_with("modes/"):
 			Global.send_notification(
 				Global.Notification.ERROR,
-				"Scurity alert!",
+				"Security alert!",
 				path + " file contains a file outside modes folder: " + file_path + "\nThis file extraction was skipped!"
 			)
 			continue
