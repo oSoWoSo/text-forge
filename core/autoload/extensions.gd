@@ -97,7 +97,7 @@ func install_extension(path: String) -> void:
 		if not file_path.begins_with("extensions/") or file_path.split("/").has(".."):
 			Global.send_notification(
 				Global.Notification.ERROR,
-				"Scurity alert!",
+				"Security alert!",
 				path + " contains a file outside extensions folder: " + file_path + "\nThis file extraction was skipped!"
 			)
 			continue
