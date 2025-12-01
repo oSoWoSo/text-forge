@@ -60,9 +60,11 @@ func test_check_option_no_requirements() -> void:
 
 func test_check_option_requires_file_enabled() -> void:
 	test_action_script.requires_file = true
+	var original_state = Global.is_editor_disabled()
 	Global.set_editor_disabled(false)
 	test_action_script._check_option()
 	assert_bool(test_action_script.enable).is_true()
+	Global.set_editor_disabled(original_state)
 
 func test_check_option_requires_file_disabled() -> void:
 	test_action_script.requires_file = true
