@@ -9,7 +9,7 @@ This directory contains comprehensive unit tests for the Text Forge text editor.
 
 ## Performance Beckmarks
 Current test suite execution time (estimated):
-- **All tests**: ~10 seconds
+- **All tests**: ~13 seconds
 - **Individual file**: ~1 second
 
 ## Test Generation Notes

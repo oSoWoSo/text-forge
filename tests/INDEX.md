@@ -15,20 +15,20 @@
 ## Unit Tests
 
 - Path: `tests/`
-- Tests: 79
-- Files: 9
+- Tests: 175
+- Files: 13
 
 ### Action Scripts Tests
 
 - Path: `tests/action_scripts/`
-- Tests: 5
+- Tests: 19
 - Files: 2
 
 ### Autoloads Tests
 
 - Path: `tests/core/autoload/`
-- Tests: 11
-- Files: 2
+- Tests: 93
+- Files: 6
 
 ### Core Tests
 
