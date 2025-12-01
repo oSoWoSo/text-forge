@@ -16,6 +16,8 @@ func before_test() -> void:
 		Settings.settings.erase_section(test_section)
 	if Settings.presets.has_section(test_section):
 		Settings.presets.erase_section(test_section)
+	if Settings.data.has_section(test_section):
+		Settings.data.erase_section(test_section)
 
 func after_test() -> void:
 	# Clean up after each test
@@ -23,6 +25,8 @@ func after_test() -> void:
 		Settings.settings.erase_section(test_section)
 	if Settings.presets.has_section(test_section):
 		Settings.presets.erase_section(test_section)
+	if Settings.data.has_section(test_section):
+		Settings.data.erase_section(test_section)
 
 func test_settings_file_constant() -> void:
 	assert_str(Settings.SETTINGS_FILE).is_equal("user://settings.cfg")

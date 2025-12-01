@@ -89,7 +89,10 @@ func test_action_scripts() -> void:
 	for i in DirAccess.get_files_at(S.FOLDER_ACTION_SCRIPTS):
 		if i.ends_with(".uid"):
 			continue
-		var script: Node = load(S.FOLDER_ACTION_SCRIPTS.path_join(i)).new()
+		var loaded = load(S.FOLDER_ACTION_SCRIPTS.path_join(i))
+		if loaded == null:
+			continue
+		var script: Node = auto_free(loaded.new())
 		if not script is MultiActionScript:
-			assert_object(script).is_inheriting(ActionScript).append_failure_message("{0} is {1}".format([i, script.get_class()]))
-		script.free()
+			assert_object(script).is_inheriting(ActionScript) \
+			.append_failure_message("{0} is {1}".format([i, script.get_class()]))

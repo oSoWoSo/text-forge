@@ -1,4 +1,4 @@
-# Test Forge Unit Tests - Summary
+# Text Forge Unit Tests - Summary
 
 ## Overview
 This document provides a comprehensive summary of all unit tests generated for the Text Forge
@@ -34,7 +34,7 @@ project changes.
 
 |           Test File           | Tests | Lines |                         Covers                          | Coverage |
 |:-----------------------------:|:-----:|:-----:|:-------------------------------------------------------:|:--------:|
-|     `backup_code_test.gd`     |   14  |  87   |          Creation, Restoration, Configuration           | ⭐⭐⭐⭐⭐ |
+|     `backup_core_test.gd`     |   14  |  87   |          Creation, Restoration, Configuration           | ⭐⭐⭐⭐⭐ |
 |       `factory_test.gd`       |   4   |  44   |                      Node creation                      | ⭐⭐ |
 |       `global_test.gd`        |   26  |  140  |    Access, File management, Commands, Notifications     | ⭐⭐⭐⭐⭐ |
 |       `settings_test.gd`      |   21  |  122  |    Configuration management, Presets, Data storage      | ⭐⭐⭐⭐⭐ |
