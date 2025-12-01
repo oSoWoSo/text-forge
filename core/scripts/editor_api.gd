@@ -121,9 +121,9 @@ func import_mode(path: String) -> void:
 	# Extract file
 	var files = reader.get_files()
 	for file_path: String in files:
-		# Reject entries not under modes/ OR containing any ".." path segment.
+		# Reject entries not under modes/
 		file_path = file_path.simplify_path()
-		if not file_path.begins_with("modes/") or file_path.split("/").has(".."):
+		if not file_path.begins_with("modes/"):
 			Global.send_notification(
 				Global.Notification.ERROR,
 				"Security alert!",

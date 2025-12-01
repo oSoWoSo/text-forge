@@ -130,14 +130,15 @@ func load_recent_projects() -> void:
 		if not file:
 			Global.send_notification(
 				Global.Notification.ERROR,
-				"Failed to save recent projects!"
+				"Failed to save recent projects!",
+				"Error code: " + str(FileAccess.get_open_error())
 			)
 			return
 		file.store_string("\n".join(recent_projects))
 		file.close()
 
 
-##  Appends given project to recent projects.
+## Appends given project to recent projects.
 func append_to_recent_projects(file_path: String) -> void:
 	var file: FileAccess
 	var files := ""

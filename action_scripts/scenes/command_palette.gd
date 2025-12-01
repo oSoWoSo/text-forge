@@ -25,19 +25,20 @@ func _on_search_box_text_changed(new_text: String) -> void:
 	S.free_all_children(options)
 	for item: String in order:
 		var option: Button = sample.duplicate()
-		var modified_text = item
-		if item.containsn(new_text):
+		var modified_text := item
+		if not new_text.is_empty() and item.containsn(new_text):
+			var idx := item.findn(new_text)
 			modified_text = (
-				item.substr(0, item.findn(new_text))
+				item.substr(0, idx)
 				+ "[bgcolor=ffffff10]"
-				+ item.substr(item.findn(new_text), new_text.length())
+				+ item.substr(idx, new_text.length())
 				+ "[/bgcolor]"
-				+ item.substr(item.findn(new_text)
-				+ new_text.length())
+				+ item.substr(idx + new_text.length())
 			)
 		option.get_child(0).append_text(modified_text)
 		option.get_child(1).text = commands[item][0]
-		if option.get_child(0).text == "(Unset)": option.get_child(0).hide()
+		if option.get_child(1).text == "(Unset)":
+			option.get_child(1).hide()
 		option.pressed.connect(commands[item][1])
 		option.pressed.connect(self.hide)
 		options.add_child(option)

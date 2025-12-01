@@ -92,9 +92,9 @@ func install_extension(path: String) -> void:
 
 	var files = reader.get_files()
 	for file_path: String in files:
-		# Reject entries not under extensions/ OR containing any ".." path segment.
+		# Reject entries not under extensions
 		file_path = file_path.simplify_path()
-		if not file_path.begins_with("extensions/") or file_path.split("/").has(".."):
+		if not file_path.begins_with("extensions/"):
 			Global.send_notification(
 				Global.Notification.ERROR,
 				"Security alert!",

@@ -86,7 +86,15 @@ func _on_packages_info_request_completed(__: int, response_code: int, ___: Packe
 
 
 func _on_package_information_requested(id: String) -> void:
-	var pack_info: Dictionary = info.filter(func(p): return p["id"] == id)[0]
+	var filtered := info.filter(func(p): return p["id"] == id)
+	if filtered.is_empty():
+		Global.send_notification(
+			Global.Notification.ERROR,
+			"Package not found!",
+			"Could not find package with id: " + id
+		)
+		return
+	var pack_info: Dictionary = filtered[0]
 	i_description.text = "Loading..."
 	S.free_all_children(i_images)
 	NetSuite.http_request(
