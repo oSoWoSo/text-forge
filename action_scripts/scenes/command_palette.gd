@@ -47,6 +47,8 @@ func _on_search_box_text_changed(new_text: String) -> void:
 
 
 func _sort_commands(a: String, b: String, text: String) -> bool:
+	if text.is_empty():
+		return a < b
 	var score_a: float = text.similarity(a)
 	var score_b: float = text.similarity(b)
 	if a.contains(text):

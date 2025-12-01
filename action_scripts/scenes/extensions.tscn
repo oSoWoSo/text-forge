@@ -90,7 +90,7 @@ alignment = 1
 
 [node name="Status" type="CheckBox" parent="ExtensionInstance/VBox/Actions"]
 layout_mode = 2
-text = "Disabled "
+text = "Disabled"
 
 [node name="Export" type="Button" parent="ExtensionInstance/VBox/Actions"]
 layout_mode = 2

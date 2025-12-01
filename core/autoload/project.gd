@@ -191,7 +191,7 @@ func cache_icon(path: String) -> String:
 		id += 1
 		target = cache_dir.path_join(str(id) + "." + ext)
 	var file := FileAccess.open(target, FileAccess.WRITE)
-	if file == null:
+	if not file:
 		return ""
 	file.store_buffer(icon)
 	file.close()

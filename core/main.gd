@@ -310,6 +310,12 @@ func start_replace_action(pattern: String) -> void:
 func append_to_recent_files(file_path: String) -> void:
 	var current_files := FileAccess.get_file_as_string(S.RECENT_FILES_DATA)
 	var file_access := FileAccess.open(S.RECENT_FILES_DATA, FileAccess.WRITE)
+	if not file_access:
+		Global.send_notification(
+			Global.Notification.ERROR,
+			"Failed to update recent files!"
+		)
+		return
 	file_access.store_string(file_path + "\n" + current_files)
 	file_access.close()
 	Signals.reload_recent_files.emit()
@@ -478,5 +484,5 @@ func _load_last_file(is_automatic := true) -> void:
 ## Helper to generate script path for a menu option.
 func _get_script_path_for_item(item: Dictionary) -> String:
 	return S.TEMPLATE_ACTION_SCRIPT.format(
-		[item.get("text", "").to_snake_case().remove_char(46)]
+		[item.get("text", "").to_snake_case().remove_chars(".")]
 	)

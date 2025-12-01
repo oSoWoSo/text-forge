@@ -75,6 +75,13 @@ func _on_packages_info_request_completed(__: int, response_code: int, ___: Packe
 		)
 		return
 	info = JSON.parse_string(body.get_string_from_utf8())
+	if info == null:
+		Global.send_notification(
+			Global.Notification.ERROR,
+			"Failed to parse packages information!",
+			"Invalid JSON response from server."
+		)
+		return
 	for p in info:
 		var n := PackageItem.new()
 		n.setup(
@@ -221,10 +228,10 @@ func _complete_installation(
 			Global.get_editor_api().import_mode(path)
 		"themes":
 			add_child(Factory.confirmation_dialog(
-				"Installing theme completed, Do you want to use it now?",
+				"Theme installation complete. Do you want to use it now?",
 				"Yes",
-				"No, Later",
-				"Do you want use new theme?",
+				"No, later",
+				"Do you want to use the new theme?",
 				Callable(),
 				_change_theme.bind(path.get_file().get_basename())
 			))
@@ -316,10 +323,12 @@ func get_compatibility_status(compatible_versions: String) -> CompatibilityStatu
 
 
 func _on_search_text_changed(new_text: String) -> void:
+	var selected_id := filter.get_selected_id()
+	var selected_category := filter.get_item_text(filter.get_item_index(selected_id)).to_lower()
 	for n: PanelContainer in packages.get_children():
 		if ((
-				n.n_category.text == filter.get_item_text(filter.get_item_index(filter.get_selected_id())).to_lower()
-				or filter.get_selected_id() == 0
+				n.n_category.text == selected_category
+				or selected_id == 0
 			) and (
 				n.n_name.text.containsn(new_text)
 				or new_text.is_empty()

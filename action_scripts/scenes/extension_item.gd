@@ -94,4 +94,4 @@ func _export_self(path: String) -> void:
 
 
 func _update_status_text(is_enabled: bool) -> void:
-	enable.text = "Enabled " if is_enabled else "Disabled "
+	enable.text = "Enabled" if is_enabled else "Disabled"

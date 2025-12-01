@@ -38,7 +38,10 @@ func _run_action() -> void:
 			var start_key := Global.get_editor().get_delimiter_start_key(delimiter_index)
 			var end_key := Global.get_editor().get_delimiter_end_key(delimiter_index)
 			text[delimiter_start.y] = text[delimiter_start.y].erase(delimiter_start.x, start_key.length())
-			text[delimiter_end.y] = text[delimiter_end.y].erase(delimiter_end.x - end_key.length(), end_key.length())
+			var end_erase_pos := delimiter_end.x - end_key.length()
+			if delimiter_start.y == delimiter_end.y:
+				end_erase_pos -= start_key.length()
+			text[delimiter_end.y] = text[delimiter_end.y].erase(end_erase_pos, end_key.length())
 	Global.set_editor_text("\n".join(text))
 	Global.get_editor().end_multicaret_edit()
 	Global.get_editor().end_complex_operation()

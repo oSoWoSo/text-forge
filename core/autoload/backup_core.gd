@@ -86,9 +86,6 @@ func backup_file(as_auto: bool) -> void:
 		config.load(S.globalize_path(S.BACKUP_DATABASE))
 	var file_backups: Dictionary = config.get_value("backups", Global.get_file_path(), {})
 	var backup_id := _generate_new_backup_id()
-	if backup_id == "":
-		backup_failed.emit(as_auto)
-		return
 	var file := FileAccess.open(S.globalize_path(S.TEMPLATE_BACKUP_FILE.format([backup_id])), FileAccess.WRITE)
 	if not file:
 		if not as_auto:
@@ -107,9 +104,9 @@ func backup_file(as_auto: bool) -> void:
 	backup_saved.emit(as_auto)
 
 
-# Returns a new random backup id based on unix time.
+# Returns a probabilistically unique backup id based on unix time and random suffix.
 func _generate_new_backup_id() -> String:
-	# Use timestamp + random suffix for guaranteed uniqueness
+	# Use timestamp + random suffix for high-probability uniqueness
 	var timestamp := str(Time.get_unix_time_from_system())
 	var suffix := str(randi_range(1000, 9999))
 	return timestamp + suffix
