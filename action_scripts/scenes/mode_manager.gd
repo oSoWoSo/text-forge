@@ -25,7 +25,7 @@ func _load_mode_list() -> void:
 		mode_list.add_item(item["name"])
 
 
-func _show_about(idx) -> void:
+func _show_about(idx: int) -> void:
 	if mode_list.select_mode == ItemList.SELECT_MULTI:
 		return
 	current_mode_index = idx
@@ -53,7 +53,7 @@ func _import_mode(path: String) -> void:
 	_load_mode_list()
 
 
-func _on_data_changed(new_text: String) -> void:
+func _on_data_changed(_new_text: String) -> void:
 	var config = ConfigFile.new()
 	var err := config.load(S.globalize_path("user://modes".path_join(mode_informations[current_mode_index]["id"]).path_join("mode.cfg")))
 	if err:
@@ -136,7 +136,10 @@ func _on_remove_pressed() -> void:
 
 
 func _remove_mode() -> void:
-	OS.move_to_trash(S.globalize_path("user://modes".path_join(mode_informations[current_mode_index]["id"])))
+	var err := OS.move_to_trash(S.globalize_path("user://modes".path_join(mode_informations[current_mode_index]["id"])))
+	if err:
+		Global.send_notification(Global.Notification.ERROR, "Failed to remove mode!", "Error code: " + str(err))
+		return
 	Global.send_notification(Global.Notification.INFO, "Remove mode completed.")
 	Global.get_editor_api().reload_modes()
 	_load_mode_list()

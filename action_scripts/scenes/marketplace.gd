@@ -19,6 +19,8 @@ const MP_HOST = "https://raw.githubusercontent.com/text-forge/mp/refs"
 const PACKAGES_INFORMATION = "packages.json"
 ## Name of package information file for each package.
 const PACK_INFORMATION = "pack.json"
+## Package item scene.
+const PACKAGE_ITEM = preload("res://action_scripts/scenes/package_item.tscn")
 
 ## Packages list.
 @export var packages: VBoxContainer
@@ -62,6 +64,11 @@ func _ready() -> void:
 		_on_packages_info_request_completed,
 		{ "url": MP_HOST.path_join(version).path_join(PACKAGES_INFORMATION) }
 	) == null:
+		Global.send_notification(
+			Global.Notification.ERROR,
+			"Failed to connect to marketplace!",
+			"Could not initiate HTTP request."
+		)
 		S.free_all_children(packages)
 
 
@@ -83,7 +90,10 @@ func _on_packages_info_request_completed(__: int, response_code: int, ___: Packe
 		)
 		return
 	for p in info:
-		var n := PackageItem.new()
+		if not (p is Dictionary and p.has_all(["id", "name", "version", "category", "author",
+			"tags", "description", "updated", "created", "editor_version_min"])):
+			continue
+		var n := PACKAGE_ITEM.instantiate()
 		n.setup(
 			p["id"], p["name"], p["version"], p["category"], p["author"], p["tags"],
 			p["description"], p["updated"], p["created"], p["editor_version_min"],
@@ -146,6 +156,13 @@ func _complete_package_information(
 			Global.Notification.ERROR,
 			"Failed to parse package information!",
 			"Invalid JSON response from server."
+		)
+		return
+	if not _info.has("compatible_versions"):
+		Global.send_notification(
+			Global.Notification.ERROR,
+			"Invalid package information!",
+			"Missing compatible_versions field."
 		)
 		return
 	match get_compatibility_status(_info["compatible_versions"]):
@@ -285,41 +302,35 @@ func get_compatibility_status(compatible_versions: String) -> CompatibilityStatu
 		return CompatibilityStatus.INCOMPATIBLE
 	if true: # Unverified versions check
 		var unv := S.map_array_to_int(result.get_string("unv").split(".", false, 2))
-		if editor_version[0] > unv[0]:
+		if _compare_versions(editor_version, unv) == 1 or editor_version[2] == unv[2]:
 			return CompatibilityStatus.UNVERIFIED
-		elif editor_version[0] == unv[0]:
-			if editor_version[1] > unv[1]:
-				return CompatibilityStatus.UNVERIFIED
-			elif editor_version[1] == unv[1]:
-				if editor_version[2] >= unv[2]:
-					return CompatibilityStatus.UNVERIFIED
 	if true: # Minimum version check
 		var minimum := S.map_array_to_int(result.get_string("min").split(".", false, 2))
 		var minimum_e := result.get_string("min_e") != ""
-		if editor_version[0] < minimum[0]:
+		if (
+			_compare_versions(editor_version, minimum) == -1
+			or (editor_version[2] == minimum[2] and not minimum_e)
+		):
 			return CompatibilityStatus.INCOMPATIBLE
-		elif editor_version[0] == minimum[0]:
-			if editor_version[1] < minimum[1]:
-				return CompatibilityStatus.INCOMPATIBLE
-			elif editor_version[1] == minimum[1]:
-				if editor_version[2] < minimum[2]:
-					return CompatibilityStatus.INCOMPATIBLE
-				elif editor_version[2] == minimum[2] and not minimum_e:
-					return CompatibilityStatus.INCOMPATIBLE
 	if result.get_string("max") != "": # Maximum version check
 		var maximum := S.map_array_to_int(result.get_string("max").split(".", false, 2))
 		var maximum_e := result.get_string("max_e") != ""
-		if editor_version[0] > maximum[0]:
+		if (
+			_compare_versions(editor_version, maximum) == 1
+			or (editor_version[2] == maximum[2] and not maximum_e)
+		):
 			return CompatibilityStatus.INCOMPATIBLE
-		elif editor_version[0] == maximum[0]:
-			if editor_version[1] > maximum[1]:
-				return CompatibilityStatus.INCOMPATIBLE
-			elif editor_version[1] == maximum[1]:
-				if editor_version[2] > maximum[2]:
-					return CompatibilityStatus.INCOMPATIBLE
-				if editor_version[2] == maximum[2] and not maximum_e:
-					return CompatibilityStatus.INCOMPATIBLE
 	return CompatibilityStatus.COMPATIBLE
+
+
+# Helper function to compare versions
+func _compare_versions(a: Array[int], b: Array[int]) -> int:
+	for i in range(min(a.size(), b.size())):
+		if a[i] < b[i]:
+			return -1
+		elif a[i] > b[i]:
+			return 1
+	return 0
 
 
 func _on_search_text_changed(new_text: String) -> void:
