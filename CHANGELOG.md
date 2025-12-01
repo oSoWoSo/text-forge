@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning (2.0)](https://semver.org/spec/
 ### Added
 - Mode-driven indentation settings ([#136](https://github.com/text-forge/text-forge/pull/136))
 - Bookmarks support and bookmarks panel ([#137](https://github.com/text-forge/text-forge/pull/137))
-- **Action Script:** Edit > Evaluate Selection - Evaluates mathematical expressions in selected text ([#139](https://github.com/text-forge/text-forge/pull/105))
+- **Action Script:** Edit > Evaluate Selection - Evaluates mathematical expressions in selected text ([#139](https://github.com/text-forge/text-forge/pull/139))
 - **API:** `Global.mark_file_as_unsaved()` - Marks current file as having unsaved changes ([#139](https://github.com/text-forge/text-forge/pull/139))
 - **API:** `Global.has_file()` - Checks if a valid file is currently open ([#139](https://github.com/text-forge/text-forge/pull/139))
 - **API:** `backup_failed(was_auto: bool)` signal in BackupCore for backup failure notifications ([#139](https://github.com/text-forge/text-forge/pull/139))
