@@ -12,6 +12,8 @@ func _ready() -> void:
 	if Global.get_editor():
 		Global.get_editor().type_timer_timeout.connect(_update_bookmarks)
 		Global.get_editor().gutter_clicked.connect(_update_bookmarks.call_deferred.unbind(2))
+		if Signals.open_bookmarks_panel.is_connected(Global.get_panel_manager().show_panel):
+			Signals.open_bookmarks_panel.disconnect(Global.get_panel_manager().show_panel)
 		Signals.open_bookmarks_panel.connect(Global.get_panel_manager().show_panel.bind(place, index))
 
 

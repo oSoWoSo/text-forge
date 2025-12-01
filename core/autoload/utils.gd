@@ -98,16 +98,16 @@ func deprecated() -> void:
 ##     await U.wait() # or await U.wait(0)
 ##     print("One frame passed!")
 ## [/codeblock]
-func wait(time: float = 0) -> void:
+func wait(time: float = 0) -> Signal:
 	if time != 0:
-		await get_tree().create_timer(time).timeout
+		return get_tree().create_timer(time).timeout
 	else:
-		await get_tree().process_frame
+		return get_tree().process_frame
 
 
 ## Loads a resource with globalizing [param path].
 func load_resource(path: String) -> Resource:
-	if path.is_empty():
+	if path.is_empty() or not FileAccess.file_exists(S.globalize_path(path)):
 		return null
 	return ResourceLoader.load(S.globalize_path(path))
 
@@ -138,8 +138,8 @@ func _format_stack(stack: Dictionary) -> String:
 class ThreadedLoader extends Object:
 	var _tree: SceneTree
 	var _pending: Dictionary[String, bool]= {}
-	var _for_each
-	var _after_all
+	var _for_each: Callable
+	var _after_all: Callable
 
 	## Initializes threaded loader for given [param paths], you can do this multiple times to add
 	## all files you need, but each time will overwrite [param for_each] and [param after_all] values.[br]
@@ -150,7 +150,9 @@ class ThreadedLoader extends Object:
 	func _init(tree: SceneTree, paths: PackedStringArray, for_each := Callable(), after_all := Callable()) -> void:
 		_tree = tree
 		for p in paths:
-			_pending[p] = false
+			if p.is_empty() or not FileAccess.file_exists(S.globalize_path(p)):
+				continue
+			_pending[S.globalize_path(p)] = false
 		if for_each.is_valid():
 			_for_each = for_each
 		if after_all.is_valid():
@@ -158,6 +160,10 @@ class ThreadedLoader extends Object:
 
 	## Starts threaded loader.
 	func start() -> void:
+		if _pending.is_empty():
+			if _after_all:
+				_after_all.call()
+			return
 		for p in _pending:
 			ResourceLoader.load_threaded_request(p, "", true)
 		_monitor_loading()

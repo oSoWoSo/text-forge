@@ -20,4 +20,4 @@ func _ready() -> void:
 	if DISABLE_ALL or not Global.get_editor():
 		return
 	if PERFORMANCE_ALL:
-		add_child(load("res://tests/performance.gd").new(PERFORMANCE_STARTUP, PERFORMANCE_OPEN_FILE))
+		add_child(load("res://tests/runtime/performance.gd").new(PERFORMANCE_STARTUP, PERFORMANCE_OPEN_FILE))

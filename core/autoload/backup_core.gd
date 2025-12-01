@@ -107,7 +107,7 @@ func backup_file(as_auto: bool) -> void:
 # Returns a probabilistically unique backup id based on unix time and random suffix.
 func _generate_new_backup_id() -> String:
 	# Use timestamp + random suffix for high-probability uniqueness
-	var timestamp := str(Time.get_unix_time_from_system())
+	var timestamp := str(int(Time.get_unix_time_from_system()))
 	var suffix := str(randi_range(1000, 9999))
 	return timestamp + suffix
 
