@@ -41,7 +41,7 @@ vertical_alignment = 1
 
 [node name="Instance" type="PanelContainer" parent="."]
 visible = false
-layout_mode = 2
+layout_mode = 0
 offset_left = 5.0
 offset_top = 5.0
 offset_right = 1147.0
