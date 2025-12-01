@@ -1,3 +1,4 @@
+class_name SimplePanel
 extends TextForgePanel
 ## Simple [TextForgePanel], useful for creating panels from script (by modes).
 

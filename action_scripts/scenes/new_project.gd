@@ -1,13 +1,23 @@
+class_name NewProjectWindow
 extends Window
+## Provides a window to create new projects.
 
+## Path to project file item's instance.
 const FILE_NODE_SCN: PackedScene = preload("res://action_scripts/scenes/project_file_item.tscn")
 
+## Project details [TextEdit].
 @export var details_edit: TextEdit
+## List of files to exclude.
 @export var exclude_files: VBoxContainer
+## Button to load icon.
 @export var icon_button: Button
+## List of files to include.
 @export var include_files: VBoxContainer
+## [LineEdit] for project name.
 @export var name_edit: LineEdit
+## Button to select project path.
 @export var path_button: Button
+## [LineEdit] for project tags.
 @export var tags_edit: LineEdit
 
 func _add_file(path, container: VBoxContainer) -> void:
@@ -36,18 +46,35 @@ func _icon_selected(path: String) -> void:
 
 func _on_create_pressed() -> void:
 	if not path_button.text.to_lower().ends_with(".tfproj"):
-		add_child(Factory.accept_dialog("Please select a valid .tfproj file path to save your project.",
-				"Alert!", Callable(), Vector2i(500, 50), true, true))
+		add_child(Factory.accept_dialog(
+			"Please select a valid .tfproj file path to save your project.",
+			"Alert!",
+			Callable(),
+			Vector2i(500, 50),
+			true,
+			true
+		))
 		return
 	if name_edit.text.is_empty():
-		add_child(Factory.accept_dialog("Please enter a name for your project.", "Alert!",
-				Callable(), Vector2i(500, 50), true, true))
+		add_child(Factory.accept_dialog(
+			"Please enter a name for your project.",
+			"Alert!",
+			Callable(),
+			Vector2i(500, 50),
+			true,
+			true
+		))
 		return
 	if include_files.get_child_count() == 0:
-		add_child(Factory.accept_dialog("Your project must include at least one file or folder.",
-				"Alert!", Callable(), Vector2i(500, 50), true, true))
+		add_child(Factory.accept_dialog(
+			"Your project must include at least one file or folder.",
+			"Alert!",
+			Callable(),
+			Vector2i(500, 50),
+			true,
+			true
+		))
 		return
-
 	var config := ConfigFile.new()
 	config.set_value("project", "name", name_edit.text)
 	config.set_value("project", "details", details_edit.text)
@@ -72,29 +99,70 @@ func _on_create_pressed() -> void:
 		Global.send_notification(Global.Notification.INFO, "New project created at {0}.".format([path_button.text]))
 		queue_free()
 	else:
-		Global.send_notification(Global.Notification.ERROR, "Failed to save project at {0}!".format([path_button.text]), "Error code: {0}".format([err]))
+		Global.send_notification(
+			Global.Notification.ERROR,
+			"Failed to save project at {0}!".format([path_button.text]),
+			"Error code: {0}".format([err])
+		)
 
 
 func _on_add_exclude_pressed(type: int) -> void:
-	add_child(Factory.file_dialog(type, FileDialog.ACCESS_FILESYSTEM, [],
-	_add_file.bind(exclude_files), true, OS.get_system_dir(OS.SYSTEM_DIR_DOCUMENTS), ""))
+	add_child(Factory.file_dialog(
+		type,
+		FileDialog.ACCESS_FILESYSTEM,
+		[],
+		_add_file.bind(exclude_files),
+		true,
+		OS.get_system_dir(OS.SYSTEM_DIR_DOCUMENTS),
+		""
+	))
 
 
 func _on_icon_pressed() -> void:
-	add_child(Factory.file_dialog(FileDialog.FILE_MODE_OPEN_FILE, FileDialog.ACCESS_FILESYSTEM,
-			["*.bmp,*.dds,*.ktx,*.exr,*.hdr,*.jpg,*.jpeg,*.png,*.tga,*.svg,*.webp;Image Files;image/bmp,image/vnd.ms-dds,image/ktx,image/exr,image/vnd.radiance,image/jpeg,image/png,image/x-tga,image/svg+xml,image/webp"],
-			_icon_selected, true, OS.get_system_dir(OS.SYSTEM_DIR_PICTURES), ""))
+	add_child(Factory.file_dialog(
+		FileDialog.FILE_MODE_OPEN_FILE,
+		FileDialog.ACCESS_FILESYSTEM,
+		[
+			"*.png;PNG Image;image/png",
+			"*.jpg,*.jpeg;JPEG Image;image/jpeg",
+			"*.svg;SVG Image;image/svg+xml",
+			"*.bmp;BitMap Image;image/bmp",
+			"*.webp;WEBP Image;image/webp",
+			"*.tga;X-TGA Image;image/x-tga",
+			"*.hdr;HDR Image (Radiance);image/vnd.radiance",
+			"*.dds;DDS Image;image/vnd.ms-dds",
+			"*.ktx;KTX Image;image/ktx",
+			"*.exr;EXR Image;image/exr",
+		],
+		_icon_selected,
+		true,
+		OS.get_system_dir(OS.SYSTEM_DIR_PICTURES),
+		""
+	))
 
 
 func _on_add_include_pressed(type: int) -> void:
-	add_child(Factory.file_dialog(type, FileDialog.ACCESS_FILESYSTEM, [],
-	_add_file.bind(include_files), true, OS.get_system_dir(OS.SYSTEM_DIR_DOCUMENTS), ""))
+	add_child(Factory.file_dialog(
+		type,
+		FileDialog.ACCESS_FILESYSTEM,
+		[],
+		_add_file.bind(include_files),
+		true,
+		OS.get_system_dir(OS.SYSTEM_DIR_DOCUMENTS),
+		""
+	))
 
 
 func _on_path_pressed() -> void:
-	add_child(Factory.file_dialog(FileDialog.FILE_MODE_SAVE_FILE, FileDialog.ACCESS_FILESYSTEM,
-			["*.tfproj;Text Forge Project File"], _path_selected, true,
-			OS.get_system_dir(OS.SYSTEM_DIR_DOCUMENTS), ""))
+	add_child(Factory.file_dialog(
+		FileDialog.FILE_MODE_SAVE_FILE,
+		FileDialog.ACCESS_FILESYSTEM,
+		["*.tfproj;Text Forge Project File"],
+		_path_selected,
+		true,
+		OS.get_system_dir(OS.SYSTEM_DIR_DOCUMENTS),
+		""
+	))
 
 
 func _path_selected(path: String) -> void:

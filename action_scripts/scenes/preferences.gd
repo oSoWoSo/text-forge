@@ -1,11 +1,18 @@
+class_name PreferencesWindow
 extends Window
+## A window to view and modify preferences.
+##
+## This is a user interface, see [SettingsAPI] for code.
 
+## Container to keep each section.
 @export var container: TabContainer
+## Tree for section changing.
 @export var tree: Tree
 
 func _on_close_requested() -> void:
 	Signals.settings_changed.emit()
 	queue_free()
+
 
 func _ready() -> void:
 	var config := ConfigFile.new()
@@ -25,9 +32,11 @@ func _ready() -> void:
 		container.add_child(scroll)
 		var page := tree.create_item()
 		page.set_text(0, scroll.name)
-		if tab.get_child_count() == 0: scroll.queue_free()
+		if tab.get_child_count() == 0:
+			scroll.queue_free()
+			page.free()
 	if tree.get_root().get_child_count():
-		tree.set_selected(tree.get_root().get_first_child(),0)
+		tree.set_selected(tree.get_root().get_first_child(), 0)
 
 
 func _on_tree_item_selected() -> void:

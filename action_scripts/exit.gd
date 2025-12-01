@@ -10,7 +10,7 @@ func _run_action() -> void:
 
 
 func _close() -> void:
-	if Global.get_file_name().ends_with("*"):
+	if Global.has_unsaved_change():
 		Signals.save_request.emit(id)
 		return
 	await get_tree().process_frame

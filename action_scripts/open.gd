@@ -5,7 +5,7 @@ func _initialize() -> void:
 
 
 func _run_action() -> void:
-	if Global.get_file_name().ends_with("*"):
+	if Global.has_unsaved_change():
 		Signals.save_request.emit(id)
 		return
 	add_child(Factory.file_dialog(FileDialog.FILE_MODE_OPEN_FILE, FileDialog.ACCESS_FILESYSTEM, [], _open_file, true, "", Global.get_last_file_path()))

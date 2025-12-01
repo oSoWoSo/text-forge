@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://cdk5itderltnr" path="res://action_scripts/scenes/color_picker.gd" id="1_aa5xl"]
 
 [node name="Window" type="Window" node_paths=PackedStringArray("color_picker")]
+oversampling_override = 1.0
 title = "Color Picker"
 initial_position = 2
 size = Vector2i(300, 600)

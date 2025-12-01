@@ -1,4 +1,9 @@
+class_name ModeViewer
 extends MenuButton
+## Shows available modes and file extensions.
+##
+## This button shows current mode's name. Also user can see available modes and file extensions in
+## it's popup menu.
 
 func _ready() -> void:
 	Signals.mode_changed.connect(_update_mode.unbind(1))

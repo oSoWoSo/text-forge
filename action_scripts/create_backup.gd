@@ -2,6 +2,7 @@ extends ActionScript
 
 func _initialize() -> void:
 	requires_file = true
+	requires_saved_file = true
 
 
 func _run_action() -> void:

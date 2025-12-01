@@ -10,9 +10,44 @@ and this project adheres to [Semantic Versioning (2.0)](https://semver.org/spec/
 ### Added
 - Mode-driven indentation settings ([#136](https://github.com/text-forge/text-forge/pull/136))
 - Bookmarks support and bookmarks panel ([#137](https://github.com/text-forge/text-forge/pull/137))
+- **Action Script:** Edit > Evaluate Selection - Evaluates mathematical expressions in selected text ([#139](https://github.com/text-forge/text-forge/pull/139))
+- **API:** `Global.mark_file_as_unsaved()` - Marks current file as having unsaved changes ([#139](https://github.com/text-forge/text-forge/pull/139))
+- **API:** `Global.has_file()` - Checks if a valid file is currently open ([#139](https://github.com/text-forge/text-forge/pull/139))
+- **API:** `backup_failed(was_auto: bool)` signal in BackupCore for backup failure notifications ([#139](https://github.com/text-forge/text-forge/pull/139))
+- **API:** `extensions_loaded` signal in Extensions autoload ([#139](https://github.com/text-forge/text-forge/pull/139))
+- **API:** `indentation_settings_updated(use_space, indent_size)` signal in EditorAPI ([#139](https://github.com/text-forge/text-forge/pull/139))
+- **API:** Per-mode indentation override support with `EditorAPI.custom_mode_indentations` ([#139](https://github.com/text-forge/text-forge/pull/139))
+- **API:** `EditorAPI.reset_to_mode_indentation_settings()` ([#139](https://github.com/text-forge/text-forge/pull/139))
+- **API:** `EditorAPI.change_indentation_type(use_spaces)` ([#139](https://github.com/text-forge/text-forge/pull/139))
+- **API:** `EditorAPI.change_indent_size(indent_size)` ([#139](https://github.com/text-forge/text-forge/pull/139))
+- Class name declarations to ~40+ files for better type safety ([#139](https://github.com/text-forge/text-forge/pull/139))
+- Security validation for plugin/mod file extraction (prevents path traversal attacks) ([#139](https://github.com/text-forge/text-forge/pull/139))
+
+### Changed
+- **Action Script:** ~Command > Command Pallete~ to Command > Command Palette (renamed, improved search) ([#139](https://github.com/text-forge/text-forge/pull/139))
+- **API:** ~`Settings.config`~ to `Settings.data` (merged settings loading) ([#139](https://github.com/text-forge/text-forge/pull/139))
+- **API:** Extension config keys corrected: `on_activate`, `on_deactivate`, `uninstall` ([#139](https://github.com/text-forge/text-forge/pull/139))
+- Backup system ID generation now timestamp-based with random suffix ([#139](https://github.com/text-forge/text-forge/pull/139))
+- Unsaved file detection now uses `Global.has_unsaved_change()` instead of filename checks ([#139](https://github.com/text-forge/text-forge/pull/139))
+
+### Removed
+- **API:** ~`FileDatabase`~ class - Use direct path references instead ([#139](https://github.com/text-forge/text-forge/pull/112))
 
 ### Fixed
 - Changelog is not displayed in editor ([#133](https://github.com/text-forge/text-forge/pull/133))
+- **Action Script:** Move Lines to New File incorrect behavior ([#139](https://github.com/text-forge/text-forge/pull/92))
+- **Action Script:** Reset Font Size not loading configuration properly ([#139](https://github.com/text-forge/text-forge/pull/93))
+- **Action Script:** Toggle Bookmark incorrectly marking files as unsaved ([#139](https://github.com/text-forge/text-forge/pull/102))
+- **Action Script:** Toggle Comment delimiter detection and multi-caret handling ([#139](https://github.com/text-forge/text-forge/pull/139))
+- **Action Script:** Restart error handling with process creation validation ([#139](https://github.com/text-forge/text-forge/pull/139))
+- Backup system: Restored backup saving functionality ([#139](https://github.com/text-forge/text-forge/pull/54), [#139](https://github.com/text-forge/text-forge/pull/59))
+- Backup system: BackupStatus color updates on failure ([#139](https://github.com/text-forge/text-forge/pull/70), [#139](https://github.com/text-forge/text-forge/pull/71))
+- Backup system: Infinite save_request cycles ([#139](https://github.com/text-forge/text-forge/pull/73))
+- Backup system: Fixed `auto_backup_interval_minutes` setting name (was misspelled) ([#139](https://github.com/text-forge/text-forge/pull/139))
+- Internal modes no longer reinstall on every application run ([#139](https://github.com/text-forge/text-forge/pull/3))
+- Asset filename: ~`loafing.png`~ to `loading.png` ([#139](https://github.com/text-forge/text-forge/pull/26))
+- Unit test execution errors and disabled custom tests during test runs ([#139](https://github.com/text-forge/text-forge/pull/107), [#139](https://github.com/text-forge/text-forge/pull/109))
+- File selection dialog filters improved across multiple scenes ([#139](https://github.com/text-forge/text-forge/pull/139))
 
 ## [v0.2-rc1] - 2025-11-20
 

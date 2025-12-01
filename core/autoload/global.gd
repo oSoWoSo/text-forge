@@ -41,6 +41,11 @@ func _ready() -> void:
 		_core = get_node("/root/Main") as Core
 		_editor = _core.editor
 		_file_label = _core.file_label
+	else:
+		print_rich("[color=webgray]--- Global is in test mode ---[/color]")
+		_core = Core.new()
+		_editor = _core.editor
+		_file_label = _core.file_label
 
 
 ## Returns last window mode but [constant Window.MODE_FULLSCREEN] excluded.[br][br]
@@ -73,8 +78,10 @@ func set_file_name(file_name: String) -> void:
 	_file_label.text = file_name
 
 
+## Returns [code]true[/code] when there is an opened file.
 func has_file() -> bool:
 	return get_file_path().is_absolute_path()
+
 
 ## Returns editor node, it's accessable with [member Core.editor] too.
 func get_editor() -> Editor:
@@ -190,6 +197,12 @@ func load_resource(path: String) -> Resource:
 	return U.load_resource(path)
 
 
+## Appends [code]*[/code] to file name to show it's changed.
+func mark_file_as_unsaved() -> void:
+	if not (Global.has_unsaved_change() or Global.is_editor_disabled()):
+		_file_label.text += "*"
+
+
 class WindowManager:
 	## Window manager to restore window position, size, and mode.
 	##
@@ -212,9 +225,7 @@ class WindowManager:
 	func _ready() -> void:
 		if Engine.is_embedded_in_editor():
 			return
-
 		_window.close_requested.connect(_save_window_settings)
-
 		_load_window_settings()
 		if _window.mode != Window.MODE_MINIMIZED:
 			_last_mode_except_minimized = _window.mode
@@ -225,7 +236,6 @@ class WindowManager:
 	func _process(_delta: float) -> void:
 		if Engine.is_embedded_in_editor():
 			return
-
 		if _window.mode != Window.MODE_MINIMIZED:
 			_last_mode_except_minimized = _window.mode
 			if _window.mode != Window.MODE_FULLSCREEN:
@@ -235,14 +245,11 @@ class WindowManager:
 	func _load_window_settings() -> void:
 		if Engine.is_embedded_in_editor():
 			return
-
-		if not Settings.config.has_section(WINDOW_SECTION_ID):
+		if not Settings.data.has_section(WINDOW_SECTION_ID):
 			return
-
 		var screen = Settings.read_data(WINDOW_SECTION_ID, "screen", "N/A")
 		if screen is int and screen >= 0 and screen < DisplayServer.get_screen_count():
 			_window.current_screen = screen
-
 		var mode = Settings.read_data(WINDOW_SECTION_ID, "mode", "N/A")
 		if mode is Window.Mode:
 			match mode:
@@ -269,7 +276,6 @@ class WindowManager:
 	func _save_window_settings() -> void:
 		if Engine.is_embedded_in_editor():
 			return
-
 		Settings.write_data(WINDOW_SECTION_ID, "screen", _window.current_screen)
 		if _window.mode != Window.MODE_MINIMIZED:
 			Settings.write_data(WINDOW_SECTION_ID, "mode", _window.mode)

@@ -3,32 +3,33 @@
 [ext_resource type="Script" uid="uid://cw2hgon0xrtae" path="res://action_scripts/scenes/backups.gd" id="1_0pj35"]
 
 [node name="Window" type="Window" node_paths=PackedStringArray("file_list", "backup_list")]
+oversampling_override = 1.0
 title = "Backups"
 initial_position = 2
 size = Vector2i(500, 400)
 min_size = Vector2i(400, 300)
 keep_title_visible = true
 script = ExtResource("1_0pj35")
-file_list = NodePath("MarginContainer/HSplitContainer/ItemList")
-backup_list = NodePath("MarginContainer/HSplitContainer/ItemList2")
+file_list = NodePath("Margin/HSplit/Files")
+backup_list = NodePath("Margin/HSplit/Backups")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="Margin" type="MarginContainer" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HSplitContainer" type="HSplitContainer" parent="MarginContainer"]
+[node name="HSplit" type="HSplitContainer" parent="Margin"]
 layout_mode = 2
 split_offset = 200
 
-[node name="ItemList" type="ItemList" parent="MarginContainer/HSplitContainer"]
+[node name="Files" type="ItemList" parent="Margin/HSplit"]
 layout_mode = 2
 
-[node name="ItemList2" type="ItemList" parent="MarginContainer/HSplitContainer"]
+[node name="Backups" type="ItemList" parent="Margin/HSplit"]
 layout_mode = 2
 
 [connection signal="close_requested" from="." to="." method="queue_free"]
-[connection signal="item_selected" from="MarginContainer/HSplitContainer/ItemList" to="." method="_on_item_list_item_selected"]
-[connection signal="item_selected" from="MarginContainer/HSplitContainer/ItemList2" to="." method="_on_item_list_2_item_selected"]
+[connection signal="item_selected" from="Margin/HSplit/Files" to="." method="_on_files_item_selected"]
+[connection signal="item_selected" from="Margin/HSplit/Backups" to="." method="_on_backup_item_selected"]

@@ -1,0 +1,85 @@
+[gd_scene load_steps=3 format=3 uid="uid://cytf7ju37wxoy"]
+
+[ext_resource type="Script" uid="uid://c4f2372irjy6e" path="res://action_scripts/scenes/command_palette.gd" id="1_y6aej"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_x336v"]
+font_size = 14
+font_color = Color(1, 1, 1, 0.34902)
+
+[node name="Popup" type="Popup" node_paths=PackedStringArray("options", "sample", "input")]
+oversampling_override = 1.0
+initial_position = 2
+size = Vector2i(400, 282)
+visible = true
+script = ExtResource("1_y6aej")
+options = NodePath("Panel/VBox/Scroll/Commands")
+sample = NodePath("Panel/VBox/Instance")
+input = NodePath("Panel/VBox/SearchBox")
+
+[node name="Panel" type="PanelContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+
+[node name="SearchBox" type="LineEdit" parent="Panel/VBox"]
+layout_mode = 2
+placeholder_text = "Search for command"
+
+[node name="Scroll" type="ScrollContainer" parent="Panel/VBox"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Commands" type="VBoxContainer" parent="Panel/VBox/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Instance" type="Button" parent="Panel/VBox"]
+visible = false
+layout_mode = 2
+theme_type_variation = &"CommandButton"
+text = "New"
+alignment = 0
+text_overrun_behavior = 3
+
+[node name="Name" type="RichTextLabel" parent="Panel/VBox/Instance"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 5.0
+offset_top = -11.5
+offset_right = 244.0
+offset_bottom = 11.5
+grow_vertical = 2
+mouse_filter = 1
+bbcode_enabled = true
+scroll_active = false
+vertical_alignment = 1
+
+[node name="Shortcut" type="Label" parent="Panel/VBox/Instance"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -148.0
+offset_top = -11.5
+offset_bottom = 11.5
+grow_horizontal = 0
+grow_vertical = 2
+text = "Ctrl+F"
+label_settings = SubResource("LabelSettings_x336v")
+horizontal_alignment = 1
+vertical_alignment = 1
+text_overrun_behavior = 1
+
+[connection signal="text_changed" from="Panel/VBox/SearchBox" to="." method="_on_search_box_text_changed"]
+[connection signal="text_submitted" from="Panel/VBox/SearchBox" to="." method="_on_search_box_text_submitted"]

@@ -1,19 +1,26 @@
+class_name ModuleProfiler
 extends MenuButton
+## Shows a list of dynamic modules and count of all items.
 
+## Timer to reset profiler's modulate value.
 @export var modulate_timer: Timer
+
+## Count of all modules.
+var count = 0
+## Last count of items. For modulate change.
+var _old_count: int = 0
+
+## A list of monitored modules.
 @onready var modules_list: Dictionary[String, Node] = {
 	"Extensions": Extensions,
 	"Action Scripts": Global.get_scripts_node(),
 	"Modes": Global.get_editor_api(),
 	"Network Connections": NetSuite,
 }
-var _old_count: int = 0
-var count = 0
 
 func _ready() -> void:
 	get_popup().index_pressed.connect(_on_index_pressed)
 	Signals.module_profiler_refresh.connect(_refresh)
-
 	_refresh()
 
 
@@ -40,7 +47,10 @@ func _node_to_popup_menu_tree(node: Node) -> PopupMenu:
 	var popup := PopupMenu.new()
 	for child in node.get_children():
 		if child.get_child_count():
-			popup.add_submenu_node_item(child.name + str(" ({0})").format([child.get_child_count()]), _node_to_popup_menu_tree(child))
+			popup.add_submenu_node_item(
+				child.name + str(" ({0})").format([child.get_child_count()]),
+				_node_to_popup_menu_tree(child)
+			)
 		else:
 			popup.add_item(child.name)
 		count += 1
@@ -60,7 +70,6 @@ func _update_count() -> void:
 func _on_index_pressed(index: int) -> void:
 	if index != 0:
 		return
-
 	_refresh()
 
 

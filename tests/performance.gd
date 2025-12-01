@@ -35,7 +35,7 @@ func _ready() -> void:
 		print("Total setup (msec): " + str(Time.get_ticks_msec() - start_time))
 
 
-func _on_first_frame():
+func _on_first_frame() -> void:
 	end_time = Time.get_ticks_msec()
 	var duration := end_time - start_time
 	print("Startup time (msec): ", duration)

@@ -9,9 +9,10 @@ const ITEM = preload("res://data/panels/bookmarks/item_panel.tscn")
 @export var items: VBoxContainer
 
 func _ready() -> void:
-	Global.get_editor().type_timer_timeout.connect(_update_bookmarks)
-	Global.get_editor().gutter_clicked.connect(_update_bookmarks.call_deferred.unbind(2))
-	Signals.open_bookmarks_panel.connect(Global.get_panel_manager().show_panel.bind(place, index))
+	if Global.get_editor():
+		Global.get_editor().type_timer_timeout.connect(_update_bookmarks)
+		Global.get_editor().gutter_clicked.connect(_update_bookmarks.call_deferred.unbind(2))
+		Signals.open_bookmarks_panel.connect(Global.get_panel_manager().show_panel.bind(place, index))
 
 
 ## Updates bookmarks, uses available items again and hides additional items.

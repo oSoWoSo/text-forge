@@ -21,20 +21,21 @@ extends HBoxContainer
 ## Nodes with [code]Spliter[/code] suffix are [SplitContainer]s for handle panel sizes and open/close.[br]
 ## Nodes with [code]Panel[/code] suffix are [TabContainer]s with panels as children for show panels.
 
+## Emits when panel loading completed (for performance monitoring).
 signal load_completed
 
 ## Panel IDs.
 enum Panels {
-	## Left panel.
 	LEFT,
-	## Right panel.
 	RIGHT,
-	## Bottom panel.
 	BOTTOM,
 }
 
+## Tabs to show panel icons.
 @export var tabs: Dictionary[Panels, ItemList]
+## [SplitContainer]s to resize panels.
 @export var spliters: Dictionary[Panels, SplitContainer]
+## Containers to show panel contents.
 @export var containers: Dictionary[Panels, TabContainer]
 
 ## Panels data, keeps size, closing state, available panels, and last opened tab for each side.
@@ -43,16 +44,16 @@ var data := {
 	Panels.RIGHT: {"size": 200, "closed": true, "panels": {}, "last_tab": 0},
 	Panels.BOTTOM: {"size": 200, "closed": true, "panels": {}, "last_tab": 0},
 }
+## Panels with name and place to load.
 var _panels: Dictionary[String, Dictionary] = {}
 
 func _ready() -> void:
 	for side in 3:
-		# handle panel changing
+		# Handle panel changing
 		tabs[side].item_selected.connect(_handle_panel.bind(side))
 		spliters[side].item_rect_changed.connect(_apply_split)
 		containers[side].tab_selected.connect(_write_tab.bind(side))
-
-	# handle spliter draging
+	# Handle spliter draging
 	spliters[Panels.LEFT].dragged.connect(func(offset):
 		data[Panels.LEFT].size = offset
 		data[Panels.LEFT].closed = offset == 0
@@ -68,14 +69,14 @@ func _ready() -> void:
 		data[Panels.BOTTOM].closed = offset + 10 >= spliters[Panels.BOTTOM].size.y
 		_apply_split()
 	)
-
+	# Save layout before exit
 	get_window().close_requested.connect(_save_layout)
-
+	# Load panels and last layout
 	_load_panels()
 	_load_layout()
 
 
-## Add given [param panel] in [param location] with [param icon], it means new icon in [param location]
+## Adds given [param panel] in [param location] with [param icon], it means new icon in [param location]
 ## side and new panel in [member panels].
 func add_panel(location: Panels, panel: TextForgePanel, icon: Texture2D) -> void:
 	var current_tab = tabs[location]
@@ -91,6 +92,7 @@ func add_panel(location: Panels, panel: TextForgePanel, icon: Texture2D) -> void
 	data[location]["panels"][index] = panel
 
 
+## Removes target panel.
 func remove_panel(location: Panels, index: int) -> void:
 	var current_tab = tabs[location]
 	var current_panel = containers[location]
@@ -137,7 +139,7 @@ func _load_panels() -> void:
 	for panel in DirAccess.get_directories_at(S.FOLDER_PANELS):
 		var config = ConfigFile.new()
 		config.load(S.globalize_path(S.TEMPLATE_PANEL_CONFIG.format([panel])))
-		var place = config.get_value("panel", "place")
+		var place = config.get_value("panel", "place", "L")
 		var converted: int
 		if place == "R":
 			converted = Panels.RIGHT
@@ -154,10 +156,15 @@ func _load_panels() -> void:
 	U.load_resources_threaded(paths, Callable(), _complete_loading)
 
 
+## Adds loaded panels.
 func _complete_loading() -> void:
 	for p in _panels:
 		var info := _panels[p]
-		add_panel(info["place"], U.load_resource(p).instantiate(), U.load_resource(S.TEMPLATE_PANEL_ICON.format([info["name"]])))
+		add_panel(
+			info["place"],
+			U.load_resource(p).instantiate(),
+			U.load_resource(S.TEMPLATE_PANEL_ICON.format([info["name"]]))
+		)
 	_apply_split()
 	load_completed.emit()
 
@@ -178,27 +185,60 @@ func _handle_panel(selected: int, panel_id: int) -> void:
 
 ## Handle spliters to keep each side in setes minimum size and keep empty sides close.
 func _apply_split() -> void:
-	spliters[Panels.LEFT].split_offset = max(data[Panels.LEFT].size, containers[Panels.LEFT].get_child(containers[Panels.LEFT].current_tab).custom_minimum_size.x if containers[Panels.LEFT].get_child_count() else 0)
+	# --- Left ---
+	spliters[Panels.LEFT].split_offset = max(
+		data[Panels.LEFT].size,
+		(
+			containers[Panels.LEFT].get_child(containers[Panels.LEFT].current_tab).custom_minimum_size.x
+			if containers[Panels.LEFT].get_child_count()
+			else 0
+		)
+	)
 	if data[Panels.LEFT].closed or containers[Panels.LEFT].get_child_count() == 0:
 		spliters[Panels.LEFT].split_offset = 0
 		containers[Panels.LEFT].current_tab = -1
 	else:
-		containers[Panels.LEFT].current_tab = min(data[Panels.LEFT]["last_tab"], containers[Panels.LEFT].get_tab_count() - 1)
-
-	spliters[Panels.RIGHT].split_offset = max(spliters[Panels.RIGHT].size.x - data[Panels.RIGHT].size, containers[Panels.RIGHT].get_child(containers[Panels.RIGHT].current_tab).custom_minimum_size.x if containers[Panels.RIGHT].get_child_count() else 0)
+		containers[Panels.LEFT].current_tab = min(
+			data[Panels.LEFT]["last_tab"],
+			containers[Panels.LEFT].get_tab_count() - 1
+		)
+	# --- Right ---
+	spliters[Panels.RIGHT].split_offset = max(
+		spliters[Panels.RIGHT].size.x - data[Panels.RIGHT].size,
+		(
+			containers[Panels.RIGHT].get_child(containers[Panels.RIGHT].current_tab).custom_minimum_size.x
+			if containers[Panels.RIGHT].get_child_count()
+			else 0
+		)
+	)
 	if data[Panels.RIGHT].closed or containers[Panels.RIGHT].get_child_count() == 0:
 		spliters[Panels.RIGHT].split_offset = spliters[Panels.RIGHT].size.x
 		containers[Panels.RIGHT].current_tab = -1
 	else:
-		containers[Panels.RIGHT].current_tab = min(data[Panels.RIGHT]["last_tab"], containers[Panels.RIGHT].get_tab_count() - 1)
-
-	spliters[Panels.BOTTOM].split_offset = max(spliters[Panels.BOTTOM].size.y - data[Panels.BOTTOM].size, containers[Panels.BOTTOM].get_child(containers[Panels.BOTTOM].current_tab).custom_minimum_size.y if containers[Panels.BOTTOM].get_child_count() else 0)
+		containers[Panels.RIGHT].current_tab = min(
+			data[Panels.RIGHT]["last_tab"],
+			containers[Panels.RIGHT].get_tab_count() - 1
+		)
+	# --- Bottom ---
+	spliters[Panels.BOTTOM].split_offset = max(
+		spliters[Panels.BOTTOM].size.y - data[Panels.BOTTOM].size,
+		(
+			containers[Panels.BOTTOM].get_child(containers[Panels.BOTTOM].current_tab).custom_minimum_size.y
+			if containers[Panels.BOTTOM].get_child_count()
+			else 0
+		)
+	)
 	if data[Panels.BOTTOM].closed or containers[Panels.BOTTOM].get_child_count() == 0:
 		spliters[Panels.BOTTOM].split_offset = spliters[Panels.BOTTOM].size.y
 		containers[Panels.BOTTOM].current_tab = -1
 	else:
-		containers[Panels.BOTTOM].current_tab = min(data[Panels.BOTTOM]["last_tab"], containers[Panels.BOTTOM].get_tab_count() - 1)
+		containers[Panels.BOTTOM].current_tab = min(
+			data[Panels.BOTTOM]["last_tab"],
+			containers[Panels.BOTTOM].get_tab_count() - 1
+		)
 
 
+## Saves current tab for each panel to [member data].
 func _write_tab(tab: int, side: Panels):
-	if tab != -1: data[side]["last_tab"] = tab
+	if tab != -1:
+		data[side]["last_tab"] = tab

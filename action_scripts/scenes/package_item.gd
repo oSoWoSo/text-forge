@@ -1,18 +1,30 @@
+class_name PackageItem
 extends PanelContainer
+## Readr-made scene for package items in [MarketplaceWindow].
 
+## Name label.
 @export var n_name: Label
+## Version label.
 @export var n_version: Label
+## Category label.
 @export var n_category: Label
+## Author label.
 @export var n_author: Label
+## Tags container.
 @export var n_tags: HFlowContainer
+## Description label.
 @export var n_description: Label
+## Created and updated dates label.
 @export var n_dates: Label
+## Minimum editor version label.
 @export var n_min_editor_version: Label
+## Install button.
 @export var n_button: Button
 
 func setup(
-			id: String, package_name: String, version: String, category: String, author: String, tags: Array,
-			description: String, updated: String, created: String, min_editor_version: String, action: Callable) -> void:
+		id: String, package_name: String, version: String, category: String, author: String, tags: Array,
+		description: String, updated: String, created: String, min_editor_version: String, action: Callable
+	) -> void:
 	n_name.text = package_name
 	n_version.text = version
 	n_category.text = category

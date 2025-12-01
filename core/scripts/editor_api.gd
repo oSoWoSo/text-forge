@@ -2,11 +2,26 @@ class_name EditorAPI
 extends Control
 ## Editor API and Mode Manager.
 ##
-## This node is first child of [Editor] and designed to manage modes. Access way: [code]Global.get_editor_api()[/code]
+## This node is first child of [Editor] and designed to manage modes. Access way: [code]Global.get_editor_api()[/code][br]
+## This module manages a lot of important features and functionalities, including:[br][br]
+## - Modes validating, loading, management, handling internal modes[br]
+## - File saving and loading[br]
+## - Mode panel[br]
+## - Mode-based indentation settings[br]
+## - File preview[br]
+## - File outline[br]
+## - File linting[br]
+## - Installing modes from [code].tfmode[/code] files[br]
+## - Auto format and auto indent[br]
+## - Code completion[br]
+## - Smart file editing[br]
+## - Syntax highlighter[br]
+## - Bookmarks[br]
 
 ## Emits when a mode selected from available modes, this is a delay system and restore choice when
-## there is more than one mode for current file.
+## there is more than one mode for current file. (See [method load_file] and [method save_file] for usages)
 signal mode_selected(index: int)
+## Shares any change in indentation settings.
 signal indentation_settings_updated(use_space: bool, indent_size: int)
 
 ## Keeps list of all modes informations without damaged modes.
@@ -15,9 +30,10 @@ var mode_list: Array[Dictionary] = []
 var current_mode: Dictionary = {}
 ## Keeps panel of currently in use mode.
 var mode_panel: TextForgePanel
+## Keeps customized configuration for indentation settings for each mode.
+var custom_mode_indentations := {}
 # Keeps temprory index of selected mode.
 var _temp_mode_index: int = 0
-var custom_mode_indentations := {}
 
 func _ready() -> void:
 	child_order_changed.connect(Signals.refresh_module_profiler)
@@ -25,31 +41,32 @@ func _ready() -> void:
 	Global.get_editor().type_timer_timeout.connect(_update_preview)
 	Global.get_editor().type_timer_timeout.connect(_update_outline)
 	Global.get_editor().type_timer_timeout.connect(_lint_content)
-
-	if DirAccess.dir_exists_absolute(S.globalize_path(S.FOLDER_MODES.path_join("plain_text"))):
+	# Install internal modes
+	if not DirAccess.dir_exists_absolute(S.globalize_path(S.FOLDER_MODES.path_join("plain_text"))):
 		import_mode(S.globalize_path(S.DEFAULT_MODES))
+	else:
+		_load_mode_list()
 
 
 ## Loads [member mode_list], will fill [member GlobalAccess.damaged_modes] with failed modes.
 ## This function have file existence check, [ConfigFile] error handling, config section and key
 ## validation, and script class check. This function will add modes folder name to mode information
-## dictionary and [code]"id"[/code].
+## dictionary as [code]"id"[/code].
 func _load_mode_list() -> void:
-	if mode_list != []:
-		reload_modes()
-		return
+	if not mode_list.is_empty():
+		mode_list.clear()
 	var damaged_modes: Dictionary[String, String] = {}
-
+	# Validate each mode
 	for mode_folder: String in DirAccess.get_directories_at(S.FOLDER_MODES):
-		if not (FileAccess.file_exists(S.globalize_path(S.TEMPLATE_MODE_INFO.format([mode_folder])))
-		and FileAccess.file_exists(S.globalize_path(S.TEMPLATE_MODE_SCRIPT.format([mode_folder])))
-		and FileAccess.file_exists(S.globalize_path(S.TEMPLATE_MODE_ICON.format([mode_folder])))):
+		if not (
+			FileAccess.file_exists(S.globalize_path(S.TEMPLATE_MODE_INFO.format([mode_folder])))
+			and FileAccess.file_exists(S.globalize_path(S.TEMPLATE_MODE_SCRIPT.format([mode_folder])))
+			and FileAccess.file_exists(S.globalize_path(S.TEMPLATE_MODE_ICON.format([mode_folder])))
+		):
 			damaged_modes[mode_folder] = "Missing files"
 			continue
-
 		var config = ConfigFile.new()
 		var err := config.load(S.globalize_path(S.TEMPLATE_MODE_INFO.format([mode_folder])))
-
 		if err:
 			damaged_modes[mode_folder] = "Load config failed"
 			continue
@@ -59,18 +76,11 @@ func _load_mode_list() -> void:
 		if Array(config.get_section_keys("mode")) != ["name", "description", "author", "version", "extensions"]:
 			damaged_modes[mode_folder] = "Invalid keys"
 			continue
-		if not is_instance_of(U.load_resource(S.TEMPLATE_MODE_SCRIPT.format([mode_folder])).new(), TextForgeMode):
-			damaged_modes[mode_folder] = "Invalid script"
-			continue
-
 		var mode: Dictionary[String, Variant] = {"id": mode_folder}
 		for key: String in config.get_section_keys("mode"):
 			mode[key] = config.get_value("mode", key)
-
 		mode_list.append(mode)
-
 	custom_mode_indentations = Settings.read_data("mode_settings", "indentations", {})
-
 	Global.damaged_modes = damaged_modes
 	if damaged_modes:
 		var damaged_modes_grouped: Dictionary[String, Array] = {}
@@ -86,9 +96,8 @@ func _load_mode_list() -> void:
 		Global.send_notification(Global.Notification.ERROR, "Failed to load some modes!", damaged_modes_string)
 
 
-## Reload all modes with [method _load_mode_list].
+## Reloads all modes with [method _load_mode_list].
 func reload_modes() -> void:
-	mode_list = []
 	_load_mode_list()
 
 
@@ -100,58 +109,66 @@ func import_mode(path: String) -> void:
 	var reader = ZIPReader.new()
 	var err := reader.open(path)
 	if err:
-		Global.send_notification(Global.Notification.ERROR, "Can't load this file!", "Load {0} for import mode or mode kit failed. Error code: {1}".format([path, str(err)]))
+		Global.send_notification(
+			Global.Notification.ERROR,
+			"Can't load this file!",
+			"Load {0} for import mode or mode kit failed. Error code: {1}".format([path, str(err)])
+		)
 		return
-
 	if not DirAccess.dir_exists_absolute(S.globalize_path("user://modes")):
 		DirAccess.make_dir_absolute(S.globalize_path("user://modes"))
 	var root_dir = DirAccess.open("user://")
-
+	# Extract file
 	var files = reader.get_files()
-	for file_path in files:
+	for file_path: String in files:
+		# Reject entries not under modes/
+		file_path = file_path.simplify_path()
+		if not file_path.begins_with("modes/"):
+			Global.send_notification(
+				Global.Notification.ERROR,
+				"Security alert!",
+				path + " file contains a file outside modes folder: " + file_path + "\nThis file extraction was skipped!"
+			)
+			continue
 		if file_path.ends_with("/"):
 			root_dir.make_dir_recursive(file_path)
 			continue
-
 		root_dir.make_dir_recursive(root_dir.get_current_dir().path_join(file_path).get_base_dir())
 		var file = FileAccess.open(root_dir.get_current_dir().path_join(file_path), FileAccess.WRITE)
 		var buffer = reader.read_file(file_path)
 		file.store_buffer(buffer)
-
 	reload_modes()
 	Global.send_notification(Global.Notification.INFO, "Load mode / mode kit completed.")
 
 
 ## Handle file saving from mode selection to correct mode encode system and then to targe file.
-## Will use current mode if is compatible (based on [method _is_mode_compatible]), otherwise will
-## use [method _is_mode_compatible] to filter modes and select one of them. Three situation can heppend:[br]
-## - [b]There is no compatible mode:[/b] Will [method _unload_current_mode] and use
-## [method FileAccess.store_string].[br]
-## - [b]There is one compatible mode:[/b] Will [method _change_mode_to] and use
-## [method _handle_save_file] and [method _load_mode_features].[br]
-## - [b]There is more than one compatible mode:[/b] Will show popup menu for select mode then use
-## [method _change_mode_to] and [method _handle_save_file] and [method _load_mode_features].[br][br]
-## If there is any error in [method _change_mode_to] (see [method TextForgeMode._initialize_mode])
-## will fail with [i]Failed to initialize mode for save[/i].
+## See [url=https://text-forge.github.io/docs/setup#open-a-file]Open A File[/url] guide for possible
+## situations in mode selection.
 func save_file(file_path: String) -> void:
 	var mode := current_mode
-
 	if not _is_mode_compatible(current_mode, file_path):
 		var compatible_modes := mode_list.filter(func(m): return _is_mode_compatible(m, file_path))
-
 		match compatible_modes.size():
 			0:
-				Global.send_notification(Global.Notification.WARNING, "Can't find any mode to save this file.", "Save file using UTF-8...")
+				Global.send_notification(
+					Global.Notification.WARNING,
+					"Can't find any mode to save this file.",
+					"Save file using UTF-8..."
+				)
 				_unload_current_mode()
-
+				# Save with UTF-8
 				var file = FileAccess.open(file_path, FileAccess.WRITE)
 				if FileAccess.get_open_error():
-					Global.send_notification(Global.Notification.ERROR, "Failed to open file!", "Save in {0} failed with error code {1}".format([file_path, FileAccess.get_open_error()]))
+					Global.send_notification(
+						Global.Notification.ERROR,
+						"Failed to open file!",
+						"Save in {0} failed with error code {1}".format([file_path, FileAccess.get_open_error()])
+					)
 					return
 				file.store_string(Global.get_editor_text())
-				Global.get_core().append_to_recent_files(file_path)
 				file.close()
-
+				# ---
+				Global.get_core().append_to_recent_files(file_path)
 				_save_bookmarks()
 				Signals.check_options.emit()
 				return
@@ -166,22 +183,23 @@ func save_file(file_path: String) -> void:
 				select_menu.size = Vector2(400, 0)
 				add_child(select_menu)
 				select_menu.popup_centered()
-
 				await mode_selected
-
 				remove_child(select_menu)
 				select_menu.queue_free()
 				mode = compatible_modes[_temp_mode_index]
 				_temp_mode_index = 0
-
 	if _change_mode_to(mode) == OK:
 		_handle_save_file(file_path)
 	else:
-		Global.send_notification(Global.Notification.ERROR, "Failed to initialize mode {0} for save!".format([mode["name"]]))
+		Global.send_notification(
+			Global.Notification.ERROR,
+			"Failed to initialize mode {0} for save!".format([mode["name"]])
+		)
 
 
-## Handle file loading from mode selection to targe file and then to correct mode decode system and editor.
-## This method have same logic as [method save_file].
+## Handle file loading from mode selection to targe file and then to correct mode's decode system
+## and editor. See [url=https://text-forge.github.io/docs/setup#open-a-file]Open A File[/url] guide
+## for possible situations in mode selection.
 func load_file(file_path: String) -> void:
 	if file_path.get_extension().to_lower() == "tfproj":
 		Project.load_project(file_path)
@@ -193,15 +211,23 @@ func load_file(file_path: String) -> void:
 
 		match compatible_modes.size():
 			0:
-				Global.send_notification(Global.Notification.WARNING, "Can't find any mode to open this file.", "Load file using UTF-8...")
+				Global.send_notification(
+					Global.Notification.WARNING,
+					"Can't find any mode to open this file.",
+					"Load file using UTF-8..."
+				)
 				_unload_current_mode()
-
+				# Load with UTF-8
 				Global.set_editor_text(FileAccess.get_file_as_string(file_path))
 				Global.get_core().append_to_recent_files(file_path)
 				Global.set_editor_disabled(false)
 				if FileAccess.get_open_error():
-					Global.send_notification(Global.Notification.ERROR, "Error in opening file!", "Load from {0} completed with error code {1}".format([file_path, FileAccess.get_open_error()]))
-
+					Global.send_notification(
+						Global.Notification.ERROR,
+						"Error in opening file!",
+						"Load from {0} completed with error code {1}".format([file_path, FileAccess.get_open_error()])
+					)
+				# ---
 				Signals.check_options.emit()
 				update_indentation_settings(false)
 				_load_bookmarks()
@@ -218,18 +244,18 @@ func load_file(file_path: String) -> void:
 				select_menu.size = Vector2(400, 0)
 				add_child(select_menu)
 				select_menu.popup_centered()
-
 				await mode_selected
-
 				remove_child(select_menu)
 				select_menu.queue_free()
 				mode = compatible_modes[_temp_mode_index]
 				_temp_mode_index = 0
-
 	if _change_mode_to(mode) == OK:
 		_handle_load_file(file_path)
 	else:
-		Global.send_notification(Global.Notification.ERROR, "Failed to initialize mode {0} for load!".format([mode["name"]]))
+		Global.send_notification(
+			Global.Notification.ERROR,
+			"Failed to initialize mode {0} for load!".format([mode["name"]])
+		)
 
 
 ## Handle auto format request to mode and then back result to editor.
@@ -239,7 +265,6 @@ func auto_format() -> void:
 		return
 	if not mode_script.features["auto_format"]:
 		return
-
 	Global.set_editor_text(mode_script._auto_format(Global.get_editor_text()))
 
 
@@ -250,7 +275,6 @@ func auto_indent() -> void:
 		return
 	if not mode_script.features["auto_indent"]:
 		return
-
 	Global.set_editor_text(mode_script._auto_indent(Global.get_editor_text()))
 
 
@@ -275,7 +299,6 @@ func _on_editor_code_completion_requested() -> void:
 	var mode_script := _get_mode_script()
 	if not mode_script:
 		return
-
 	mode_script._update_code_completion_options(Global.get_editor().get_text_for_code_completion())
 	Global.get_editor().update_code_completion_options(false)
 
@@ -304,7 +327,6 @@ func _update_outline() -> void:
 	if not mode_script:
 		Signals.outline_updated.emit(Array())
 		return
-
 	Signals.outline_updated.emit(mode_script._generate_outline(Global.get_editor_text()))
 
 
@@ -315,7 +337,6 @@ func _lint_content() -> void:
 	if not mode_script:
 		Signals.problems_updated.emit(Array([], TYPE_DICTIONARY, "", null))
 		return
-
 	Signals.problems_updated.emit(mode_script._lint_file(Global.get_editor_text()))
 
 
@@ -326,7 +347,6 @@ func _update_preview() -> void:
 	if not mode_script:
 		Signals.preview_updated.emit("")
 		return
-
 	Signals.preview_updated.emit(mode_script._generate_preview(Global.get_editor_text()))
 
 
@@ -334,15 +354,17 @@ func _update_preview() -> void:
 func _load_mode_panel() -> void:
 	if mode_panel:
 		Global.get_panel_manager().remove_panel(PanelManager.Panels.LEFT, mode_panel.index)
-
 	var mode_script := _get_mode_script()
 	if not mode_script:
 		return
-
 	if mode_script.panel:
 		mode_panel = mode_script.panel
-		Global.get_panel_manager().add_panel(PanelManager.Panels.LEFT, mode_script.panel,
-				ImageTexture.create_from_image(Image.load_from_file(S.globalize_path(S.TEMPLATE_MODE_ICON.format([current_mode["id"]]))))
+		Global.get_panel_manager().add_panel(
+			PanelManager.Panels.LEFT,
+			mode_script.panel,
+			ImageTexture.create_from_image(Image.load_from_file(S.globalize_path(
+				S.TEMPLATE_MODE_ICON.format([current_mode["id"]])
+			)))
 		)
 
 
@@ -353,10 +375,8 @@ func _load_delimiters() -> void:
 	if not mode_script:
 		Global.get_editor().syntax_highlighter = null
 		return
-
 	Global.get_editor().clear_comment_delimiters()
 	Global.get_editor().clear_string_delimiters()
-
 	for d in mode_script.comment_delimiters:
 		if d.keys() != ["start_key", "end_key", "line_only"]:
 			continue
@@ -373,7 +393,6 @@ func _load_syntax_highlighter() -> void:
 	if not mode_script:
 		Global.get_editor().syntax_highlighter = null
 		return
-
 	Global.get_editor().syntax_highlighter = mode_script.syntax_highlighter
 
 
@@ -381,7 +400,6 @@ func _load_syntax_highlighter() -> void:
 func _unload_current_mode() -> void:
 	if current_mode == {}:
 		return
-
 	var current_mode_script := _get_mode_script()
 	if current_mode_script:
 		current_mode_script.queue_free()
@@ -402,25 +420,21 @@ func _unload_current_mode() -> void:
 func _change_mode_to(mode: Dictionary) -> Error:
 	if mode == current_mode:
 		return OK
-
-	var new_mode_script: TextForgeMode = U.load_resource(S.TEMPLATE_MODE_SCRIPT.format([mode["id"]])).new() as TextForgeMode
+	var new_mode_script := U.load_resource(S.TEMPLATE_MODE_SCRIPT.format([mode["id"]])).new() as TextForgeMode
 	if not new_mode_script:
 		return ERR_INVALID_DATA
-
-	# Catch current mode script for fallback
+	# Cache current mode script for fallback
 	if get_child_count():
-		var current_mode_script: TextForgeMode = get_child(0)
+		var current_mode_script := _get_mode_script()
 		self.remove_child(current_mode_script)
 		Global.add_child(current_mode_script)
 		Global.temprory_children["current_mode_script"] = current_mode_script
-
 	add_child(new_mode_script)
 	new_mode_script.name = mode["id"]
 	var initialize_error := new_mode_script._initialize_mode()
-
 	if initialize_error:
 		self.remove_child(new_mode_script)
-
+		new_mode_script.queue_free()
 	if Global.temprory_children.has("current_mode_script"):
 		# Remove catched mode script
 		if initialize_error == OK:
@@ -431,12 +445,10 @@ func _change_mode_to(mode: Dictionary) -> Error:
 			Global.remove_child(current_mode_script)
 			self.add_child(current_mode_script)
 		Global.temprory_children.erase("current_mode_script")
-
 	if initialize_error == OK:
 		current_mode = mode
 		_load_mode_features()
 		Signals.mode_changed.emit(current_mode)
-
 	return initialize_error
 
 
@@ -444,16 +456,21 @@ func _change_mode_to(mode: Dictionary) -> Error:
 func _handle_save_file(file_path: String) -> void:
 	var mode_script := _get_mode_script()
 	if not mode_script:
-		Global.send_notification(Global.Notification.ERROR, "Can't find mode script!", "Saving failed.")
+		Global.send_notification(
+			Global.Notification.ERROR,
+			"Can't find mode script!",
+			"Saving failed."
+		)
 		return
-
 	DirAccess.make_dir_recursive_absolute(S.globalize_path(file_path.get_base_dir()))
 	var file := FileAccess.open(file_path, FileAccess.WRITE)
-
 	if FileAccess.get_open_error():
-		Global.send_notification(Global.Notification.ERROR, "Failed to open file!", "Save in {0} failed with error code {1}".format([file_path, FileAccess.get_open_error()]))
+		Global.send_notification(
+			Global.Notification.ERROR,
+			"Failed to open file!",
+			"Save in {0} failed with error code {1}".format([file_path, FileAccess.get_open_error()])
+		)
 		return
-
 	file.store_buffer(mode_script._string_to_buffer(Global.get_editor_text()))
 	Global.get_core().append_to_recent_files(file_path)
 	file.close()
@@ -466,9 +483,17 @@ func _save_bookmarks() -> void:
 	var bookmarks := Global.get_editor().get_bookmarked_lines()
 	var data: Dictionary[String, PackedInt32Array]
 	if Project.has_project():
-		data = Project.current_project.get_value("files", "bookmarks", Dictionary({}, TYPE_STRING, "", null, TYPE_PACKED_INT32_ARRAY, "", null))
+		data = Project.current_project.get_value(
+			"files",
+			"bookmarks",
+			Dictionary({}, TYPE_STRING, "", null, TYPE_PACKED_INT32_ARRAY, "", null)
+		)
 	else:
-		data = Settings.read_data("files", "bookmarks", Dictionary({}, TYPE_STRING, "", null, TYPE_PACKED_INT32_ARRAY, "", null))
+		data = Settings.read_data(
+			"files",
+			"bookmarks",
+			Dictionary({}, TYPE_STRING, "", null, TYPE_PACKED_INT32_ARRAY, "", null)
+		)
 	data[Global.get_file_path()] = bookmarks
 	if Project.has_project():
 		Project.current_project.set_value("files", "bookmarks", data)
@@ -476,21 +501,27 @@ func _save_bookmarks() -> void:
 	else:
 		Settings.write_data("files", "bookmarks", data)
 
+
 ## Handles load file with current mode. Makes base directory recursive.
 func _handle_load_file(file_path: String) -> void:
 	var mode_script := _get_mode_script()
 	if not mode_script:
 		push_error("Load error")
-		Global.send_notification(Global.Notification.ERROR, "Can't find mode script!", "Loading failed.")
+		Global.send_notification(
+			Global.Notification.ERROR,
+			"Can't find mode script!",
+			"Loading failed."
+		)
 		return
-
 	DirAccess.make_dir_recursive_absolute(S.globalize_path(file_path.get_base_dir()))
 	var buffer := FileAccess.get_file_as_bytes(file_path)
-
 	if FileAccess.get_open_error():
-		Global.send_notification(Global.Notification.ERROR, "Failed to open file!", "Load from {0} failed with error code {1}".format([file_path, FileAccess.get_open_error()]))
+		Global.send_notification(
+			Global.Notification.ERROR,
+			"Failed to open file!",
+			"Load from {0} failed with error code {1}".format([file_path, FileAccess.get_open_error()])
+		)
 		return
-
 	Global.set_editor_text(mode_script._buffer_to_string(buffer))
 	Global.get_core().append_to_recent_files(file_path)
 	Global.set_editor_disabled(false)
@@ -504,9 +535,17 @@ func _handle_load_file(file_path: String) -> void:
 func _load_bookmarks() -> void:
 	var data: Dictionary[String, PackedInt32Array]
 	if Project.has_project():
-		data = Project.current_project.get_value("files", "bookmarks", Dictionary({}, TYPE_STRING, "", null, TYPE_PACKED_INT32_ARRAY, "", null))
+		data = Project.current_project.get_value(
+			"files",
+			"bookmarks",
+			Dictionary({}, TYPE_STRING, "", null, TYPE_PACKED_INT32_ARRAY, "", null)
+		)
 	else:
-		data = Settings.read_data("files", "bookmarks", Dictionary({}, TYPE_STRING, "", null, TYPE_PACKED_INT32_ARRAY, "", null))
+		data = Settings.read_data(
+			"files",
+			"bookmarks",
+			Dictionary({}, TYPE_STRING, "", null, TYPE_PACKED_INT32_ARRAY, "", null)
+		)
 	Global.get_editor().clear_bookmarked_lines()
 	for i in data.get(Global.get_file_path(), []):
 		Global.get_editor().set_line_as_bookmarked(i, true)
@@ -516,7 +555,6 @@ func _load_bookmarks() -> void:
 func _is_mode_compatible(mode: Dictionary, file_path: String) -> bool:
 	if mode == {}:
 		return false
-
 	return file_path.get_extension() in mode["extensions"]
 
 
@@ -530,6 +568,9 @@ func _get_mode_script() -> TextForgeMode:
 	return mode_script
 
 
+## Updates indentation settings. When [param use_mode] is [code]true[/code] uses overriden
+## configuration based on [member custom_mode_indentations] or original settings in mode script.
+## Otherwise uses editor settings.
 func update_indentation_settings(use_mode := true) -> void:
 	if Settings.get_setting("edit", "lock_indentation_settings", false):
 		return
@@ -545,7 +586,11 @@ func update_indentation_settings(use_mode := true) -> void:
 		else:
 			var mode_script := _get_mode_script()
 			if not mode_script:
-				Global.send_notification(Global.Notification.ERROR, "Can't find mode script!", "Updating indentation settings failed.")
+				Global.send_notification(
+					Global.Notification.ERROR,
+					"Can't find mode script!",
+					"Updating indentation settings failed."
+				)
 				return
 			if mode_script.indent_type == TextForgeMode.INDENT_TYPE.DISABLE:
 				use_spaces = Settings.get_setting("edit", "indent_with_space")
@@ -555,12 +600,12 @@ func update_indentation_settings(use_mode := true) -> void:
 				indent_size = Settings.get_setting("edit", "indent_size")
 			else:
 				indent_size = mode_script.indent_size
-
 	Global.get_editor().indent_use_spaces = use_spaces
 	Global.get_editor().indent_size = indent_size
 	indentation_settings_updated.emit(use_spaces, indent_size)
 
 
+## Removes overriden settings for current mode.
 func reset_to_mode_indentation_settings() -> void:
 	if not current_mode.has("id"):
 		return
@@ -570,6 +615,8 @@ func reset_to_mode_indentation_settings() -> void:
 		update_indentation_settings()
 
 
+## Changes indentation type between spaces and tabs based on current editor state. When there is a
+## loaded mode will add overriden settings for current mode. Otherwise, will change editor settings.
 func change_indentation_type(use_spaces: bool) -> void:
 	if not current_mode.has("id"):
 		Settings.set_setting("edit", "indent_with_space", use_spaces)
@@ -580,13 +627,27 @@ func change_indentation_type(use_spaces: bool) -> void:
 	else:
 		var mode_script := _get_mode_script()
 		if not mode_script:
-			Global.send_notification(Global.Notification.ERROR, "Can't find mode script!", "Changing indentation settings failed.")
+			Global.send_notification(
+				Global.Notification.ERROR,
+				"Can't find mode script!",
+				"Changing indentation settings failed."
+			)
 			return
-		custom_mode_indentations[current_mode.id] = { "use_spaces": use_spaces, "indent_size": mode_script.indent_size if mode_script.indent_size > 0 else Settings.get_setting("edit", "indent_size") }
+		custom_mode_indentations[current_mode.id] = {
+			"use_spaces": use_spaces,
+			"indent_size": (
+				mode_script.indent_size
+				if mode_script.indent_size > 0
+				else Settings.get_setting("edit", "indent_size")
+			)
+		}
 	Settings.write_data("mode_settings", "indentations", custom_mode_indentations)
 	update_indentation_settings()
 
 
+## Changes indentation size (number of spaces or width of each tab) based on current editor state.
+## When there is a loaded mode will add overriden settings for current mode. Otherwise, will change
+## editor settings.
 func change_indent_size(indent_size: int) -> void:
 	if indent_size < 1:
 		Global.send_notification(Global.Notification.ERROR, "Invalid indent size!", "Indent size must be at least 1.")
@@ -600,13 +661,20 @@ func change_indent_size(indent_size: int) -> void:
 	else:
 		var mode_script := _get_mode_script()
 		if not mode_script:
-			Global.send_notification(Global.Notification.ERROR, "Can't find mode script!", "Changing indentation settings failed.")
+			Global.send_notification(
+				Global.Notification.ERROR,
+				"Can't find mode script!",
+				"Changing indentation settings failed."
+			)
 			return
 		var use_spaces_value: bool
 		if mode_script.indent_type == TextForgeMode.INDENT_TYPE.DISABLE:
 			use_spaces_value = Settings.get_setting("edit", "indent_with_space")
 		else:
 			use_spaces_value = mode_script.indent_type == TextForgeMode.INDENT_TYPE.SPACE
-		custom_mode_indentations[current_mode.id] = { "use_spaces": use_spaces_value, "indent_size": indent_size }
+		custom_mode_indentations[current_mode.id] = {
+			"use_spaces": use_spaces_value,
+			"indent_size": indent_size
+		}
 	Settings.write_data("mode_settings", "indentations", custom_mode_indentations)
 	update_indentation_settings()

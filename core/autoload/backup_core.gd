@@ -1,5 +1,8 @@
+class_name BackupAPI
 extends Node
-## Backup core of Text Forge
+## Backup core of Text Forge.
+##
+## A global API to work with backups.
 
 ## Emits when a backup saved.
 signal backup_saved(was_auto: bool)
@@ -9,7 +12,7 @@ signal backup_failed(was_auto: bool)
 func _ready() -> void:
 	get_window().close_requested.connect(_cleanup_backups)
 	Settings.define_preset("files", "auto_backup", true)
-	Settings.define_preset("files", "auto_backup_iterval_minutes", 5)
+	Settings.define_preset("files", "auto_backup_interval_minutes", 5)
 	Settings.define_preset("files", "keep_backup_for_days", 10)
 	_handle_auto_save()
 
@@ -17,7 +20,7 @@ func _ready() -> void:
 # Cleanups backups
 func _cleanup_backups() -> void:
 	_remove_old_backups()
-	_remove_backups_without_refrence()
+	_remove_backups_without_reference()
 
 
 # Starts auto backup saving timer based on settings
@@ -26,7 +29,7 @@ func _handle_auto_save() -> void:
 		return
 	var timer := Timer.new()
 	timer.autostart = true
-	timer.wait_time = 60.0 * Settings.get_setting("files", "auto_backup_iterval_minutes")
+	timer.wait_time = 60.0 * Settings.get_setting("files", "auto_backup_interval_minutes")
 	timer.timeout.connect(backup_file.bind(true))
 	add_child(timer)
 
@@ -48,7 +51,6 @@ func get_backups_list() -> Dictionary[String, Dictionary]:
 	config.load(S.globalize_path(S.BACKUP_DATABASE))
 	if not config.has_section("backups"):
 		return Dictionary({}, TYPE_STRING, "", null, TYPE_DICTIONARY, "", null)
-
 	var list: Dictionary[String, Dictionary]
 	for file_item in config.get_section_keys("backups"):
 		var file_backups = config.get_value("backups", file_item, {})
@@ -57,14 +59,22 @@ func get_backups_list() -> Dictionary[String, Dictionary]:
 
 
 ## Restores current backup to given [param path] from given [param code] backup.
-func restore_backup(code: String, path: String) -> void:
+func restore_backup(code: String, path: String) -> Error:
+	if not FileAccess.file_exists(S.TEMPLATE_BACKUP_FILE.format([code])):
+		Global.send_notification(
+			Global.Notification.ERROR,
+			"Failed to find backup file!"
+		)
+		return ERR_DOES_NOT_EXIST
 	var content := FileAccess.get_file_as_string(S.TEMPLATE_BACKUP_FILE.format([code]))
 	Global.set_file_path(path)
 	Global.set_file_name(path.get_file())
 	Global.set_editor_disabled(false)
 	Global.set_editor_text(content)
-	Signals.save_request.emit(-1)
-	Global.send_notification(Global.Notification.INFO, "Backup sucefully restored.")
+	Signals.check_options.emit()
+	Global.mark_file_as_unsaved()
+	Global.send_notification(Global.Notification.INFO, "Backup successfully restored.")
+	return OK
 
 
 ## Makes a backup from current file.
@@ -74,13 +84,18 @@ func backup_file(as_auto: bool) -> void:
 	var config := ConfigFile.new()
 	if FileAccess.file_exists(S.globalize_path(S.BACKUP_DATABASE)):
 		config.load(S.globalize_path(S.BACKUP_DATABASE))
-
 	var file_backups: Dictionary = config.get_value("backups", Global.get_file_path(), {})
 	var backup_id := _generate_new_backup_id()
-	if backup_id == "":
+	var file := FileAccess.open(S.globalize_path(S.TEMPLATE_BACKUP_FILE.format([backup_id])), FileAccess.WRITE)
+	if not file:
+		if not as_auto:
+			Global.send_notification(
+				Global.Notification.ERROR,
+				"Failed to save backup!",
+				"Could not open backup file for writing."
+			)
 		backup_failed.emit(as_auto)
 		return
-	var file := FileAccess.open(S.globalize_path(S.TEMPLATE_BACKUP_FILE.format([backup_id])), FileAccess.WRITE)
 	file.store_string(Global.get_editor_text())
 	file.close()
 	file_backups[Time.get_datetime_string_from_system(false, true)] = backup_id
@@ -89,22 +104,16 @@ func backup_file(as_auto: bool) -> void:
 	backup_saved.emit(as_auto)
 
 
-# Returns a new random backup id (max tries: 10^8)
+# Returns a probabilistically unique backup id based on unix time and random suffix.
 func _generate_new_backup_id() -> String:
-	var path := ""
-	for i in range(10 ** 8):
-		var codes := Array()
-		codes.resize(8)
-		codes = codes.map(func(j): return randi_range(0, 9))
-		path = S.globalize_path(S.TEMPLATE_BACKUP_FILE.format(["".join(codes)]))
-		if not FileAccess.file_exists(path):
-			return "".join(codes)
-	Global.send_notification(Global.Notification.ERROR, "Failed to generate random backup ID in 10^8 tries.")
-	return ""
+	# Use timestamp + random suffix for high-probability uniqueness
+	var timestamp := str(Time.get_unix_time_from_system())
+	var suffix := str(randi_range(1000, 9999))
+	return timestamp + suffix
 
 
-# Searchs backup database for each backup file and removes backups without refrence
-func _remove_backups_without_refrence() -> void:
+# Searches backup database for each backup file and removes backups without reference
+func _remove_backups_without_reference() -> void:
 	var config := ConfigFile.new()
 	if FileAccess.file_exists(S.globalize_path(S.BACKUP_DATABASE)):
 		config.load(S.globalize_path(S.BACKUP_DATABASE))
@@ -128,18 +137,20 @@ func _remove_old_backups() -> void:
 	var config := ConfigFile.new()
 	if FileAccess.file_exists(S.globalize_path(S.BACKUP_DATABASE)):
 		config.load(S.globalize_path(S.BACKUP_DATABASE))
-
 	if not config.has_section("backups"):
 		return
 	for file_item in config.get_section_keys("backups"):
-		var file_backups = config.get_value("backups", file_item, {})
+		var file_backups: Dictionary = config.get_value("backups", file_item, {})
 		if file_backups.size() <= 1:
 			continue
-		for backup_time in file_backups:
-			if file_backups.size() <= 1:
+		var to_remove: Array[String] = []
+		for backup_time: String in file_backups:
+			if file_backups.size() - to_remove.size() <= 1:
 				break
 			if _convert_to_days(backup_time) + Settings.get_setting("files", "keep_backup_for_days") < _convert_to_days(Time.get_datetime_string_from_system()):
-				file_backups.erase(backup_time)
+				to_remove.append(backup_time)
+		for backup_to_remove in to_remove:
+			file_backups.erase(backup_to_remove)
 		config.set_value("backups", file_item, file_backups)
 	config.save(S.globalize_path(S.BACKUP_DATABASE))
 

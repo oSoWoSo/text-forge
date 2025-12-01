@@ -11,10 +11,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_b5vjj")
-tab = NodePath("Margin/TabContainer")
-preview = NodePath("Margin/TabContainer/Preview")
-preview_node = NodePath("Margin/TabContainer/ScrollContainer/MarginContainer")
-preview_scroll_container = NodePath("Margin/TabContainer/ScrollContainer")
+tab = NodePath("Margin/Tab")
+preview = NodePath("Margin/Tab/Preview")
+preview_node = NodePath("Margin/Tab/Scroll/Margin")
+preview_scroll_container = NodePath("Margin/Tab/Scroll")
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -24,13 +24,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TabContainer" type="TabContainer" parent="Margin"]
+[node name="Tab" type="TabContainer" parent="Margin"]
 layout_mode = 2
 theme_type_variation = &"FlatTabContainer"
 current_tab = 0
 tabs_visible = false
 
-[node name="Message" type="Label" parent="Margin/TabContainer"]
+[node name="Message" type="Label" parent="Margin/Tab"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "Preview isn't available"
@@ -38,7 +38,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_tab_index = 0
 
-[node name="Preview" type="RichTextLabel" parent="Margin/TabContainer"]
+[node name="Preview" type="RichTextLabel" parent="Margin/Tab"]
 visible = false
 layout_mode = 2
 bbcode_enabled = true
@@ -46,12 +46,12 @@ shortcut_keys_enabled = false
 threaded = true
 metadata/_tab_index = 1
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Margin/TabContainer"]
+[node name="Scroll" type="ScrollContainer" parent="Margin/Tab"]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Margin/TabContainer/ScrollContainer"]
+[node name="Margin" type="MarginContainer" parent="Margin/Tab/Scroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
