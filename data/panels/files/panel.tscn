@@ -11,10 +11,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_h88as")
-tab = NodePath("MarginContainer/TabContainer")
-tree = NodePath("MarginContainer/TabContainer/Tree")
+tab = NodePath("Margin/Tab")
+tree = NodePath("Margin/Tab/Tree")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,13 +22,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TabContainer" type="TabContainer" parent="MarginContainer"]
+[node name="Tab" type="TabContainer" parent="Margin"]
 layout_mode = 2
 theme_type_variation = &"FlatTabContainer"
 current_tab = 1
 tabs_visible = false
 
-[node name="Label" type="Label" parent="MarginContainer/TabContainer"]
+[node name="Label" type="Label" parent="Margin/Tab"]
 visible = false
 layout_mode = 2
 text = "Please open a project to see files"
@@ -37,11 +37,11 @@ vertical_alignment = 1
 autowrap_mode = 3
 metadata/_tab_index = 0
 
-[node name="Tree" type="Tree" parent="MarginContainer/TabContainer"]
+[node name="Tree" type="Tree" parent="Margin/Tab"]
 layout_mode = 2
 theme_type_variation = &"FileTree"
 allow_reselect = true
 hide_root = true
 metadata/_tab_index = 1
 
-[connection signal="item_selected" from="MarginContainer/TabContainer/Tree" to="." method="_on_tree_item_selected"]
+[connection signal="item_selected" from="Margin/Tab/Tree" to="." method="_on_tree_item_selected"]

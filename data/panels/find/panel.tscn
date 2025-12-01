@@ -86,12 +86,12 @@ text = "Next"
 [node name="GlobalActions" type="HBoxContainer" parent="Margin/VBox"]
 layout_mode = 2
 
-[node name="RAll" type="Button" parent="Margin/VBox/GlobalActions"]
+[node name="ReplaceAll" type="Button" parent="Margin/VBox/GlobalActions"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Replace All"
 
-[node name="All" type="Button" parent="Margin/VBox/GlobalActions"]
+[node name="SelectAll" type="Button" parent="Margin/VBox/GlobalActions"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Select All"
@@ -104,5 +104,5 @@ text = "Select All"
 [connection signal="item_selected" from="Margin/VBox/MatchList" to="." method="_on_item_list_item_selected"]
 [connection signal="pressed" from="Margin/VBox/NavigationActions/Prev" to="." method="_on_prev_pressed"]
 [connection signal="pressed" from="Margin/VBox/NavigationActions/Next" to="." method="_on_next_pressed"]
-[connection signal="pressed" from="Margin/VBox/GlobalActions/RAll" to="." method="_on_replace_all_pressed"]
-[connection signal="pressed" from="Margin/VBox/GlobalActions/All" to="." method="_on_all_pressed"]
+[connection signal="pressed" from="Margin/VBox/GlobalActions/ReplaceAll" to="." method="_on_replace_all_pressed"]
+[connection signal="pressed" from="Margin/VBox/GlobalActions/SelectAll" to="." method="_on_all_pressed"]
