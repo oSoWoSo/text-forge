@@ -161,7 +161,7 @@ class ThreadedLoader extends Object:
 	## Starts threaded loader.
 	func start() -> void:
 		if _pending.is_empty():
-			if _after_all.is_valid():
+			if _after_all:
 				_after_all.call()
 			return
 		for p in _pending:
