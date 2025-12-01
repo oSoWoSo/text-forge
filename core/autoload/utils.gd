@@ -107,7 +107,7 @@ func wait(time: float = 0) -> Signal:
 
 ## Loads a resource with globalizing [param path].
 func load_resource(path: String) -> Resource:
-	if path.is_empty() or not FileAccess.file_exists(path):
+	if path.is_empty() or not FileAccess.file_exists(S.globalize_path(path)):
 		return null
 	return ResourceLoader.load(S.globalize_path(path))
 
@@ -150,9 +150,9 @@ class ThreadedLoader extends Object:
 	func _init(tree: SceneTree, paths: PackedStringArray, for_each := Callable(), after_all := Callable()) -> void:
 		_tree = tree
 		for p in paths:
-			if p.is_empty() or not FileAccess.file_exists(p):
+			if p.is_empty() or not FileAccess.file_exists(S.globalize_path(p)):
 				continue
-			_pending[p] = false
+			_pending[S.globalize_path(p)] = false
 		if for_each.is_valid():
 			_for_each = for_each
 		if after_all.is_valid():
