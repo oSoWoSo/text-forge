@@ -175,7 +175,7 @@ func _install_package(pack_info: Dictionary, _info: Dictionary) -> void:
 	var path_to_download := "user://_temp_mode.tfmode"
 	if pack_info["category"] == "themes":
 		path_to_download = S.FOLDER_THEMES.path_join(_info["file"])
-	if pack_info["category"] == "extensions":
+	elif pack_info["category"] == "extensions":
 		path_to_download = "user://_temp_extension.tfx"
 	var data_to_pass := {
 		"name": pack_info["name"],

@@ -206,7 +206,6 @@ func _load_scripts() -> void:
 			if item.get("type", OptionTypes.REGULAR) == OptionTypes.SEPARATOR:
 				continue
 			# Create script path
-			# 46 is unicode for "."
 			var script_path := _get_script_path_for_item(item)
 			# Disable items without script (except submenu roots)
 			if not FileAccess.file_exists(S.globalize_path(script_path)):
@@ -335,13 +334,15 @@ func _on_editor_text_changed() -> void:
 func _reload_recent_files() -> void:
 	if not recent_files_submenu:
 		return
-	var recent_files_old := FileAccess.get_file_as_string(S.RECENT_FILES_DATA)
-	if FileAccess.get_open_error():
-		Global.send_notification(
-			Global.Notification.ERROR,
-			"Failed to reload recent files!"
-		)
-		return
+	var recent_files_old := ""
+	if FileAccess.file_exists(S.RECENT_FILES_DATA):
+		recent_files_old = FileAccess.get_file_as_string(S.RECENT_FILES_DATA)
+		if FileAccess.get_open_error():
+			Global.send_notification(
+				Global.Notification.ERROR,
+				"Failed to reload recent files!"
+			)
+			return
 	# Clear submenu
 	recent_files_submenu.clear()
 	# Load recent files

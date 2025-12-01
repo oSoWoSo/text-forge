@@ -102,7 +102,7 @@ func _on_export_pressed() -> void:
 func _export_mode(path: String) -> void:
 	var writer = ZIPPacker.new()
 	var err = writer.open(path)
-	if err != OK:
+	if err:
 		Global.send_notification(Global.Notification.ERROR, "Can't export mode!", "Error code: " + str(err))
 		return
 	_add_folder_to_zip(writer, "user://modes/".path_join(mode_informations[current_mode_index]["id"]))
@@ -113,7 +113,7 @@ func _export_mode(path: String) -> void:
 func _add_folder_to_zip(writer: ZIPPacker, path: String) -> void:
 	for file in DirAccess.get_files_at(path):
 		var file_bytes := FileAccess.get_file_as_bytes(path.path_join(file))
-		if FileAccess.get_open_error() != OK:
+		if FileAccess.get_open_error():
 			push_warning("Failed to read file: " + path.path_join(file))
 			continue
 		writer.start_file(path.erase(0, 7).path_join(file))
@@ -146,7 +146,7 @@ func _remove_mode() -> void:
 func _save_package(path: String) -> void:
 	var writer = ZIPPacker.new()
 	var err = writer.open(path)
-	if err != OK:
+	if err:
 		Global.send_notification(Global.Notification.ERROR, "Can't export mode kit!", "Error code: " + str(err))
 		return
 	for index in mode_list.get_selected_items():
