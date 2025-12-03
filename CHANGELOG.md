@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning (2.0)](https://semver.org/spec/
 - **API:** `EditorAPI.change_indent_size(indent_size)` ([#139](https://github.com/text-forge/text-forge/pull/139))
 - Class name declarations to ~40+ files for better type safety ([#139](https://github.com/text-forge/text-forge/pull/139))
 - Security validation for plugin/mod file extraction (prevents path traversal attacks) ([#139](https://github.com/text-forge/text-forge/pull/139))
+- Auto text writing direction for editor ([#144](https://github.com/text-forge/text-forge/pull/144))
 
 ### Changed
 - **Action Script:** ~Command > Command Pallete~ to Command > Command Palette (renamed, improved search) ([#139](https://github.com/text-forge/text-forge/pull/139))
