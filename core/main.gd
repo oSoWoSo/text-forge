@@ -388,6 +388,7 @@ func _connect_script(path: String, res: Resource) -> void:
 			Global.Notification.ERROR,
 			"Failed to connect script %s!" % path
 		)
+		return
 	var script = res.new()
 	# For MultiActionScripts (submenu roots)
 	if item.get("type", OptionTypes.REGULAR) == OptionTypes.SUBMENU:
