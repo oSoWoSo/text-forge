@@ -383,6 +383,12 @@ func _connect_script(path: String, res: Resource) -> void:
 				break
 		if was_found:
 			break
+	if not was_found:
+		Global.send_notification(
+			Global.Notification.ERROR,
+			"Failed to connect script %s!" % path
+		)
+		return
 	var script = res.new()
 	# For MultiActionScripts (submenu roots)
 	if item.get("type", OptionTypes.REGULAR) == OptionTypes.SUBMENU:
@@ -394,7 +400,7 @@ func _connect_script(path: String, res: Resource) -> void:
 	Signals.check_options.connect(script._check_option)
 	script.id = item.get("code", -1)
 	script.menu = item.get("popup")
-	script.name = item.get("text", "").to_snake_case().remove_char(46)
+	script.name = item.get("text", "").to_snake_case().remove_chars(".")
 	# Add child
 	scripts.add_child.call_deferred(script)
 
@@ -484,6 +490,6 @@ func _load_last_file(is_automatic := true) -> void:
 
 ## Helper to generate script path for a menu option.
 func _get_script_path_for_item(item: Dictionary) -> String:
-	return S.TEMPLATE_ACTION_SCRIPT.format(
+	return S.globalize_path(S.TEMPLATE_ACTION_SCRIPT.format(
 		[item.get("text", "").to_snake_case().remove_chars(".")]
-	)
+	))
