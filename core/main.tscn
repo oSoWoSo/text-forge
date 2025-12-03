@@ -186,6 +186,7 @@ minimap_draw = true
 caret_draw_when_editable_disabled = true
 highlight_all_occurrences = true
 highlight_current_line = true
+text_direction = 0
 symbol_lookup_on_click = true
 symbol_tooltip_on_hover = true
 line_folding = true
