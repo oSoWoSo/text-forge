@@ -48,6 +48,7 @@ and this project adheres to [Semantic Versioning (2.0)](https://semver.org/spec/
 - Asset filename: ~`loafing.png`~ to `loading.png` ([#139](https://github.com/text-forge/text-forge/pull/26))
 - Unit test execution errors and disabled custom tests during test runs ([#139](https://github.com/text-forge/text-forge/pull/107), [#139](https://github.com/text-forge/text-forge/pull/109))
 - File selection dialog filters improved across multiple scenes ([#139](https://github.com/text-forge/text-forge/pull/139))
+- Action scripts loading broken due to incorrect path globalization in `core/main.gd` ([#143](https://github.com/text-forge/text-forge/pull/143))
 
 ## [v0.2-rc1] - 2025-11-20
 
