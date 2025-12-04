@@ -95,7 +95,10 @@ func restore_default(section: String, key: String) -> void:
 
 
 ## Sets [param velue] for given setting and save settings.
-func set_setting(section: String, key: String, value: Variant = null) -> void:
+func set_setting(section: String, key: String, value: Variant = null, force_silent := false) -> void:
+	if settings.has_section_key(section, key):
+		if get_setting(section, key) == value:
+			return
 	settings.set_value(section, key, value)
 	var err := settings.save(SETTINGS_FILE)
 	if err:
@@ -104,6 +107,9 @@ func set_setting(section: String, key: String, value: Variant = null) -> void:
 			"Can't save settings file!",
 			"Error code: " + str(err)
 		)
+		return
+	if not force_silent:
+		Signals.settings_changed.emit()
 
 
 ## Defines new preset, it means this preset will have default value ([param default]) and can reset

@@ -11,14 +11,14 @@ extends HBoxContainer
 var section: String
 ## Option key.
 var key: String
-## Default value.
-var default = null
 ## Current value.
 var value
 
 func _ready() -> void:
+	if section.is_empty() or key.is_empty():
+		return
 	label.text = key.capitalize()
-	value = Settings.get_setting(section, key, default)
+	value = Settings.get_setting(section, key)
 	match typeof(value):
 		TYPE_BOOL:
 			options.current_tab = 0
