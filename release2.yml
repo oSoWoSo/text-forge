@@ -1,0 +1,110 @@
+name: Release (2 passes)
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  export_matrix:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - name: TextForge-Linux-${{ github.ref_name }}
+            export_preset: "Linux"
+            platform: Linux
+            needs_wine: false
+          - name: TextForge-Windows-${{ github.ref_name }}
+            export_preset: "Windows Desktop"
+            platform: Windows
+            needs_wine: true
+
+    name: ${{ matrix.config.name }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v5
+
+    - name: Wine
+      if: matrix.config.needs_wine
+      id: wine
+      run: |
+        sudo apt update
+        sudo apt install -y wine64
+        echo "WINE_PATH=$(which wine)" >> $GITHUB_OUTPUT
+
+    - name: Export
+      id: export
+      continue-on-error: true
+      uses: firebelley/godot-export@v7.0.0
+      with:
+        godot_executable_download_url: https://github.com/godotengine/godot/releases/download/4.5-stable/Godot_v4.5-stable_linux.x86_64.zip
+        godot_export_templates_download_url: https://github.com/godotengine/godot/releases/download/4.5-stable/Godot_v4.5-stable_export_templates.tpz
+        relative_project_path: ./
+        relative_export_path: ./text-forge-builds/
+        presets_to_export: ${{ matrix.config.export_preset }}
+        wine_path: ${{ steps.wine.outputs.WINE_PATH }}
+        export_debug: true
+        cache: true
+        verbose: true
+        archive_output: false
+
+    - name: Export 2
+      id: export2
+      if: steps.export.outcome == 'failure'
+      uses: firebelley/godot-export@v7.0.0
+      with:
+        godot_executable_download_url: https://github.com/godotengine/godot/releases/download/4.5-stable/Godot_v4.5-stable_linux.x86_64.zip
+        godot_export_templates_download_url: https://github.com/godotengine/godot/releases/download/4.5-stable/Godot_v4.5-stable_export_templates.tpz
+        relative_project_path: ./
+        relative_export_path: ./text-forge-builds/
+        presets_to_export: ${{ matrix.config.export_preset }}
+        wine_path: ${{ steps.wine.outputs.WINE_PATH }}
+        export_debug: true
+        cache: true
+        verbose: true
+        archive_output: false
+
+    - name: Archive
+      run: |
+        cd text-forge-builds
+        EXPORT_DIR=$(find . -maxdepth 1 -type d -name "${{ matrix.config.platform }}*" | head -n 1)
+        if [ -z "$EXPORT_DIR" ]; then
+          echo "Export directory not found!"
+          exit 1
+        fi
+        echo "Found export directory: $EXPORT_DIR"
+        cp -r ../data "$EXPORT_DIR/"
+        cp -r ../action_scripts "$EXPORT_DIR/"
+        cp ../README.md "$EXPORT_DIR/"
+        cp ../CHANGELOG.md "$EXPORT_DIR/"
+        cd "$EXPORT_DIR"
+        zip -r "../${{ matrix.config.name }}.zip" .
+        cd ..
+        rm -rf "$EXPORT_DIR"
+        ls -lah
+        echo "✓ Archive created successfully"
+
+    - name: Artifact
+      uses: actions/upload-artifact@v5
+      with:
+        name: ${{ matrix.config.name }}
+        path: text-forge-builds/${{ matrix.config.name }}.zip
+
+    - name: Release
+      uses: ncipollo/release-action@v1.20.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        generateReleaseNotes: true
+        tag: ${{ github.ref_name }}
+        artifacts: text-forge-builds/${{ matrix.config.name }}.zip
+        allowUpdates: true
+        discussionCategory: General
+        generateReleaseNotesPreviousTag: true
+        makeLatest: legacy
+        omitBodyDuringUpdate: true
+        omitNameDuringUpdate: true
