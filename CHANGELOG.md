@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file. (Notable ch
 The format is based on [Keep a Changelog (1.1)](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning (2.0)](https://semver.org/spec/v2.0.0.html).
 
-## [unreleased]
+## [v0.2-rc2] - 2025-12-07
 
 ### Added
 - Mode-driven indentation settings ([#136](https://github.com/text-forge/text-forge/pull/136))
@@ -64,14 +64,14 @@ and this project adheres to [Semantic Versioning (2.0)](https://semver.org/spec/
 - Empty *Mode Viewer* popup menu at startup ([#116](https://github.com/text-forge/text-forge/pull/116))
 - Panel status is not restored after startup ([#119](https://github.com/text-forge/text-forge/pull/119))
 
-## [v0.2-beta2] - 2025-10-9
+## [v0.2-beta2] - 2025-10-09
 
 ### Added
 - Higher priority for main action scripts loading ([#112](https://github.com/text-forge/text-forge/pull/112))
 - Syntax highlighting colors by themes ([#113](https://github.com/text-forge/text-forge/pull/113))
 - Support custom preview formats ([#115](https://github.com/text-forge/text-forge/pull/115))
 
-## [v0.2-beta1] - 2025-9-25
+## [v0.2-beta1] - 2025-09-25
 
 ### Added
 - Caret position button ([#96](https://github.com/text-forge/text-forge/pull/96))
@@ -85,7 +85,7 @@ and this project adheres to [Semantic Versioning (2.0)](https://semver.org/spec/
 - Error when multiple save requests sent at same time ([#102](https://github.com/text-forge/text-forge/pull/102))
 - Restore panel open state ([#103](https://github.com/text-forge/text-forge/pull/103))
 
-## [v0.1-stable] - 2025-8-30 & [v0.1-rc2] - 2025-8-26
+## [v0.1-stable] - 2025-08-30 & [v0.1-rc2] - 2025-08-26
 
 > [!Note]
 > Because of a versioning mistake changelog of these versions is mixed.
@@ -99,7 +99,7 @@ and this project adheres to [Semantic Versioning (2.0)](https://semver.org/spec/
 ### Fixed
 - Error for multiple available modes selection ([#93](https://github.com/text-forge/text-forge/pull/93))
 
-## [v0.1-rc1] - 2025-8-19
+## [v0.1-rc1] - 2025-08-19
 
 ### Added
 
@@ -178,7 +178,7 @@ and this project adheres to [Semantic Versioning (2.0)](https://semver.org/spec/
 - Fixed size for panel icons ([#71](https://github.com/text-forge/text-forge/pull/71))
 - Missing icon changes for notification panel ([#71](https://github.com/text-forge/text-forge/pull/71))
 
-## [v0.1-beta] - 2025-7-27
+## [v0.1-beta] - 2025-07-27
 
 ### Added
 
@@ -267,7 +267,8 @@ and this project adheres to [Semantic Versioning (2.0)](https://semver.org/spec/
 - Data-driven UI.
 - Docs in 4 languages (en, fa, es, zh)
 
-[unreleased]: https://github.com/text-forge/text-forge/compare/v0.2.0-rc1...HEAD
+[unreleased]: https://github.com/text-forge/text-forge/compare/v0.2.0-rc2...HEAD
+[v0.2-rc2]: https://github.com/text-forge/text-forge/releases/tag/v0.2.0-rc2
 [v0.2-rc1]: https://github.com/text-forge/text-forge/releases/tag/v0.2.0-rc1
 [v0.2-beta2]: https://github.com/text-forge/text-forge/releases/tag/v0.2.0-beta2
 [v0.2-beta1]: https://github.com/text-forge/text-forge/releases/tag/v0.2.0-beta1
