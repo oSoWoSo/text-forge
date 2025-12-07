@@ -22,6 +22,7 @@ Include technical notes, test cases, environments, screenshots if relevant. -->
 ## Checklist
 <!-- Confirm the following before requesting merge,
 keep PR as draft before completing this list. -->
+- [ ] **I have thoroughly read the [Branch Merge Policy](https://github.com/text-forge/text-forge/wiki/Branch-Merge-Policy) and will follow it.**
 - [ ] Linked all relevant issues/PRs/discussions
 - [ ] Code follows project style and guidelines
 - [ ] Self-reviewed and tested thoroughly
