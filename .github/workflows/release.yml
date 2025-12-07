@@ -1,0 +1,114 @@
+name: Release (2 passes)
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  export_matrix:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - name: TextForge-Linux-${{ github.ref_name }}
+            export_preset: "Linux"
+            platform: Linux
+            needs_wine: false
+          - name: TextForge-Windows-${{ github.ref_name }}
+            export_preset: 'Windows Desktop'
+            platform: Windows
+            needs_wine: true
+
+    name: ${{ matrix.config.name }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v5
+
+    - name: Wine
+      if: matrix.config.needs_wine
+      id: wine
+      run: |
+        sudo apt update
+        sudo apt install -y wine64
+        echo "WINE_PATH=$(which wine)" >> $GITHUB_OUTPUT
+
+    - name: Export
+      id: export
+      continue-on-error: true
+      uses: firebelley/godot-export@v7.0.0
+      with:
+        godot_executable_download_url: https://github.com/godotengine/godot/releases/download/4.5-stable/Godot_v4.5-stable_linux.x86_64.zip
+        godot_export_templates_download_url: https://github.com/godotengine/godot/releases/download/4.5-stable/Godot_v4.5-stable_export_templates.tpz
+        relative_project_path: ./
+        relative_export_path: ./TextForge/
+        presets_to_export: ${{ matrix.config.export_preset }}
+        wine_path: ${{ steps.wine.outputs.WINE_PATH }}
+        export_debug: true
+        cache: true
+        verbose: true
+        archive_output: false
+
+    - name: Export 2
+      id: export2
+      if: steps.export.outcome == 'failure'
+      uses: firebelley/godot-export@v7.0.0
+      with:
+        godot_executable_download_url: https://github.com/godotengine/godot/releases/download/4.5-stable/Godot_v4.5-stable_linux.x86_64.zip
+        godot_export_templates_download_url: https://github.com/godotengine/godot/releases/download/4.5-stable/Godot_v4.5-stable_export_templates.tpz
+        relative_project_path: ./
+        relative_export_path: ./TextForge/
+        presets_to_export: ${{ matrix.config.export_preset }}
+        wine_path: ${{ steps.wine.outputs.WINE_PATH }}
+        export_debug: true
+        cache: true
+        verbose: true
+        archive_output: false
+
+    - name: Archive
+      run: |
+        # Copy supporting files to wrapper directory
+        for d in TextForge/*; do
+          if [ -d "$d" ]; then
+            mv "$d"/* ../
+            rmdir "$d"
+          fi
+        done
+        cp -r data TextForge/
+        cp -r action_scripts TextForge/
+        cp icon.png TextForge/
+        cp README.md TextForge/
+        cp CHANGELOG.md TextForge/
+        cp SECURITY.md TextForge/
+        cp LICENSE TextForge/
+        # Show files in TextForge
+        echo 'Add to zip:'
+        ls -lh TextForge/
+        # Create zip with TextForge folder
+        zip -r "${{ matrix.config.name }}.zip" TextForge
+        echo "✓ Archive ${{ matrix.config.name }}.zip created"
+        ls -lh "${{ matrix.config.name }}.zip"
+
+    - name: Artifact
+      uses: actions/upload-artifact@v5
+      with:
+        name: ${{ matrix.config.name }}
+        path: ${{ matrix.config.name }}.zip
+
+    - name: Release
+      uses: ncipollo/release-action@v1.20.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        generateReleaseNotes: true
+        tag: ${{ github.ref_name }}
+        artifacts: ${{ matrix.config.name }}.zip
+        allowUpdates: true
+        discussionCategory: General
+        generateReleaseNotesPreviousTag: true
+        makeLatest: legacy
+        omitBodyDuringUpdate: true
+        omitNameDuringUpdate: true
