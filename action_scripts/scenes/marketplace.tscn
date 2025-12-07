@@ -96,6 +96,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Info" type="Window" parent="."]
+oversampling_override = 1.0
 title = "Package information..."
 initial_position = 2
 size = Vector2i(600, 500)
@@ -148,7 +149,7 @@ text = "1.0.0"
 layout_mode = 2
 size_flags_horizontal = 8
 theme_type_variation = &"PackageBadgeLabel"
-text = "Text Forge 0.1.0+"
+text = "Text Forge 0.2.0+"
 
 [node name="Dates" type="Label" parent="Info/Margin/VBox/Footer"]
 layout_mode = 2
