@@ -37,6 +37,9 @@ jobs:
         sudo apt install -y wine64
         echo "WINE_PATH=$(which wine)" >> $GITHUB_OUTPUT
 
+    - name: Dir
+      run: mkdir -p /home/runner/work/text-forge/text-forge/text-forge-builds
+
     - name: Export
       id: export
       continue-on-error: true
