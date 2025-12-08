@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     tags:
-      - "v*"
+      - "*"
 
 jobs:
   export_matrix:
@@ -15,14 +15,16 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - name: Linux
+          - name: TextForge-Linux-${{ github.ref_name }}
             export_preset: "Linux"
+            platform: Linux
             needs_wine: false
-          - name: Windows
+          - name: TextForge-Windows-${{ github.ref_name }}
             export_preset: "Windows Desktop"
+            platform: Windows
             needs_wine: true
 
-    name: ${{ matrix.config.name }} release
+    name: ${{ matrix.config.name }}
     steps:
     - name: checkout
       uses: actions/checkout@v5
@@ -35,7 +37,7 @@ jobs:
         sudo apt install -y wine64
         echo "WINE_PATH=$(which wine)" >> $GITHUB_OUTPUT
 
-    - name: export Text.Forge (${{ matrix.config.name }})
+    - name: Export
       id: export
       continue-on-error: true
       uses: firebelley/godot-export@v7.0.0
@@ -51,7 +53,7 @@ jobs:
         verbose: true
         archive_output: false
 
-    - name: 2nd export (${{ matrix.config.name }})
+    - name: Export 2
       id: export2
       if: steps.export.outcome == 'failure'
       uses: firebelley/godot-export@v7.0.0
@@ -67,11 +69,11 @@ jobs:
         verbose: true
         archive_output: false
 
-    - name: Create archive
+    - name: Archive
       if: steps.export.outcome == 'failure'
       run: |
         cd text-forge-builds
-        EXPORT_DIR=$(find . -maxdepth 1 -type d -name "${{ matrix.config.name }}*" | head -n 1)
+        EXPORT_DIR=$(find . -maxdepth 1 -type d -name "${{ matrix.config.platform }}*" | head -n 1)
         if [ -z "$EXPORT_DIR" ]; then
           echo "Export directory not found!"
           exit 1
@@ -88,14 +90,14 @@ jobs:
         ls -lah
         echo "✓ Archive created successfully"
 
-    - name: Upload artifact
+    - name: Artifact
       if: steps.export.outcome == 'failure'
       uses: actions/upload-artifact@v5
       with:
-        name: text-forge-${{ matrix.config.name }}
+        name: ${{ matrix.config.name }}
         path: text-forge-builds/${{ matrix.config.name }}.zip
 
-    - name: Create release
+    - name: Release
       uses: ncipollo/release-action@v1.20.0
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
