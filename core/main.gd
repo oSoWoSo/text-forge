@@ -54,8 +54,6 @@ var templates_submenu: PopupMenu
 var main_menu_data: Dictionary
 ## Protects [method _handle_settings] from multiple runs at same time.
 var _is_reloading_settings := false
-## Cached translation data with [method TextForgeTranslator.cache_source].
-var _translation_data: Dictionary[String, Dictionary]
 
 # This is start point of Text Forge
 func _ready() -> void:
@@ -66,8 +64,6 @@ func _ready() -> void:
 	scripts.child_order_changed.connect(Signals.refresh_module_profiler)
 	# Open file with drag and drop feature
 	get_window().files_dropped.connect(func(files: PackedStringArray): Signals.open_file.emit(files[0]))
-	# Cache translation data
-	_translation_data = TFT.cache_source(S.TRANSLATION_FILE)
 	# Connect reload_recent_files request signal
 	Signals.reload_recent_files.connect(_reload_recent_files)
 	# Handle settings
@@ -175,16 +171,13 @@ func _load_main_menu() -> void:
 		var menu_name: String = menu_item.trim_suffix(MENU_SUFFIX)
 		menu_name = menu_name.capitalize()
 		# Translate name
-		new_menu_button.name = TFT.get_text_from_cache(
-			MENU_TRANSLATION_PREFIX + menu_name.to_snake_case(),
-			_translation_data,
-		)
+		new_menu_button.name = tr(MENU_TRANSLATION_PREFIX + menu_name.to_snake_case())
 		# For each option in current menu
 		for item: Dictionary in current_menu:
 			# Set item "popup", see _load_scripts for use case
 			main_menu_data[menu_item][current_menu.find(item)]["popup"] = new_menu_button
 			# Translate text
-			var item_text := TFT.get_text_from_cache(item.get("key", ""), _translation_data)
+			var item_text: String = item.get("key", "")
 			# Add item
 			match item.get("type", OptionTypes.REGULAR):
 				OptionTypes.REGULAR:
@@ -254,11 +247,11 @@ func _create_submenu(root_menu: PopupMenu, root_option: Dictionary) -> void:
 				main_menu_data[submenu_name][main_menu_data[submenu_name].find(submenu_item)]["popup"] = submenu
 				match submenu_item.get("type", OptionTypes.REGULAR):
 					OptionTypes.REGULAR:
-						submenu.add_item(TFT.get_text(submenu_item.get("key", "")), submenu_item.get("code", -1))
+						submenu.add_item(submenu_item.get("key", ""), submenu_item.get("code", -1))
 					OptionTypes.SEPARATOR:
-						submenu.add_separator(TFT.get_text(submenu_item.get("key", "")))
+						submenu.add_separator(submenu_item.get("key", ""))
 					OptionTypes.CHECKBOX:
-						submenu.add_check_item(TFT.get_text(submenu_item.get("key", "")), submenu_item.get("code", -1))
+						submenu.add_check_item(submenu_item.get("key", ""), submenu_item.get("code", -1))
 					_:
 						Global.send_notification(Global.Notification.ERROR, "Can't add item to submenu!", "Currently regular, separator, and checkbox items are available for submenus.")
 			# Connect submenu to handle state function
@@ -267,7 +260,7 @@ func _create_submenu(root_menu: PopupMenu, root_option: Dictionary) -> void:
 	if not submenu.id_pressed.is_connected(_handle_menu_option_state):
 		submenu.id_pressed.connect(_handle_menu_option_state.bind(submenu, root_option.get("text", "")))
 	# Add submenu
-	root_menu.add_submenu_node_item(TFT.get_text(root_option.get("key", "")), submenu, root_option.get("code", -1))
+	root_menu.add_submenu_node_item(root_option.get("key", ""), submenu, root_option.get("code", -1))
 	# Disable empty submenus
 	if submenu.item_count == 0:
 		root_menu.set_item_disabled(-1, true)

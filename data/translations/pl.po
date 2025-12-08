@@ -1,0 +1,399 @@
+msgid ""
+msgstr ""
+"Language: pl\n"
+
+msgid "menu.project"
+msgstr "Projekt"
+
+msgid "menu.project.new_project"
+msgstr "Nowy projekt"
+
+msgid "menu.project.open_project"
+msgstr "Otwórz projekt"
+
+msgid "menu.project.recent_projects"
+msgstr "Ostatnie projekty"
+
+msgid "menu.project.close_project"
+msgstr "Zamknij projekt"
+
+msgid "menu.project.project_settings"
+msgstr "Ustawienia projektu"
+
+msgid "menu.file"
+msgstr "Plik"
+
+msgid "menu.file.new"
+msgstr "Nowy"
+
+msgid "menu.file.new_window"
+msgstr "Nowe okno"
+
+msgid "menu.file.new_with_template"
+msgstr "Nowy z szablonu"
+
+msgid "menu.file.open"
+msgstr "Otwórz..."
+
+msgid "menu.file.recent_files"
+msgstr "Ostatnie pliki"
+
+msgid "menu.file.save"
+msgstr "Zapisz"
+
+msgid "menu.file.save_as"
+msgstr "Zapisz jako..."
+
+msgid "menu.file.reload"
+msgstr "Załaduj ponownie"
+
+msgid "menu.file.close"
+msgstr "Zamknij"
+
+msgid "menu.file.backup_create"
+msgstr "Stwórz kopię..."
+
+msgid "menu.file.backup_load"
+msgstr "Wczytaj kopię..."
+
+msgid "menu.file.copy_path"
+msgstr "Skopiuj ścieżkę"
+
+msgid "menu.file.show_in_filesystem"
+msgstr "Pokaż w eksploratorze plików"
+
+msgid "menu.file.secure_delete"
+msgstr "Bezpieczne usuwanie"
+
+msgid "menu.file.restart"
+msgstr "Uruchom ponownie"
+
+msgid "menu.file.exit"
+msgstr "Zakończ"
+
+msgid "menu.edit"
+msgstr "Edytuj"
+
+msgid "menu.edit.undo"
+msgstr "Cofnij"
+
+msgid "menu.edit.redo"
+msgstr "Ponów"
+
+msgid "menu.edit.cut"
+msgstr "Wytnij"
+
+msgid "menu.edit.copy"
+msgstr "Kopiuj"
+
+msgid "menu.edit.paste"
+msgstr "Wklej"
+
+msgid "menu.edit.delete"
+msgstr "Usuń"
+
+msgid "menu.edit.select_all"
+msgstr "Zaznacz wszystko"
+
+msgid "menu.edit.select_next_occurence"
+msgstr "Zaznacz następne wystąpienie"
+
+msgid "menu.edit.select_all_occurences"
+msgstr "Zaznacz wszystkie wystąpienia"
+
+msgid "menu.edit.duplicate_selection"
+msgstr "Zduplikuj zaznaczenie"
+
+msgid "menu.edit.evaluate_selection"
+msgstr "Przelicz zaznaczenie"
+
+msgid "menu.edit.line"
+msgstr "Linia"
+
+msgid "menu.edit.line.move_up"
+msgstr "Przesuń linie do góry"
+
+msgid "menu.edit.line.move_down"
+msgstr "Przesuń linie w dół"
+
+msgid "menu.edit.line.indent"
+msgstr "Wcięcie"
+
+msgid "menu.edit.line.unindent"
+msgstr "Usuń wcięcie"
+
+msgid "menu.edit.line.delete"
+msgstr "Usuń linie"
+
+msgid "menu.edit.line.toggle_comment"
+msgstr "Przełącz komentarz"
+
+msgid "menu.edit.line.duplicate"
+msgstr "Zduplikuj linie"
+
+msgid "menu.edit.line.select_whole"
+msgstr "Zaznacz całą linię"
+
+msgid "menu.edit.line.select_paragraph"
+msgstr "Zaznacz akapit"
+
+msgid "menu.edit.line.join"
+msgstr "Połącz linie"
+
+msgid "menu.edit.line.move_to_new_file"
+msgstr "Przenieś do nowego pliku"
+
+msgid "menu.edit.completion_query"
+msgstr "Zapytanie o uzupełnienie"
+
+msgid "menu.edit.convert_case"
+msgstr "Zmień wielkość liter"
+
+msgid "menu.edit.convert_case.upper"
+msgstr "DUŻE"
+
+msgid "menu.edit.convert_case.lower"
+msgstr "małe"
+
+msgid "menu.edit.convert_case.capitalize"
+msgstr "Pierwsza litera duża"
+
+msgid "menu.edit.convert_case.camel"
+msgstr "camelCase"
+
+msgid "menu.edit.convert_case.pascal"
+msgstr "PascalCase"
+
+msgid "menu.edit.convert_case.snake"
+msgstr "snake_case"
+
+msgid "menu.search"
+msgstr "Szukaj"
+
+msgid "menu.search.find_and_replace"
+msgstr "Znajdź i zamień..."
+
+msgid "menu.search.find_next"
+msgstr "Znajdź następny"
+
+msgid "menu.search.find_prev"
+msgstr "Znajdź poprzedni"
+
+msgid "menu.search.replace_all"
+msgstr "Zamień wszystko"
+
+msgid "menu.go_to"
+msgstr "Przejdź do"
+
+msgid "menu.go_to.line"
+msgstr "Przejdź do linii..."
+
+msgid "menu.go_to.code_regions"
+msgstr "Regiony kodu..."
+
+msgid "menu.go_to.insert_nav_mark"
+msgstr "Wstaw znacznik nawigacji"
+
+msgid "menu.go_to.nav_marks"
+msgstr "Znaczniki nawigacji..."
+
+msgid "menu.go_to.table_of_contents"
+msgstr "Spis treści..."
+
+msgid "menu.go_to.bookmarks"
+msgstr "Zakładki..."
+
+msgid "menu.go_to.toggle_bookmark"
+msgstr "Przełącz zakładkę"
+
+msgid "menu.go_to.remove_all_bookmarks"
+msgstr "Usuń wszystkie zakładki"
+
+msgid "menu.command"
+msgstr "Polecenie"
+
+msgid "menu.command.palette"
+msgstr "Paleta poleceń..."
+
+msgid "menu.format"
+msgstr "Formatuj"
+
+msgid "menu.format.auto_format"
+msgstr "Automatyczne formatowanie"
+
+msgid "menu.format.indentation"
+msgstr "Wcięcie"
+
+msgid "menu.format.indentation.auto_indentation"
+msgstr "Automatyczne wcięcie"
+
+msgid "menu.format.indentation.remove_all_indents"
+msgstr "Usuń wszystkie wcięcia"
+
+msgid "menu.format.indentation.auto_indent"
+msgstr "Automatyczne wcięcie"
+
+msgid "menu.format.indentation.to_spaces"
+msgstr "Zmień wcięcie na spacje"
+
+msgid "menu.format.indentation.to_tabs"
+msgstr "Zmień wcięcie na tabulatory"
+
+msgid "menu.format.indentation.auto_indent_new_lines"
+msgstr "Automatyczne wcięcie nowych linii"
+
+msgid "menu.format.indentation.lock_indentation"
+msgstr "Zablokuj ustawienia wcięć"
+
+msgid "menu.format.indentation.reset_mode_indentation"
+msgstr "Resetuj ustawienia wcięć trybu"
+
+msgid "menu.format.continue_placeholder_completion"
+msgstr "Kontynuuj uzupełnianie placeholderów"
+
+msgid "menu.format.save_as_template"
+msgstr "Zapisz jako szablon..."
+
+msgid "menu.format.templates"
+msgstr "Szablony..."
+
+msgid "menu.view"
+msgstr "Widok"
+
+msgid "menu.view.increase_font"
+msgstr "Zwiększ rozmiar czcionki"
+
+msgid "menu.view.reduce_font"
+msgstr "Zmniejsz rozmiar czcionki"
+
+msgid "menu.view.reset_font"
+msgstr "Zresetuj rozmiar czcionki"
+
+msgid "menu.view.focus_editor"
+msgstr "Skup się na edytorze"
+
+msgid "menu.view.line_length_guides"
+msgstr "Ustawienia długości linii..."
+
+msgid "menu.view.show_bookmarks"
+msgstr "Pokaż zakładki"
+
+msgid "menu.view.show_line_numbers"
+msgstr "Pokaż numery linii"
+
+msgid "menu.view.show_fold_gutter"
+msgstr "Pokaż panel zwijania"
+
+msgid "menu.view.show_minimap"
+msgstr "Pokaż minimapę"
+
+msgid "menu.view.block_caret"
+msgstr "Kursor blokowy"
+
+msgid "menu.view.highlight_occurrences"
+msgstr "Podświetl wszystkie wystąpienia"
+
+msgid "menu.view.highlight_current_line"
+msgstr "Podświetl bieżącą linię"
+
+msgid "menu.view.show_control_chars"
+msgstr "Pokaż znaki kontrolne"
+
+msgid "menu.view.show_tabs"
+msgstr "Pokaż tabulatory"
+
+msgid "menu.view.show_spaces"
+msgstr "Pokaż spacje"
+
+msgid "menu.view.full_screen"
+msgstr "Pełny ekran"
+
+msgid "menu.tools"
+msgstr "Narzędzia"
+
+msgid "menu.tools.color_picker"
+msgstr "Wybór koloru"
+
+msgid "menu.tools.security"
+msgstr "Bezpieczeństwo..."
+
+msgid "menu.tools.counter"
+msgstr "Licznik..."
+
+msgid "menu.tools.translation"
+msgstr "Tłumaczenie..."
+
+msgid "menu.tools.clipboard_history"
+msgstr "Historia schowka"
+
+msgid "menu.tools.function_creator"
+msgstr "Kreator funkcji..."
+
+msgid "menu.tools.documentation"
+msgstr "Dokumentacja..."
+
+msgid "menu.tools.auto_completion"
+msgstr "Automatyczne uzupełnianie..."
+
+msgid "menu.tools.time_management"
+msgstr "Zarządzanie czasem..."
+
+msgid "menu.tools.calendar"
+msgstr "Kalendarz"
+
+msgid "menu.tools.by_extensions"
+msgstr "Rozszerzenia"
+
+msgid "menu.tools.signature"
+msgstr "Podpis..."
+
+msgid "menu.tools.date_time"
+msgstr "Data i czas..."
+
+msgid "menu.tools.macros"
+msgstr "Makra..."
+
+msgid "menu.tools.auto_backup"
+msgstr "Automatyczny zapis..."
+
+msgid "menu.settings"
+msgstr "Ustawienia"
+
+msgid "menu.settings.preferences"
+msgstr "Preferencje..."
+
+msgid "menu.settings.mode_manager"
+msgstr "Menadżer trybów"
+
+msgid "menu.settings.extensions"
+msgstr "Rozszerzenia..."
+
+msgid "menu.settings.marketplace"
+msgstr "Rynek..."
+
+msgid "menu.settings.open_data_folder"
+msgstr "Otwórz folder danych"
+
+msgid "menu.help"
+msgstr "Pomoc"
+
+msgid "menu.help.github"
+msgstr "Repozytorium GitHub"
+
+msgid "menu.help.mode_library"
+msgstr "Biblioteka trybów"
+
+msgid "menu.help.forum"
+msgstr "Forum"
+
+msgid "menu.help.feedback"
+msgstr "Napisz opinię"
+
+msgid "menu.help.submit_issue"
+msgstr "Zgłoś problem"
+
+msgid "menu.help.docs"
+msgstr "Dokumentacja online"
+
+msgid "menu.help.about"
+msgstr "Informacje o programie"
