@@ -55,8 +55,8 @@ jobs:
 
     - name: Archive
       run: |
-        ls /home/runner/.local/share/godot/builds/
-        cp -r "/home/runner/.local/share/godot/builds/${{ matrix.config.export_preset }}" /home/runner/work/text-forge/text-forge/text-forge-builds
+        ls "/home/runner/.local/share/godot/builds/${{ matrix.config.export_preset }}/"
+        cp /home/runner/.local/share/godot/builds/${{ matrix.config.export_preset }}/* /home/runner/work/text-forge/text-forge/text-forge-builds/
         cd /home/runner/work/text-forge/text-forge/text-forge-builds || pwd
         ls -lah
         cp -r ../data ./
