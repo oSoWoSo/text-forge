@@ -72,7 +72,7 @@ jobs:
     - name: Archive
       run: |
         cd text-forge-builds
-        EXPORT_DIR=$(find . -maxdepth 1 -type d -name "${{ matrix.config.platform }}*" | head -n 1)
+        EXPORT_DIR=$(find . -maxdepth 1 -type d -name "${{ matrix.config.export_preset }}" | head -n 1)
         if [ -z "$EXPORT_DIR" ]; then
           echo "Export directory not found!"
           exit 1
