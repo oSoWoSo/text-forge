@@ -53,17 +53,23 @@ jobs:
       run: |
         mkdir -p /home/runner/work/text-forge/text-forge/text-forge-builds/
         ./Godot_v4.5-stable_linux.x86_64 --headless --import || true
-        if [ ${{ matrix.config.export_preset }} = 'Linux' ]; then
-          ./Godot_v4.5-stable_linux.x86_64 /home/runner/work/text-forge/text-forge/project.godot --headless --export-debug 'Linux' /home/runner/work/text-forge/text-forge/text-forge-builds/TextForge.x86_64 --verbose || true
-        elif [ ${{ matrix.config.export_preset }} = 'Windows Desktop' ]; then
-          ./Godot_v4.5-stable_linux.x86_64 /home/runner/work/text-forge/text-forge/project.godot --headless --export-debug 'Windows Desktop' /home/runner/work/text-forge/text-forge/text-forge-builds/TextForge.exe --verbose || true
-        fi
+        case "${{ matrix.config.export_preset }}" in
+          Linux)
+            echo "Exporting Linux release"
+            ./Godot_v4.5-stable_linux.x86_64 /home/runner/work/text-forge/text-forge/project.godot --headless --export-debug 'Linux' /home/runner/work/text-forge/text-forge/text-forge-builds/TextForge.x86_64 --verbose || true
+            ;;
+          'Windows Desktop')
+            echo "Exporting Windows release"
+            ./Godot_v4.5-stable_linux.x86_64 /home/runner/work/text-forge/text-forge/project.godot --headless --export-debug "Windows Desktop" /home/runner/work/text-forge/text-forge/text-forge-builds/TextForge.exe --verbose || true
+            ;;
+        esac
         ls /home/runner/work/text-forge/text-forge/text-forge-builds/
 
     - name: Archive
       run: |
         cd /home/runner/work/text-forge/text-forge/text-forge-builds
         pwd
+        ls -lah
         cp -r ../data ./
         cp -r ../action_scripts ./
         cp ../README.md ./
