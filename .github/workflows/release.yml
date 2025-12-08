@@ -15,11 +15,13 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - name: Linux
+          - name: TextForge-Linux-${{ github.ref_name }}
             export_preset: "Linux"
+            platform: Linux
             needs_wine: false
-          - name: Windows
+          - name: TextForge-Windows-${{ github.ref_name }}
             export_preset: "Windows Desktop"
+            platform: Windows
             needs_wine: true
 
     name: ${{ matrix.config.name }} release
@@ -71,7 +73,7 @@ jobs:
       if: steps.export.outcome == 'failure'
       run: |
         cd text-forge-builds
-        EXPORT_DIR=$(find . -maxdepth 1 -type d -name "${{ matrix.config.name }}*" | head -n 1)
+        EXPORT_DIR=$(find . -maxdepth 1 -type d -name "${{ matrix.config.platform }}*" | head -n 1)
         if [ -z "$EXPORT_DIR" ]; then
           echo "Export directory not found!"
           exit 1
