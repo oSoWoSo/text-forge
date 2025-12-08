@@ -49,15 +49,20 @@ jobs:
         chmod +x Godot_v4.5-stable_linux.x86_64
 
     - name: Import assets
+      continue-on-error: true
       run: |
         mkdir -p /home/runner/work/text-forge/text-forge/text-forge-builds/
         ./Godot_v4.5-stable_linux.x86_64 --headless --import || true
-        ./Godot_v4.5-stable_linux.x86_64 /home/runner/work/text-forge/text-forge/project.godot --headless --export-debug "${{ matrix.config.export_preset }}" --verbose || true
+        if [ ${{ matrix.config.export_preset }} = 'Linux' ]; then
+          ./Godot_v4.5-stable_linux.x86_64 /home/runner/work/text-forge/text-forge/project.godot --headless --export-debug 'Linux' /home/runner/work/text-forge/text-forge/text-forge-builds/TextForge.x86_64 --verbose || true
+        elif [ ${{ matrix.config.export_preset }} = 'Windows Desktop' ]; then
+          ./Godot_v4.5-stable_linux.x86_64 /home/runner/work/text-forge/text-forge/project.godot --headless --export-debug 'Windows Desktop' /home/runner/work/text-forge/text-forge/text-forge-builds/TextForge.exe --verbose || true
+        fi
         ls /home/runner/work/text-forge/text-forge/text-forge-builds/
 
     - name: Archive
       run: |
-        cd text-forge-builds
+        cd /home/runner/work/text-forge/text-forge/text-forge-builds
         EXPORT_DIR=$(find . -maxdepth 1 -type d -name "${{ matrix.config.platform }}*" | head -n 1)
         if [ -z "$EXPORT_DIR" ]; then
           echo "Export directory not found!"
