@@ -27,7 +27,6 @@ config/icon="uid://c5as0fd5jhnm8"
 
 Settings="*res://core/autoload/settings.gd"
 Signals="*res://core/autoload/signals.gd"
-TFT="*res://core/autoload/translation_manager.gd"
 ExtensionHub="*res://core/autoload/extension_hub.gd"
 Global="*res://core/autoload/global.gd"
 Factory="*res://core/autoload/factory.gd"

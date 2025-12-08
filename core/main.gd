@@ -118,6 +118,8 @@ func _define_presets() -> void:
 	Settings.define_preset("editor_ui", "filter_hue_shift", 0.0)
 	Settings.define_preset("editor_ui", "filter_saturation", 1.0)
 	Settings.define_preset("editor_ui", "filter_brightness", 1.0)
+	# 5. Language
+	Settings.define_preset("editor_ui", "interface_language", "en")
 
 
 ## Loads core-related settings. This function supports dynamic reload for mode, theme, and indentation.
@@ -146,6 +148,8 @@ func _handle_settings() -> void:
 	overlay_shader.material.set_shader_parameter("hue_shift", Settings.get_setting("editor_ui", "filter_hue_shift"))
 	overlay_shader.material.set_shader_parameter("saturation", Settings.get_setting("editor_ui", "filter_saturation"))
 	overlay_shader.material.set_shader_parameter("brightness", Settings.get_setting("editor_ui", "filter_brightness"))
+	# 5. Language
+	TranslationServer.set_locale(TranslationServer.standardize_locale(Settings.get_setting("editor_ui", "interface_language"), true))
 
 
 ## Loads data in [member main_menu_data], uses [constant S.MAIN_UI_DATA] and [constant DATA_SECTION].
