@@ -224,9 +224,6 @@ msgstr ""
 msgid "menu.format.indentation"
 msgstr ""
 
-msgid "menu.format.indentation.auto_indentation"
-msgstr ""
-
 msgid "menu.format.indentation.remove_all_indents"
 msgstr ""
 
