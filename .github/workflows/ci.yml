@@ -1,0 +1,96 @@
+name: R
+on:
+  workflow_dispatch:
+  push:
+    paths: .github/workflows/ci.yml
+    tags:
+      - "*"
+
+jobs:
+  export_matrix:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - name: TextForge-Linux-${{ github.ref_name }}
+            export_preset: "Linux"
+            platform: Linux
+            needs_wine: false
+          - name: TextForge-Windows-${{ github.ref_name }}
+            export_preset: "Windows Desktop"
+            platform: Windows
+            needs_wine: true
+
+    name: ${{ matrix.config.name }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v5
+
+    - name: Wine
+      if: matrix.config.needs_wine
+      id: wine
+      run: |
+        sudo apt update
+        sudo apt install -y wine64
+        echo "WINE_PATH=$(which wine)" >> $GITHUB_OUTPUT
+
+    - name: Download Godot
+      run: |
+        wget -q https://github.com/godotengine/godot/releases/download/4.5-stable/Godot_v4.5-stable_linux.x86_64.zip
+        wget -q https://github.com/godotengine/godot/releases/download/4.5-stable/Godot_v4.5-stable_export_templates.tpz
+        unzip -q Godot_v4.5-stable_linux.x86_64.zip
+        unzip -q Godot_v4.5-stable_export_templates.tpz
+        mkdir -p /home/runner/.local/share/godot/export_templates/4.5.stable/
+        cp templates/* /home/runner/.local/share/godot/export_templates/4.5.stable/
+        chmod +x Godot_v4.5-stable_linux.x86_64
+
+    - name: Import assets
+      run: |
+        mkdir -p /home/runner/work/text-forge/text-forge/text-forge-builds/
+        ./Godot_v4.5-stable_linux.x86_64 --headless --import || true
+        ./Godot_v4.5-stable_linux.x86_64 /home/runner/work/text-forge/text-forge/project.godot --headless --export-debug "${{ matrix.config.export_preset }}" --verbose || true
+        ls /home/runner/work/text-forge/text-forge/text-forge-builds/
+
+    - name: Archive
+      run: |
+        cd text-forge-builds
+        EXPORT_DIR=$(find . -maxdepth 1 -type d -name "${{ matrix.config.platform }}*" | head -n 1)
+        if [ -z "$EXPORT_DIR" ]; then
+          echo "Export directory not found!"
+          exit 1
+        fi
+        echo "Found export directory: $EXPORT_DIR"
+        cp -r ../data "$EXPORT_DIR/"
+        cp -r ../action_scripts "$EXPORT_DIR/"
+        cp ../README.md "$EXPORT_DIR/"
+        cp ../CHANGELOG.md "$EXPORT_DIR/"
+        cd "$EXPORT_DIR"
+        zip -r "../${{ matrix.config.name }}.zip" .
+        cd ..
+        rm -rf "$EXPORT_DIR"
+        ls -lah
+        echo "✓ Archive created successfully"
+
+    - name: Artifact
+      uses: actions/upload-artifact@v5
+      with:
+        name: ${{ matrix.config.name }}
+        path: text-forge-builds/${{ matrix.config.name }}.zip
+
+    - name: Release
+      uses: ncipollo/release-action@v1.20.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        generateReleaseNotes: true
+        tag: ${{ github.ref_name }}
+        artifacts: text-forge-builds/${{ matrix.config.name }}.zip
+        allowUpdates: true
+        discussionCategory: General
+        generateReleaseNotesPreviousTag: true
+        makeLatest: legacy
+        omitBodyDuringUpdate: true
+        omitNameDuringUpdate: true
