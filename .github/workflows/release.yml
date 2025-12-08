@@ -16,11 +16,11 @@ jobs:
       matrix:
         config:
           - name: TextForge-Linux-${{ github.ref_name }}
-            export_preset: "Linux"
+            export_preset: 'Linux'
             platform: Linux
             needs_wine: false
           - name: TextForge-Windows-${{ github.ref_name }}
-            export_preset: "Windows Desktop"
+            export_preset: 'Windows Desktop'
             platform: Windows
             needs_wine: true
 
@@ -56,7 +56,7 @@ jobs:
     - name: Archive
       run: |
         ls /home/runner/.local/share/godot/builds/
-        cp /home/runner/.local/share/godot/builds/${{ matrix.config.platform }} /home/runner/work/text-forge/text-forge/text-forge-builds
+        cp -r "/home/runner/.local/share/godot/builds/${{ matrix.config.export_preset }}" /home/runner/work/text-forge/text-forge/text-forge-builds
         cd /home/runner/work/text-forge/text-forge/text-forge-builds || pwd
         ls -lah
         cp -r ../data ./
