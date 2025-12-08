@@ -62,7 +62,7 @@ jobs:
 
     - name: Archive
       run: |
-        #cd /home/runner/work/text-forge/text-forge/text-forge-builds
+        cd /home/runner/work/text-forge/text-forge/text-forge-builds
         pwd
         cp -r ../data ./
         cp -r ../action_scripts ./
