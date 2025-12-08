@@ -62,21 +62,15 @@ jobs:
 
     - name: Archive
       run: |
-        cd /home/runner/work/text-forge/text-forge/text-forge-builds
-        EXPORT_DIR=$(find . -maxdepth 1 -type d -name "${{ matrix.config.platform }}*" | head -n 1)
-        if [ -z "$EXPORT_DIR" ]; then
-          echo "Export directory not found!"
-          exit 1
-        fi
-        echo "Found export directory: $EXPORT_DIR"
-        cp -r ../data "$EXPORT_DIR/"
-        cp -r ../action_scripts "$EXPORT_DIR/"
-        cp ../README.md "$EXPORT_DIR/"
-        cp ../CHANGELOG.md "$EXPORT_DIR/"
-        cd "$EXPORT_DIR"
+        #cd /home/runner/work/text-forge/text-forge/text-forge-builds
+        pwd
+        cp -r ../data ./
+        cp -r ../action_scripts ./
+        cp ../README.md ./
+        cp ../CHANGELOG.md ./
         zip -r "../${{ matrix.config.name }}.zip" .
         cd ..
-        rm -rf "$EXPORT_DIR"
+        rm -rf text-forge-builds
         ls -lah
         echo "✓ Archive created successfully"
 
@@ -84,7 +78,8 @@ jobs:
       uses: actions/upload-artifact@v5
       with:
         name: ${{ matrix.config.name }}
-        path: text-forge-builds/${{ matrix.config.name }}.zip
+        path: ${{ matrix.config.name }}.zip
+        #path: text-forge-builds/${{ matrix.config.name }}.zip
 
     - name: Release
       uses: ncipollo/release-action@v1.20.0
@@ -92,7 +87,8 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         generateReleaseNotes: true
         tag: ${{ github.ref_name }}
-        artifacts: text-forge-builds/${{ matrix.config.name }}.zip
+        artifacts: ${{ matrix.config.name }}.zip
+        #artifacts: text-forge-builds/${{ matrix.config.name }}.zip
         allowUpdates: true
         discussionCategory: General
         generateReleaseNotesPreviousTag: true
