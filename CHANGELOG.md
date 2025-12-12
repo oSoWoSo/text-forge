@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning (2.0)](https://semver.org/spec/
 ## [v0.2-rc2] - 2025-12-07 & [v0.2-stable] - 2025-12-12
 
 > [!Note]
-> `v0.2-rc2` hasn't any known bug until release of `v0.2-stable`, so there isn't any change between these versions.
+> `v0.2-rc2` had no known bugs up to the release of `v0.2-stable`, so there are no changes between these versions.
 
 ### Added
 - Mode-driven indentation settings ([#136](https://github.com/text-forge/text-forge/pull/136))
