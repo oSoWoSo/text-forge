@@ -47,7 +47,8 @@ var presets := ConfigFile.new()
 ## [ConfigFile] loaded for editor data.
 var data := ConfigFile.new()
 
-func _ready() -> void:
+func _init() -> void:
+	Global.send_notification()
 	if FileAccess.file_exists(S.globalize_path(DATA_FILE)):
 		var err := data.load(S.globalize_path(DATA_FILE))
 		if err:

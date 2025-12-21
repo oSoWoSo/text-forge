@@ -15,10 +15,6 @@ var test_ui_filter_with_silent_mode__signal_count := 0
 var test_settings_changed_signal_propagation__signal_received := false
 var test_no_signal_on_identical_value__signal_count := 0
 
-func before_test() -> void:
-	# Store original values
-	pass
-
 func after_test() -> void:
 	# Restore defaults
 	Settings.restore_default(test_section, "filter_hue_shift")

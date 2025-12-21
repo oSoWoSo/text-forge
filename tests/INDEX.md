@@ -15,20 +15,20 @@
 ## Unit Tests
 
 - Path: `tests/`
-- Tests: 328
-- Files: 21
+- Tests: 412
+- Files: 26
 
 ### Action Scripts Tests
 
 - Path: `tests/action_scripts/`
-- Tests: 52
-- Files: 5
+- Tests: 112
+- Files: 10
 
 ### Autoloads Tests
 
 - Path: `tests/core/autoload/`
-- Tests: 103
-- Files: 6
+- Tests: 96
+- Files: 5
 
 ### Classes Tests
 
@@ -36,17 +36,17 @@
 - Tests: 38
 - Files: 1
 
+### Scripts Tests
+
+- Path: `tests/core/scripts/`
+- Tests: 14
+- Files: 1
+
 ### Core Tests
 
 - Path: `tests/core/`
-- Tests: 73
-- Files: 5
-
-### Data Tests
-
-- Path: `tests/data/`
-- Tests: 1
-- Files: 1
+- Tests: 91
+- Files: 6
 
 ### Panels Tests
 

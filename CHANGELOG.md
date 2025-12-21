@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning (2.0)](https://semver.org/spec/
 ### Added
 - **CI** Export complete zip files to release without intervention ([#152](https://github.com/text-forge/text-forge/pull/152))
 - Changed default export path ([#152](https://github.com/text-forge/text-forge/pull/152))
+- **Action Script:** Format Remove Trailing Whitespaces ([#171](https://github.com/text-forge/text-forge/pull/171))
+- **Action Script:** Normalize Line Endings and more ([#171](https://github.com/text-forge/text-forge/pull/171))
+- **API:** Hooks in `EditorAPI` ([#171](https://github.com/text-forge/text-forge/pull/171))
+- **Hooks:** `BEFORE_SAVE` hook added ([#171](https://github.com/text-forge/text-forge/pull/171))
+- Line Endings button in bottom bar ([#171](https://github.com/text-forge/text-forge/pull/171))
 
 ## [v0.2-rc2] - 2025-12-07 & [v0.2-stable] - 2025-12-12
 

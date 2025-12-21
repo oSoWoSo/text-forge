@@ -2,7 +2,7 @@ class_name EditorAPI
 extends Control
 ## Editor API and Mode Manager.
 ##
-## This node is first child of [Editor] and designed to manage modes. Access way: [code]Global.get_editor_api()[/code][br]
+## This node is first child of [Editor] and designed to manage modes. Access way: [code]Global.get_editor_api()[/code][br][br]
 ## This module manages a lot of important features and functionalities, including:[br][br]
 ## - Modes validating, loading, management, handling internal modes[br]
 ## - File saving and loading[br]
@@ -24,6 +24,13 @@ signal mode_selected(index: int)
 ## Shares any change in indentation settings.
 signal indentation_settings_updated(use_space: bool, indent_size: int)
 
+## Keeps availabe hooks to connect.
+enum Hooks {
+	## A hook that will be called before save.[br][br]
+	## [b]Note:[/b] [Callable]s connected to this hook must edit [Editor]'s text with [method GlobalAccess.set_editor_text], because other methods will mark file as unsaved after save (signal emission delay).
+	BEFORE_SAVE
+}
+
 ## Keeps list of all modes informations without damaged modes.
 var mode_list: Array[Dictionary] = []
 ## Keeps information of current mode from [member mode_list].
@@ -32,6 +39,8 @@ var current_mode: Dictionary = {}
 var mode_panel: TextForgePanel
 ## Keeps customized configuration for indentation settings for each mode.
 var custom_mode_indentations := {}
+## Keeps connected [Callable]s for each hook in [enum Hooks].
+var hooks: Dictionary[Hooks, Array]
 # Keeps temprory index of selected mode.
 var _temp_mode_index: int = 0
 
@@ -146,6 +155,7 @@ func import_mode(path: String) -> void:
 ## situations in mode selection.
 func save_file(file_path: String) -> void:
 	var mode := current_mode
+	_run_hook(Hooks.BEFORE_SAVE)
 	if not _is_mode_compatible(current_mode, file_path):
 		var compatible_modes := mode_list.filter(func(m): return _is_mode_compatible(m, file_path))
 		match compatible_modes.size():
@@ -292,6 +302,37 @@ func is_auto_indent_available() -> bool:
 	if not mode_script:
 		return false
 	return mode_script.features["auto_indent"]
+
+
+## Connects a [param callable] to given [param hook].
+func connect_to_hook(hook: Hooks, callable: Callable) -> void:
+	if not hooks.has(hook):
+		hooks[hook] = Array([], TYPE_CALLABLE, "", null)
+	# Check if this exact callable (same object/method + same bound args) already exists
+	for existing: Callable in hooks[hook]:
+		if existing == callable and existing.get_bound_arguments() == callable.get_bound_arguments():
+			return
+	hooks[hook].append(callable)
+
+
+## Disconnects given [callable] from connected [param hook] with [method connect_to_hook].
+func disconnect_from_hook(hook: Hooks, callable: Callable) -> void:
+	if not hooks.has(hook):
+		return
+	hooks[hook].erase(callable)
+
+
+## Runs given hook and disconnects invalid callables.
+func _run_hook(hook: Hooks) -> void:
+	if not hooks.has(hook):
+		return
+	if hooks[hook].is_empty():
+		return
+	for c: Callable in hooks[hook]:
+		if c.is_valid():
+			c.call()
+		else:
+			disconnect_from_hook.call_deferred(hook, c)
 
 
 ## Connected to editor's [code]code_completion_requested[/code] signal and will uandle code completion.
