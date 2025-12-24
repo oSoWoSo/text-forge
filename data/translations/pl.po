@@ -248,6 +248,21 @@ msgstr "Zablokuj ustawienia wcięć"
 msgid "menu.format.indentation.reset_mode_indentation"
 msgstr "Resetuj ustawienia wcięć trybu"
 
+msgid "menu.format.remove_trailing_whitespaces"
+msgstr "Usuń końcowe spacje"
+
+msgid "menu.format.normalize_line_endings"
+msgstr "Normalizuj zakończenia linii"
+
+msgid "menu.format.use_lf"
+msgstr "Użyj LF"
+
+msgid "menu.format.use_crlf"
+msgstr "Użyj CRLF"
+
+msgid "menu.format.use_cr"
+msgstr "Użyj CR"
+
 msgid "menu.format.continue_placeholder_completion"
 msgstr "Kontynuuj uzupełnianie placeholderów"
 

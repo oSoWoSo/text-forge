@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://dx1alvj3tjt16"]
+[gd_scene load_steps=24 format=3 uid="uid://dx1alvj3tjt16"]
 
 [ext_resource type="Script" uid="uid://byayvu15ojy1j" path="res://core/main.gd" id="1_o5qli"]
 [ext_resource type="Script" uid="uid://bkd665ctfsj35" path="res://core/scripts/replace_popup.gd" id="2_g0q11"]
@@ -20,6 +20,7 @@
 [ext_resource type="Script" uid="uid://cti2u1j1m720x" path="res://core/scripts/backup_status.gd" id="9_7ua4h"]
 [ext_resource type="Script" uid="uid://812j1a3e2eym" path="res://core/scripts/caret_pos.gd" id="10_7ua4h"]
 [ext_resource type="Script" uid="uid://c4e2vkjgt6lwi" path="res://core/scripts/indentation_settings_label.gd" id="13_slld4"]
+[ext_resource type="Script" uid="uid://cgow1m3f424xt" path="res://core/scripts/line_endings_label.gd" id="16_7akvt"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7akvt"]
 shader = ExtResource("2_i2u5h")
@@ -335,6 +336,21 @@ hide_timer = NodePath("HideTimer")
 [node name="HideTimer" type="Timer" parent="Margin/Sections/BottomBar/BackupStatus"]
 wait_time = 5.0
 one_shot = true
+
+[node name="LineEndings" type="MenuButton" parent="Margin/Sections/BottomBar"]
+layout_mode = 2
+tooltip_text = "Current EOL
+*Auto normalizer is disabled"
+theme_type_variation = &"BottomMenuButton"
+text = "LF*"
+item_count = 3
+popup/item_0/text = "LF"
+popup/item_0/id = 0
+popup/item_1/text = "CRLF"
+popup/item_1/id = 1
+popup/item_2/text = "CR"
+popup/item_2/id = 2
+script = ExtResource("16_7akvt")
 
 [node name="IndentationSettings" type="MenuButton" parent="Margin/Sections/BottomBar"]
 layout_mode = 2

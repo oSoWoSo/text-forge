@@ -248,6 +248,21 @@ msgstr "Lock Indentation Settings"
 msgid "menu.format.indentation.reset_mode_indentation"
 msgstr "Reset To Mode Indentation Settings"
 
+msgid "menu.format.remove_trailing_whitespaces"
+msgstr "Remove Trailing Whitespaces"
+
+msgid "menu.format.normalize_line_endings"
+msgstr "Normalize Line Endings"
+
+msgid "menu.format.use_lf"
+msgstr "Use LF"
+
+msgid "menu.format.use_crlf"
+msgstr "Use CRLF"
+
+msgid "menu.format.use_cr"
+msgstr "Use CR"
+
 msgid "menu.format.continue_placeholder_completion"
 msgstr "Continue Placeholder Completion"
 

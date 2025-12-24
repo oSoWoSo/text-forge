@@ -9,7 +9,7 @@ This directory contains comprehensive unit tests for the Text Forge text editor.
 
 ## Performance Benchmarks
 Current test suite execution time (estimated):
-- **All tests**: ~27 seconds
+- **All tests**: ~33 seconds
 - **Individual file**: ~1 second
 
 ## Test Generation Notes
@@ -25,6 +25,7 @@ Current test suite execution time (estimated):
   - Complex states like multi-caret edit
   - Parse error handling
   - Execute error handling
+- Update `tests/README.md`, `tests/INDEX.md`, `tests/TEST_SUMMARY.md` files
 - Don't use local variables in lambda functions, use like this (`test_neme__var_name`):
 ```
 # GdUnit generated TestSuite

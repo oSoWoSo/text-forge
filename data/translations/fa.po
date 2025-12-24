@@ -248,6 +248,21 @@ msgstr "قفل تنظیمات تورفتگی"
 msgid "menu.format.indentation.reset_mode_indentation"
 msgstr "بازنشانی به تنظیمات تورفتگی حالت"
 
+msgid "menu.format.remove_trailing_whitespaces"
+msgstr "حذف فضای خالی انتهای خطوط"
+
+msgid "menu.format.normalize_line_endings"
+msgstr "یکسان سازی انتهای خطوط"
+
+msgid "menu.format.use_lf"
+msgstr "استفاده از LF"
+
+msgid "menu.format.use_crlf"
+msgstr "استفاده از CRLF"
+
+msgid "menu.format.use_cr"
+msgstr "استفاده از CR"
+
 msgid "menu.format.continue_placeholder_completion"
 msgstr "ادامه تکمیل جای‌نگهدار"
 

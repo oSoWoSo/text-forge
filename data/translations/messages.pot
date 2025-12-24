@@ -245,6 +245,21 @@ msgstr ""
 msgid "menu.format.indentation.reset_mode_indentation"
 msgstr ""
 
+msgid "menu.format.remove_trailing_whitespaces"
+msgstr ""
+
+msgid "menu.format.normalize_line_endings"
+msgstr ""
+
+msgid "menu.format.use_lf"
+msgstr ""
+
+msgid "menu.format.use_crlf"
+msgstr ""
+
+msgid "menu.format.use_cr"
+msgstr ""
+
 msgid "menu.format.continue_placeholder_completion"
 msgstr ""
 
